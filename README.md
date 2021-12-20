@@ -6,7 +6,7 @@
   <a href="https://stdrp.ga/discord">
     <img src="https://discordapp.com/api/guilds/704273784378753124/widget.png?style=shield" alt="Discord">
   </a>
-  <img src="https://img.shields.io/github/languages/code-size/minersstudios/msDecor.svg" alt="Code-Size">
+  <img src="https://img.shields.io/github/languages/code-size/minersstudios/msBlock.svg" alt="Code-Size">
 </p>
 
 <p align="center">
