@@ -57,7 +57,5 @@ public final class Main extends JavaPlugin {
 
     }
 
-    public static Main getInstance() {
-        return JavaPlugin.getPlugin(Main.class);
-    }
+    public static Main getInstance() { return JavaPlugin.getPlugin(Main.class); }
 }

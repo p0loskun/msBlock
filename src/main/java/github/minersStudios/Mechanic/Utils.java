@@ -21,34 +21,33 @@ public class Utils {
     }
 
     public static EquipmentSlot getEquipmentSlot(PlayerInventory inv, ItemStack item) {
-        return inv.getItemInMainHand().equals(item) ? EquipmentSlot.HAND
-                : inv.getItemInOffHand().equals(item) ? EquipmentSlot.OFF_HAND : null;
+        return inv.getItemInMainHand().equals(item) ? EquipmentSlot.HAND : inv.getItemInOffHand().equals(item) ? EquipmentSlot.OFF_HAND : null;
     }
 
-    public static Location getInteractionPoint(@NotNull Location start, int maxDistance, boolean ignorePassableBlocks) {
-        if (start.getWorld() == null) return null;
-        RayTraceResult rtr = start.getWorld().rayTraceBlocks(start,
-                start.getDirection(), maxDistance, FluidCollisionMode.NEVER, ignorePassableBlocks);
-        if (rtr == null || rtr.getHitBlock() == null) return null;
-        return rtr.getHitPosition().subtract(rtr.getHitBlock().getLocation().toVector())
-                .toLocation(start.getWorld());
+    public static Location getInteractionPoint(@NotNull Location location, int maxDistance, boolean ignorePassableBlocks) {
+        if (location.getWorld() == null) return null;
+
+        RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(
+                location,
+                location.getDirection(),
+                maxDistance,
+                FluidCollisionMode.NEVER,
+                ignorePassableBlocks
+        );
+        if (rayTraceResult == null || rayTraceResult.getHitBlock() == null) return null;
+
+        return rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
     }
 
-    public static EntityPlayer parseHuman(Player p) {
-        return ((CraftPlayer) p).getHandle();
+    public static EntityPlayer parseHuman(Player player) {
+        return ((CraftPlayer) player).getHandle();
     }
-
-    public static Vec3D LocToVec(Location loc) {
-        return new Vec3D(loc.getX(), loc.getY(), loc.getZ());
-    }
-
-    public static BlockPosition BlockToBlockPos(Location location) {
-        return new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-    }
-
 
     public static MovingObjectPositionBlock getMovingObjectPositionBlock(@NotNull Player player, @NotNull Location blockLoc, boolean var3) {
-        return new MovingObjectPositionBlock(LocToVec(player.getEyeLocation()), parseHuman(player).ct(), BlockToBlockPos(blockLoc), var3);
+        Vec3D vec3D = new Vec3D(player.getEyeLocation().getX(), player.getEyeLocation().getY(), player.getEyeLocation().getZ());
+        BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
+
+        return new MovingObjectPositionBlock(vec3D, parseHuman(player).ct(), blockPosition, var3);
     }
 
 }
