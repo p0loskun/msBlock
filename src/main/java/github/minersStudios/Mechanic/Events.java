@@ -4,16 +4,14 @@ import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Snow;
 import org.bukkit.block.data.type.Stairs;
@@ -23,7 +21,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TropicalFish;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -41,22 +38,37 @@ public class Events implements Listener {
             Material.GRASS, Material.SEAGRASS, Material.WATER, Material.LAVA);
 
 
-    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
-    private void onBlockPhysics(BlockPhysicsEvent e) {
-        Block block = e.getBlock().getRelative(BlockFace.UP);
-        if (block.getType().equals(Material.NOTE_BLOCK)){
-            block.getState().update(true, false);
-            e.setCancelled(true);
+    @EventHandler(ignoreCancelled = true)
+    private void onBlockPhysics(BlockPhysicsEvent event) {
+        Block b = event.getBlock(),
+                topBlock = b.getRelative(BlockFace.UP),       // Block (y + 1)
+                bottomBlock = b.getRelative(BlockFace.DOWN);  // Block (y - 1)
+
+        if (topBlock.getType() == Material.NOTE_BLOCK) {
+            update(b.getLocation());
+            if (Tag.DOORS.isTagged(b.getType()) && b.getBlockData() instanceof Door) {
+                Door data = (Door) b.getBlockData();
+                if (!data.getHalf().equals(Bisected.Half.TOP)) return;
+                Door d = (Door) bottomBlock.getBlockData();
+                d.setOpen(data.isOpen());
+                bottomBlock.setBlockData(d);
+                bottomBlock.getState().update(true, false);
+            }
+            event.setCancelled(true);
         }
+        if (b.getType() == Material.NOTE_BLOCK) event.setCancelled(true);
+        if (!Tag.SIGNS.isTagged(b.getType()) &&
+                !b.getType().equals(Material.LECTERN))
+            b.getState().update(true, false);
     }
 
-    @EventHandler(ignoreCancelled = true)
-    private void onNoteBlockPhysics(BlockPhysicsEvent e) {
-        Block block = e.getBlock();
-        if (block.getType().equals(Material.NOTE_BLOCK)){
-            block.getState().update(true, false);
-            e.setCancelled(true);
-        }
+    private void update(Location loc) {
+        Block block = loc.getBlock().getRelative(BlockFace.UP);
+        if (block.getType() == Material.NOTE_BLOCK)
+            block.getState().update(true, true);
+        Block nextBlock = block.getRelative(BlockFace.UP);
+        if (nextBlock.getType() == Material.NOTE_BLOCK)
+            update(block.getLocation());
     }
 
     @EventHandler
@@ -77,22 +89,14 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() != Material.NOTE_BLOCK || event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) return;
-        if (event.isCancelled()) return;
-        event.setDropItems(false);
-        event.setExpToDrop(0);
-    }
-
-    @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         ArrayList<Block> blockList = new ArrayList<>(event.blockList());
 
         blockList.stream()
-                .filter(block -> block.getType() == Material.NOTE_BLOCK)
-                .forEach(block -> {
-                    event.blockList().remove(block);
-                    block.setType(Material.AIR);
+                .filter(b -> b.getType() == Material.NOTE_BLOCK)
+                .forEach(b -> {
+                    event.blockList().remove(b);
+                    b.setType(Material.AIR);
                 });
     }
 

@@ -117,7 +117,7 @@ public class CustomBlock {
         new BukkitRunnable() {
             @Override
             public void run() {
-                block.setType(Material.NOTE_BLOCK);
+                block.setType(Material.NOTE_BLOCK, false);
 
                 NoteBlock noteBlock = (NoteBlock) block.getBlockData();
 
@@ -137,7 +137,7 @@ public class CustomBlock {
         new BukkitRunnable() {
             @Override
             public void run() {
-                block.setType(Material.NOTE_BLOCK);
+                block.setType(Material.NOTE_BLOCK, false);
 
                 NoteBlock noteBlock = (NoteBlock) block.getBlockData();
 
