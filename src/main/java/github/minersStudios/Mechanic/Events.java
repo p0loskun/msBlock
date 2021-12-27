@@ -4,22 +4,20 @@ import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Snow;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TropicalFish;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -27,7 +25,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,19 +81,17 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onNotePlay(NotePlayEvent event) {
-        event.setCancelled(true);
-    }
+    public void onNotePlay(NotePlayEvent event) { event.setCancelled(true); }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         ArrayList<Block> blockList = new ArrayList<>(event.blockList());
 
         blockList.stream()
-                .filter(b -> b.getType() == Material.NOTE_BLOCK)
-                .forEach(b -> {
-                    event.blockList().remove(b);
-                    b.setType(Material.AIR);
+                .filter(block -> block.getType() == Material.NOTE_BLOCK)
+                .forEach(block -> {
+                    event.blockList().remove(block);
+                    block.setType(Material.AIR);
                 });
     }
 
@@ -138,66 +133,7 @@ public class Events implements Listener {
         } else if (!REPLACE.contains(block.getType())) return;
 
         if(inv.getItemInMainHand().getType().toString().contains("BUCKET")) {
-            switch (inv.getItemInMainHand().getType()) {
-                case LAVA_BUCKET:
-                    block.setType(Material.LAVA);
-
-                    if (player.getGameMode().equals(GameMode.SURVIVAL))
-                        inv.getItemInMainHand().setType(Material.BUCKET);
-
-                    break;
-                case WATER_BUCKET:
-                    block.setType(Material.WATER);
-
-                    if (player.getGameMode().equals(GameMode.SURVIVAL))
-                        inv.getItemInMainHand().setType(Material.BUCKET);
-
-                    break;
-                case PUFFERFISH_BUCKET:
-                    block.setType(Material.WATER);
-                    block.getLocation().getBlock().getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), EntityType.PUFFERFISH);
-
-                    if (player.getGameMode().equals(GameMode.SURVIVAL))
-                        inv.getItemInMainHand().setType(Material.BUCKET);
-
-                    break;
-                case SALMON_BUCKET:
-                    block.setType(Material.WATER);
-                    block.getLocation().getBlock().getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), EntityType.SALMON);
-
-                    if (player.getGameMode().equals(GameMode.SURVIVAL))
-                        inv.getItemInMainHand().setType(Material.BUCKET);
-                case TROPICAL_FISH_BUCKET:
-                    block.setType(Material.WATER);
-                    block.getLocation().getBlock().getWorld().spawn(block.getLocation().add(.5d, .5d, .5d), TropicalFish.class, tropicalFish -> {
-                        TropicalFishBucketMeta tropicalFishBucketMeta = (TropicalFishBucketMeta) inv.getItemInMainHand().getItemMeta();
-                        assert tropicalFishBucketMeta != null;
-
-                        tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
-                        tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
-                        tropicalFish.setPatternColor(tropicalFishBucketMeta.getPatternColor());
-                    });
-
-                    if (player.getGameMode().equals(GameMode.SURVIVAL))
-                        inv.getItemInMainHand().setType(Material.BUCKET);
-
-                    break;
-                case BUCKET:
-                    BlockData blockData = block.getBlockData();
-
-                    if (blockData instanceof Levelled) {
-                        Levelled levelled = (Levelled) blockData;
-
-                        if (levelled.getLevel() == 0) {
-                            if (player.getGameMode().equals(GameMode.SURVIVAL)) inv.getItemInMainHand().setType(
-                                    (block.getType().equals(Material.LAVA)) ? Material.LAVA_BUCKET :
-                                            (block.getType().equals(Material.WATER)) ? Material.WATER_BUCKET :
-                                                    Material.BUCKET
-                            );
-                            block.setType(Material.AIR);
-                        }
-                    }
-            }
+            new Buckets(player, block);
         }
 
 
