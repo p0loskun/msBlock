@@ -136,7 +136,7 @@ public class Events implements Listener {
         } else if (!REPLACE.contains(block.getType())) return;
 
         if(itemInMainHand.getType().toString().contains("BUCKET")) {
-            new Buckets(player, block);
+            new useBucket(player, block);
         }
 
 
