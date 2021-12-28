@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.InvocationTargetException;
 
 public class PlaySwingAnimation {
-    public PlaySwingAnimation(Player player){
+    PlaySwingAnimation(Player player){
         PacketContainer minePacket = Main.manager.createPacket(PacketType.Play.Server.ANIMATION);
         minePacket.getEntityModifier(player.getWorld()).write(0, player);
 

@@ -17,22 +17,18 @@ import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import java.util.Random;
 
 public class Buckets {
-
     private final Player player;
 
     private Axolotl.Variant randomVariant() {
-        int pick = new Random().nextInt(Axolotl.Variant.values().length);
-        return Axolotl.Variant.values()[pick];
+        return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
     }
 
     private TropicalFish.Pattern randomPattern() {
-        int pick = new Random().nextInt(TropicalFish.Pattern.values().length);
-        return TropicalFish.Pattern.values()[pick];
+        return TropicalFish.Pattern.values()[new Random().nextInt(TropicalFish.Pattern.values().length)];
     }
 
     private DyeColor randomBodyColor() {
-        int pick = new Random().nextInt(DyeColor.values().length);
-        return DyeColor.values()[pick];
+        return DyeColor.values()[new Random().nextInt(DyeColor.values().length)];
     }
 
     private void setBucketIfSurvival() {
@@ -92,6 +88,7 @@ public class Buckets {
                 setBucketIfSurvival();
                 break;
             case AXOLOTL_BUCKET:
+                block.setType(Material.WATER);
                 block.getLocation().getBlock().getWorld().spawn(block.getLocation().add(.5d, .5d, .5d), Axolotl.class, axolotl -> {
                     AxolotlBucketMeta axolotlBucketMeta = (AxolotlBucketMeta) inventory.getItemInMainHand().getItemMeta();
                     assert axolotlBucketMeta != null;
@@ -101,7 +98,6 @@ public class Buckets {
                         axolotl.setVariant(randomVariant());
                     }
                 });
-                block.setType(Material.WATER);
                 break;
             case BUCKET:
                 BlockData blockData = block.getBlockData();
@@ -110,11 +106,12 @@ public class Buckets {
                     Levelled levelled = (Levelled) blockData;
 
                     if (levelled.getLevel() == 0) {
-                        if (this.player.getGameMode().equals(GameMode.SURVIVAL)) inventory.getItemInMainHand().setType(
-                                (block.getType().equals(Material.LAVA)) ? Material.LAVA_BUCKET :
-                                        (block.getType().equals(Material.WATER)) ? Material.WATER_BUCKET :
-                                                Material.BUCKET
-                        );
+                        if (this.player.getGameMode().equals(GameMode.SURVIVAL))
+                            inventory.getItemInMainHand().setType(
+                                    (block.getType().equals(Material.LAVA)) ? Material.LAVA_BUCKET :
+                                    (block.getType().equals(Material.WATER)) ? Material.WATER_BUCKET :
+                                    Material.BUCKET
+                            );
                         block.setType(Material.AIR);
                     }
                 }

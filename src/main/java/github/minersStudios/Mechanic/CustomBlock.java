@@ -1,5 +1,6 @@
 package github.minersStudios.Mechanic;
 
+import github.minersStudios.Classes.PlaySwingAnimation;
 import github.minersStudios.Main;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
