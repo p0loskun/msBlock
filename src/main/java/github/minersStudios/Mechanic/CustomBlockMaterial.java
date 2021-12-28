@@ -3,6 +3,8 @@ package github.minersStudios.Mechanic;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 
+import javax.annotation.Nonnull;
+
 public enum CustomBlockMaterial {
     VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false),
     VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false),
@@ -18,7 +20,7 @@ public enum CustomBlockMaterial {
     private final Note note;
     private final boolean powered;
 
-    CustomBlockMaterial(Instrument instrument, Note note, boolean powered) {
+    CustomBlockMaterial(@Nonnull Instrument instrument, @Nonnull Note note, boolean powered) {
         this.instrument = instrument;
         this.note = note;
         this.powered = powered;
@@ -48,7 +50,8 @@ public enum CustomBlockMaterial {
     /**
      * @return Custom block material
      */
-    public static CustomBlockMaterial getCustomBlockMaterial(Note note, Instrument instrument, boolean powered) {
+    @SuppressWarnings("deprecation")
+    public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
         for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
         {
             if(

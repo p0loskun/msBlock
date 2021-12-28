@@ -14,6 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 
+import javax.annotation.Nonnull;
 import java.util.Random;
 
 public class Buckets {
@@ -36,7 +37,7 @@ public class Buckets {
             player.getInventory().getItemInMainHand().setType(Material.BUCKET);
     }
 
-    Buckets(Player player, Block block) {
+    Buckets(@Nonnull Player player, @Nonnull Block block) {
         this.player = player;
         PlayerInventory inventory = player.getInventory();
         switch (inventory.getItemInMainHand().getType()) {

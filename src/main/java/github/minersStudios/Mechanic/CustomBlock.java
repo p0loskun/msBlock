@@ -1,6 +1,5 @@
 package github.minersStudios.Mechanic;
 
-import github.minersStudios.Classes.PlaySwingAnimation;
 import github.minersStudios.Main;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
@@ -8,6 +7,9 @@ import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class CustomBlock {
     private Instrument instrument;
@@ -41,7 +43,7 @@ public class CustomBlock {
     /**
      * Sets instrument param of custom block
      */
-    public void setInstrument(Instrument instrument){
+    public void setInstrument(@Nonnull Instrument instrument){
         this.instrument = instrument;
     }
 
@@ -57,7 +59,7 @@ public class CustomBlock {
     /**
      * Sets note param of custom block
      */
-    public void setNote(Note note){
+    public void setNote(@Nonnull Note note){
         this.note = note;
     }
 
@@ -73,7 +75,7 @@ public class CustomBlock {
     /**
      * Sets a block param of custom block
      */
-    public void setBlock(Block block){
+    public void setBlock(@Nonnull Block block){
         this.block = block;
     }
 
@@ -105,7 +107,7 @@ public class CustomBlock {
     /**
      * Sets CustomBlockMaterial param of a custom block
      */
-    public void setCustomBlockMaterial(CustomBlockMaterial customBlockMaterial){
+    public void setCustomBlockMaterial(@Nullable CustomBlockMaterial customBlockMaterial){
         this.customBlockMaterial = customBlockMaterial;
     }
 
@@ -114,6 +116,7 @@ public class CustomBlock {
     /**
      * Sets custom block not without CustomBlockMaterial
      */
+    @SuppressWarnings("unused")
     public void setCustomBlock(){
         new BukkitRunnable() {
             @Override
@@ -134,7 +137,7 @@ public class CustomBlock {
     /**
      * Sets custom block not with CustomBlockMaterial
      */
-    public void setCustomBlock(CustomBlockMaterial customBlockMaterial) {
+    public void setCustomBlock(@Nonnull CustomBlockMaterial customBlockMaterial) {
         new BukkitRunnable() {
             @Override
             public void run() {
