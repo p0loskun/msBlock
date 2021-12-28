@@ -1,11 +1,15 @@
 package github.minersStudios.Mechanic;
 
 import github.minersStudios.Main;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Instrument;
 import org.bukkit.Material;
 import org.bukkit.Note;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
@@ -17,8 +21,18 @@ public class CustomBlock {
     private boolean powered;
     private Block block;
     private CustomBlockMaterial customBlockMaterial;
+    private Player player;
 
-    public CustomBlock(Block block) {
+    // CoreProtect
+    private final Plugin getPluginForCP = Main.getInstance().getServer().getPluginManager().getPlugin("CoreProtect");
+    private static CoreProtectAPI coreProtectAPI;
+    {
+        assert getPluginForCP != null;
+        coreProtectAPI = ((CoreProtect) getPluginForCP).getAPI();
+    }
+
+    public CustomBlock(Block block, Player player) {
+        setPlayer(player);
         setBlock(block);
 
         if(!block.getType().equals(Material.NOTE_BLOCK)) return;
@@ -29,6 +43,22 @@ public class CustomBlock {
         setNote(noteBlock.getNote());
         setPowered(noteBlock.isPowered());
         setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
+    }
+
+    // Player
+
+    /**
+     * @return player who placed custom block
+     */
+    public Player getPlayer(){
+        return player;
+    }
+
+    /**
+     * Sets player who placed custom block
+     */
+    public void setPlayer(@Nonnull Player player){
+        this.player = player;
     }
 
     // Instrument
@@ -121,15 +151,17 @@ public class CustomBlock {
         new BukkitRunnable() {
             @Override
             public void run() {
-                block.setType(Material.NOTE_BLOCK, false);
+                getBlock().setType(Material.NOTE_BLOCK, false);
 
-                NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+                NoteBlock noteBlock = (NoteBlock) getBlock().getBlockData();
 
                 noteBlock.setInstrument(getInstrument() == null ? getCustomBlockMaterial().getInstrument() : getInstrument());
                 noteBlock.setNote(getNote() == null ? getCustomBlockMaterial().getNote() : getNote());
                 noteBlock.setPowered(!isPowered() ? getCustomBlockMaterial().isPowered() : isPowered());
 
-                block.setBlockData(noteBlock);
+                getBlock().setBlockData(noteBlock);
+
+                coreProtectAPI.logPlacement(getPlayer().getDisplayName(), getBlock().getLocation(), Material.NOTE_BLOCK, getBlock().getBlockData());
             }
         }.runTaskLater(Main.getInstance(), 1L);
     }
@@ -141,15 +173,17 @@ public class CustomBlock {
         new BukkitRunnable() {
             @Override
             public void run() {
-                block.setType(Material.NOTE_BLOCK, false);
+                getBlock().setType(Material.NOTE_BLOCK, false);
 
-                NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+                NoteBlock noteBlock = (NoteBlock) getBlock().getBlockData();
 
                 noteBlock.setInstrument(getInstrument() == null ? customBlockMaterial.getInstrument() : getInstrument());
                 noteBlock.setNote(getNote() == null ? customBlockMaterial.getNote() : getNote());
                 noteBlock.setPowered(!isPowered() ? customBlockMaterial.isPowered() : isPowered());
 
-                block.setBlockData(noteBlock);
+                getBlock().setBlockData(noteBlock);
+
+                coreProtectAPI.logPlacement(getPlayer().getDisplayName(), getBlock().getLocation(), Material.NOTE_BLOCK, getBlock().getBlockData());
             }
         }.runTaskLater(Main.getInstance(), 1L);
     }
