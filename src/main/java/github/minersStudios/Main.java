@@ -39,5 +39,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("");
     }
 
-    public static Main getInstance() { return JavaPlugin.getPlugin(Main.class); }
+    public static Main getInstance() {
+        return JavaPlugin.getPlugin(Main.class);
+    }
 }
