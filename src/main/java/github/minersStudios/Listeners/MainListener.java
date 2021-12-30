@@ -12,17 +12,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Objects;
 
 public class MainListener implements Listener {
 
     @EventHandler
-    public void PlayerInteractEvent(PlayerInteractEvent e){
+    public void PlayerInteractEvent(PlayerInteractEvent e) {
         assert e.getClickedBlock() != null;
-        if (!(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getHand() == EquipmentSlot.HAND)) return;
+        if (
+                e.getAction() != Action.RIGHT_CLICK_BLOCK ||
+                        e.getPlayer().getInventory().getItemInMainHand().getType() != Material.PAPER ||
+                        e.getHand() != EquipmentSlot.HAND
+        ) return;
 
         Location locb = e.getClickedBlock().getRelative(e.getBlockFace()).getLocation().add(0.5D, 0.5D, 0.5D);
         for (Entity ignored : locb.getChunk().getWorld().getNearbyEntities(locb, 0.5, 0.5, 0.5)) return;
@@ -31,31 +34,23 @@ public class MainListener implements Listener {
         PlayerInventory inv = player.getInventory();
         Block block = e.getClickedBlock().getRelative(e.getBlockFace());
 
-        if(!inv.getItemInMainHand().getType().isAir()){
-            if(!Objects.requireNonNull(inv.getItemInMainHand().getItemMeta()).hasCustomModelData()) return;
-            ItemMeta itemMeta = inv.getItemInMainHand().getItemMeta();
+        ItemStack itemInMainHand = inv.getItemInMainHand();
+        ItemMeta itemMeta = itemInMainHand.getItemMeta();
+        assert itemMeta != null;
 
-            if(inv.getItemInMainHand().getType().equals(Material.PAPER)){
-                CustomBlock customBlock = new CustomBlock(block, player);
-                customBlock.setCustomBlock(
-                        itemMeta.getCustomModelData() == 1010 ? CustomBlockMaterial.VERTICAL_ACACIA_PLANKS :
-                                itemMeta.getCustomModelData() == 1011 ? CustomBlockMaterial.VERTICAL_BIRCH_PLANKS :
-                                        itemMeta.getCustomModelData() == 1012 ? CustomBlockMaterial.VERTICAL_WARPED_PLANKS :
-                                                CustomBlockMaterial.VERTICAL_OAK_PLANKS
-                        );
-            }
-        }else{
-            Block block1 = e.getClickedBlock();
-            CustomBlock customBlock = new CustomBlock(block1, player);
-
-            if(customBlock.getCustomBlockMaterial() == CustomBlockMaterial.VERTICAL_ACACIA_PLANKS){
-                player.sendMessage("acacia");
-            } else if (customBlock.getCustomBlockMaterial() == CustomBlockMaterial.VERTICAL_OAK_PLANKS){
-                player.sendMessage("oak");
-            }
-
-            player.sendMessage(customBlock.getBlock() + "\n" + customBlock.getInstrument() + "\n" + customBlock.getNote() + "\n" + customBlock.isPowered() + "\n" + customBlock.getCustomBlockMaterial());
-
+        if (!itemMeta.hasCustomModelData()) return;
+        CustomBlock customBlock = new CustomBlock(block, player);
+        player.sendMessage("a");
+        switch (itemMeta.getCustomModelData()) {
+            case 1000:
+                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_ACACIA_PLANKS);
+                break;
+            case 1001:
+                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_BIRCH_PLANKS);
+                break;
+            case 1002:
+                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_CRIMSON_PLANKS);
+                break;
         }
     }
 }

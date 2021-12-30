@@ -3,12 +3,11 @@ package github.minersStudios.Mechanic;
 import github.minersStudios.Main;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.Instrument;
-import org.bukkit.Material;
-import org.bukkit.Note;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,9 +18,9 @@ public class CustomBlock {
     private Instrument instrument;
     private Note note;
     private boolean powered;
-    private Block block;
+    private final Block block;
     private CustomBlockMaterial customBlockMaterial;
-    private Player player;
+    private final Player player;
 
     // CoreProtect
     private final Plugin getPluginForCP = Main.getInstance().getServer().getPluginManager().getPlugin("CoreProtect");
@@ -32,106 +31,17 @@ public class CustomBlock {
     }
 
     public CustomBlock(Block block, Player player) {
-        setPlayer(player);
-        setBlock(block);
+        this.player = player;
+        this.block = block;
 
-        if(!block.getType().equals(Material.NOTE_BLOCK)) return;
+        if(block.getType() != Material.NOTE_BLOCK) return;
 
         NoteBlock noteBlock = (NoteBlock) block.getBlockData();
 
-        setInstrument(noteBlock.getInstrument());
-        setNote(noteBlock.getNote());
-        setPowered(noteBlock.isPowered());
+        instrument = noteBlock.getInstrument();
+        note = noteBlock.getNote();
+        powered = noteBlock.isPowered();
         setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
-    }
-
-    // Player
-
-    /**
-     * @return player who placed custom block
-     */
-    public Player getPlayer(){
-        return player;
-    }
-
-    /**
-     * Sets player who placed custom block
-     */
-    public void setPlayer(@Nonnull Player player){
-        this.player = player;
-    }
-
-    // Instrument
-
-    /**
-     * @return instrument param of custom block
-     */
-    public Instrument getInstrument(){
-        return instrument;
-    }
-
-    /**
-     * Sets instrument param of custom block
-     */
-    public void setInstrument(@Nonnull Instrument instrument){
-        this.instrument = instrument;
-    }
-
-    // Note
-
-    /**
-     * @return note param of custom block
-     */
-    public Note getNote(){
-        return note;
-    }
-
-    /**
-     * Sets note param of custom block
-     */
-    public void setNote(@Nonnull Note note){
-        this.note = note;
-    }
-
-    // Block
-
-    /**
-     * @return block param of custom block
-     */
-    public Block getBlock(){
-        return block;
-    }
-
-    /**
-     * Sets a block param of custom block
-     */
-    public void setBlock(@Nonnull Block block){
-        this.block = block;
-    }
-
-    // Powered
-
-    /**
-     * @return boolean isPowered
-     */
-    public boolean isPowered(){
-        return powered;
-    }
-
-    /**
-     * Sets boolean isPowered
-     */
-    public void setPowered(boolean powered){
-        this.powered = powered;
-    }
-
-    // CustomBlockMaterial
-
-    /**
-     * @return CustomBlockMaterial param of a custom block
-     */
-    public CustomBlockMaterial getCustomBlockMaterial(){
-        return customBlockMaterial;
     }
 
     /**
@@ -144,48 +54,46 @@ public class CustomBlock {
     // CustomBlock
 
     /**
-     * Sets custom block not without CustomBlockMaterial
-     */
-    @SuppressWarnings("unused")
-    public void setCustomBlock(){
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                getBlock().setType(Material.NOTE_BLOCK, false);
-
-                NoteBlock noteBlock = (NoteBlock) getBlock().getBlockData();
-
-                noteBlock.setInstrument(getInstrument() == null ? getCustomBlockMaterial().getInstrument() : getInstrument());
-                noteBlock.setNote(getNote() == null ? getCustomBlockMaterial().getNote() : getNote());
-                noteBlock.setPowered(!isPowered() ? getCustomBlockMaterial().isPowered() : isPowered());
-
-                getBlock().setBlockData(noteBlock);
-
-                coreProtectAPI.logPlacement(getPlayer().getDisplayName(), getBlock().getLocation(), Material.NOTE_BLOCK, getBlock().getBlockData());
-            }
-        }.runTaskLater(Main.getInstance(), 1L);
-    }
-
-    /**
      * Sets custom block not with CustomBlockMaterial
      */
     public void setCustomBlock(@Nonnull CustomBlockMaterial customBlockMaterial) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                getBlock().setType(Material.NOTE_BLOCK, false);
+                block.setType(Material.NOTE_BLOCK);
 
-                NoteBlock noteBlock = (NoteBlock) getBlock().getBlockData();
+                NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+                noteBlock.setInstrument(customBlockMaterial.getInstrument());
+                noteBlock.setNote(customBlockMaterial.getNote());
+                noteBlock.setPowered(customBlockMaterial.isPowered());
+                block.setBlockData(noteBlock);
 
-                noteBlock.setInstrument(getInstrument() == null ? customBlockMaterial.getInstrument() : getInstrument());
-                noteBlock.setNote(getNote() == null ? customBlockMaterial.getNote() : getNote());
-                noteBlock.setPowered(!isPowered() ? customBlockMaterial.isPowered() : isPowered());
+                setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
+                block.getWorld().playSound(block.getLocation(), customBlockMaterial.getSoundPlace(), 1.0f, customBlockMaterial.getPitch());
 
-                getBlock().setBlockData(noteBlock);
+                coreProtectAPI.logPlacement(player.getDisplayName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
 
-                coreProtectAPI.logPlacement(getPlayer().getDisplayName(), getBlock().getLocation(), Material.NOTE_BLOCK, getBlock().getBlockData());
+                if (player.getGameMode() == GameMode.SURVIVAL)
+                    player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
             }
         }.runTaskLater(Main.getInstance(), 1L);
     }
 
+    /**
+     * Break custom block vanillish
+     */
+    public void breakCustomBlock(@Nonnull BlockBreakEvent event){
+        Location blockLocation = block.getLocation();
+        Player player = event.getPlayer();
+
+        setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(note, instrument, powered));
+        event.setExpToDrop(customBlockMaterial.getExpToDrop());
+        block.getWorld().playSound(blockLocation, customBlockMaterial.getSoundBreak(), 1.0f, customBlockMaterial.getPitch());
+        block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.getItemStack(true));
+        block.setType(Material.AIR);
+
+        player.setGameMode(player.getGameMode() == GameMode.ADVENTURE ? GameMode.SURVIVAL : player.getGameMode());
+
+        coreProtectAPI.logRemoval(player.getDisplayName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
+    }
 }

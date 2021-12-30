@@ -1,24 +1,19 @@
 package github.minersStudios.Classes;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import github.minersStudios.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.annotation.Nonnull;
 
 public class PlaySwingAnimation {
-    PlaySwingAnimation(Player player){
-        PacketContainer minePacket = Main.manager.createPacket(PacketType.Play.Server.ANIMATION);
-        minePacket.getEntityModifier(player.getWorld()).write(0, player);
-
-        Bukkit.getServer().getOnlinePlayers().forEach((p) -> {
-            try {
-                Main.manager.sendServerPacket(player, minePacket);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Cannot send packet.", e);
-            }
-        });
+    public void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
+        switch (equipmentSlot) {
+            case HAND:
+                player.swingMainHand();
+                break;
+            case OFF_HAND:
+                player.swingOffHand();
+                break;
+        }
     }
 }

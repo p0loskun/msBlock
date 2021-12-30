@@ -33,7 +33,7 @@ public class useBucket {
     }
 
     private void setBucketIfSurvival() {
-        if (player.getGameMode().equals(GameMode.SURVIVAL))
+        if (player.getGameMode() == GameMode.SURVIVAL)
             player.getInventory().getItemInMainHand().setType(Material.BUCKET);
     }
 
@@ -107,10 +107,10 @@ public class useBucket {
                     Levelled levelled = (Levelled) blockData;
 
                     if (levelled.getLevel() == 0) {
-                        if (this.player.getGameMode().equals(GameMode.SURVIVAL))
+                        if (this.player.getGameMode() == GameMode.SURVIVAL)
                             inventory.getItemInMainHand().setType(
-                                    (block.getType().equals(Material.LAVA)) ? Material.LAVA_BUCKET :
-                                    (block.getType().equals(Material.WATER)) ? Material.WATER_BUCKET :
+                                    (block.getType() == Material.LAVA) ? Material.LAVA_BUCKET :
+                                    (block.getType() == Material.WATER) ? Material.WATER_BUCKET :
                                     Material.BUCKET
                             );
                         block.setType(Material.AIR);

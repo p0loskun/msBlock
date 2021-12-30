@@ -1,17 +1,19 @@
 package github.minersStudios.Mechanic;
 
+import com.google.common.collect.Sets;
+import github.minersStudios.Main;
+import github.minersStudios.Mechanic.CustomBreak.BreakUtils;
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Snow;
 import org.bukkit.block.data.type.Stairs;
@@ -19,50 +21,60 @@ import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+
 
 public class Events implements Listener {
-    private final List<Material> REPLACE = Arrays.asList(Material.AIR, Material.CAVE_AIR, Material.VOID_AIR,
-            Material.GRASS, Material.SEAGRASS, Material.WATER, Material.LAVA);
+    private final HashSet<Material> REPLACE = Sets.newHashSet(
+            Material.AIR,
+            Material.CAVE_AIR,
+            Material.VOID_AIR,
+            Material.GRASS,
+            Material.SEAGRASS,
+            Material.WATER,
+            Material.LAVA
+    );
 
 
-    @EventHandler(ignoreCancelled = true)
+
+    // CoreProtect
+    private final Plugin getPluginForCP = Main.getInstance().getServer().getPluginManager().getPlugin("CoreProtect");
+    private static CoreProtectAPI coreProtectAPI;
+    {
+        assert getPluginForCP != null;
+        coreProtectAPI = ((CoreProtect) getPluginForCP).getAPI();
+    }
+
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     private void onBlockPhysics(BlockPhysicsEvent event) {
-        Block block = event.getSourceBlock(),
-                topBlock = block.getRelative(BlockFace.UP),
-                bottomBlock = block.getRelative(BlockFace.DOWN);
+        Block block = event.getBlock(),
+                topBlock = block.getRelative(BlockFace.UP);
 
         if (topBlock.getType() == Material.NOTE_BLOCK) {
             update(block.getLocation());
-            if (Tag.DOORS.isTagged(block.getType()) && block.getBlockData() instanceof Door) {
-                Door doorData = (Door) block.getBlockData();
-                if (!doorData.getHalf().equals(Bisected.Half.TOP)) return;
-                Door doorDataBottom = (Door) bottomBlock.getBlockData();
-                doorDataBottom.setOpen(doorData.isOpen());
-                bottomBlock.setBlockData(doorDataBottom);
-                bottomBlock.getState().update(true, false);
-            }
             event.setCancelled(true);
         }
-        if (block.getType() == Material.NOTE_BLOCK)
+        if (block.getType() == Material.NOTE_BLOCK) {
+            update(block.getLocation());
             event.setCancelled(true);
-        if (!Tag.SIGNS.isTagged(block.getType()) && !block.getType().equals(Material.LECTERN))
-            block.getState().update(true, false);
+        }
     }
 
     private void update(Location loc) {
         Block block = loc.getBlock().getRelative(BlockFace.UP);
         if (block.getType() == Material.NOTE_BLOCK)
-            block.getState().update(true, true);
+            block.getState().update(true, false);
 
         Block nextBlock = block.getRelative(BlockFace.UP);
         if (nextBlock.getType() == Material.NOTE_BLOCK)
@@ -70,15 +82,40 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onPistonExtends(BlockPistonExtendEvent event) {
-        if (event.getBlocks().stream().anyMatch(b -> b.getType().equals(Material.NOTE_BLOCK)))
-            event.setCancelled(true);
+    public void onPistonExtends(BlockPistonExtendEvent event){
+        for (Block blocks : event.getBlocks()) {
+            if (blocks.getType().equals(Material.NOTE_BLOCK))
+                event.setCancelled(true);
+        }
     }
 
     @EventHandler
-    public void onPistonRetract(BlockPistonRetractEvent event) {
-        if (event.getBlocks().stream().anyMatch(b -> b.getType().equals(Material.NOTE_BLOCK)))
+    public void onPistonEvent(BlockPistonRetractEvent event){
+        for (Block blocks : event.getBlocks()) {
+            if (blocks.getType().equals(Material.NOTE_BLOCK))
+                event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event){
+        if(event.getBlockPlaced().getType() == Material.NOTE_BLOCK){
             event.setCancelled(true);
+            event.getPlayer().sendMessage("ꑜ" + ChatColor.DARK_RED + " Простите, но нотные блоки запрещены");
+            update(event.getBlockPlaced().getLocation());
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        HashSet<Block> blockList = Sets.newHashSet(event.blockList());
+        blockList.stream()
+                .filter(block -> block.getType() == Material.NOTE_BLOCK)
+                .forEach(block -> {
+                    coreProtectAPI.logRemoval("#tnt", block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
+                    event.blockList().remove(block);
+                    block.setType(Material.AIR);
+                });
     }
 
     @EventHandler
@@ -87,36 +124,23 @@ public class Events implements Listener {
     }
 
     @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event) {
-        ArrayList<Block> explodedBlockList = new ArrayList<>(event.blockList());
-
-        explodedBlockList.stream()
-                .filter(explodedBlock -> explodedBlock.getType() == Material.NOTE_BLOCK)
-                .forEach(explodedBlock -> {
-                    event.blockList().remove(explodedBlock);
-                    explodedBlock.setType(Material.AIR);
-                });
-    }
-
-    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
+
+        Block clickedBlock = event.getClickedBlock();
         Player player = event.getPlayer();
 
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !event.getClickedBlock().getType().equals(Material.NOTE_BLOCK))
-            return;
-
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || clickedBlock.getType() != Material.NOTE_BLOCK) return;
         event.setCancelled(true);
 
+        if (player.getInventory().getItemInMainHand().getType().isAir() || player.getInventory().getItemInMainHand().getType() == Material.PAPER) return;
 
-        if(player.getInventory().getItemInMainHand().getType().isAir()) return;
-
-        Location locb = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation().add(0.5D, 0.5D, 0.5D);
-        for (Entity ignored : locb.getChunk().getWorld().getNearbyEntities(locb, 0.5, 0.5, 0.5)) return;
+        Location locb = clickedBlock.getRelative(event.getBlockFace()).getLocation().add(0.5D, 0.5D, 0.5D);
+        for (Entity ignored : clickedBlock.getWorld().getNearbyEntities(locb, 0.5, 0.5, 0.5)) return;
 
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemInMainHand = playerInventory.getItemInMainHand();
-        Block block = event.getClickedBlock().getRelative(event.getBlockFace());
+        Block block = clickedBlock.getRelative(event.getBlockFace());
 
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
         EnumHand hand = Utils.parseEnumHand(Utils.getEquipmentSlot(playerInventory, itemInMainHand));
@@ -128,23 +152,24 @@ public class Events implements Listener {
         assert interactionPoint != null;
 
         if (
-                REPLACE.contains(event.getClickedBlock().getType())
-                || (event.getClickedBlock().getType().equals(Material.SNOW)
-                && ((Snow) event.getClickedBlock().getBlockData()).getLayers() == 1)
-        ){
-            block = event.getClickedBlock();
+                REPLACE.contains(clickedBlock.getType())
+                        || (clickedBlock.getType() == Material.SNOW
+                        && ((Snow) clickedBlock.getBlockData()).getLayers() == 1)
+        ) {
+            block = clickedBlock;
         } else if (!REPLACE.contains(block.getType())) return;
 
-        if(itemInMainHand.getType().toString().contains("BUCKET")) {
+        if (itemInMainHand.getType().toString().contains("BUCKET")) {
             new useBucket(player, block);
+            return;
         }
 
-
         if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
+            player.sendMessage("b");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
-            Stairs data = (Stairs)block.getBlockData();
+            Stairs data = (Stairs) block.getBlockData();
 
-            switch (event.getBlockFace()){
+            switch (event.getBlockFace()) {
                 case UP:
                     data.setHalf(Bisected.Half.BOTTOM);
                     break;
@@ -159,15 +184,16 @@ public class Events implements Listener {
 
         } else if (
                 Tag.SLABS.isTagged(itemInMainHand.getType())
-                || block.getType().equals(itemInMainHand.getType())
+                        || block.getType() == itemInMainHand.getType()
         ) {
+            player.sendMessage("c");
             Slab.Type dataType;
             if (block.getType() == itemInMainHand.getType()) {
                 dataType = Slab.Type.DOUBLE;
             } else {
                 if (
                         (interactionPoint.getY() > 0d && interactionPoint.getY() < .5d)
-                        || interactionPoint.getY() == 1d
+                                || interactionPoint.getY() == 1d
                 ) {
                     dataType = Slab.Type.BOTTOM;
                 } else {
@@ -181,14 +207,16 @@ public class Events implements Listener {
             block.setBlockData(data);
         } else if (
                 Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())
-                        || block.getType().equals(itemInMainHand.getType())
+                        || block.getType() == itemInMainHand.getType()
         ) {
+            player.sendMessage("d");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
 
             Directional directional = (Directional) block.getBlockData();
             directional.setFacing(event.getBlockFace());
             block.setBlockData(directional);
         } else {
+            player.sendMessage("e");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
         }
     }
