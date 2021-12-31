@@ -1,4 +1,4 @@
-package github.minersStudios.Mechanic;
+package github.minersStudios.enumerators;
 
 import org.bukkit.*;
 import org.bukkit.inventory.ItemStack;

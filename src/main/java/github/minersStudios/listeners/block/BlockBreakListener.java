@@ -1,16 +1,13 @@
-package github.minersStudios.Mechanic.CustomBreak;
+package github.minersStudios.listeners.block;
 
-import github.minersStudios.Mechanic.CustomBlock;
+import github.minersStudios.objects.CustomBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-
-public class BreakEvents implements Listener {
-
-
+public class BlockBreakListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {

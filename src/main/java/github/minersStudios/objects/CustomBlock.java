@@ -1,18 +1,18 @@
-package github.minersStudios.Mechanic;
+package github.minersStudios.objects;
 
 import github.minersStudios.Main;
-import net.coreprotect.CoreProtect;
-import net.coreprotect.CoreProtectAPI;
+import github.minersStudios.enumerators.CustomBlockMaterial;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import static github.minersStudios.Main.coreProtectAPI;
 
 public class CustomBlock {
     private Instrument instrument;
@@ -21,14 +21,6 @@ public class CustomBlock {
     private final Block block;
     private CustomBlockMaterial customBlockMaterial;
     private final Player player;
-
-    // CoreProtect
-    private final Plugin getPluginForCP = Main.getInstance().getServer().getPluginManager().getPlugin("CoreProtect");
-    private static CoreProtectAPI coreProtectAPI;
-    {
-        assert getPluginForCP != null;
-        coreProtectAPI = ((CoreProtect) getPluginForCP).getAPI();
-    }
 
     public CustomBlock(Block block, Player player) {
         this.player = player;
@@ -76,7 +68,7 @@ public class CustomBlock {
                 if (player.getGameMode() == GameMode.SURVIVAL)
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
             }
-        }.runTaskLater(Main.getInstance(), 1L);
+        }.runTaskLater(Main.plugin, 1L);
     }
 
     /**

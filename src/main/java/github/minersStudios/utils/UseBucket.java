@@ -1,4 +1,4 @@
-package github.minersStudios.Mechanic;
+package github.minersStudios.utils;
 
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
@@ -17,28 +17,28 @@ import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-public class useBucket {
-    private final Player player;
+public class UseBucket {
+    private static Player player;
 
-    private Axolotl.Variant randomVariant() {
+    private static Axolotl.Variant randomVariant() {
         return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
     }
 
-    private TropicalFish.Pattern randomPattern() {
+    private static TropicalFish.Pattern randomPattern() {
         return TropicalFish.Pattern.values()[new Random().nextInt(TropicalFish.Pattern.values().length)];
     }
 
-    private DyeColor randomBodyColor() {
+    private static DyeColor randomBodyColor() {
         return DyeColor.values()[new Random().nextInt(DyeColor.values().length)];
     }
 
-    private void setBucketIfSurvival() {
+    private static void setBucketIfSurvival() {
         if (player.getGameMode() == GameMode.SURVIVAL)
             player.getInventory().getItemInMainHand().setType(Material.BUCKET);
     }
 
-    useBucket(@Nonnull Player player, @Nonnull Block block) {
-        this.player = player;
+    public UseBucket(@Nonnull Player player, @Nonnull Block block) {
+        UseBucket.player = player;
         PlayerInventory inventory = player.getInventory();
         switch (inventory.getItemInMainHand().getType()) {
             case LAVA_BUCKET:
@@ -107,7 +107,7 @@ public class useBucket {
                     Levelled levelled = (Levelled) blockData;
 
                     if (levelled.getLevel() == 0) {
-                        if (this.player.getGameMode() == GameMode.SURVIVAL)
+                        if (UseBucket.player.getGameMode() == GameMode.SURVIVAL)
                             inventory.getItemInMainHand().setType(
                                     (block.getType() == Material.LAVA) ? Material.LAVA_BUCKET :
                                     (block.getType() == Material.WATER) ? Material.WATER_BUCKET :

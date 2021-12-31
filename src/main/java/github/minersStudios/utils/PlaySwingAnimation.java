@@ -1,4 +1,4 @@
-package github.minersStudios.Classes;
+package github.minersStudios.utils;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;

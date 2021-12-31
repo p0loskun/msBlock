@@ -1,10 +1,11 @@
 name: msBlock
-description: 'A Minecraft plugin with Blocks for "Unknown server"'
-authors: ['MINERSStudios']
-website: <a href="http://minersstudios.github.io/" class="external free" rel="nofollow">http://minersstudios.github.io/</a>
+version: ${project.version}
+description: A Minecraft plugin with Blocks for "Unknown server"
+authors: [MinersStudios, p0loskun]
+website: minersstudios.github.io
 
-version: '${project.version}'
 main: github.minersStudios.Main
 api-version: 1.18
 database: false
-depend: [ProtocolLib, CoreProtect]
+softdepend:
+  - CoreProtect

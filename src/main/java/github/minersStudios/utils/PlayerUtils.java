@@ -1,4 +1,4 @@
-package github.minersStudios.Mechanic;
+package github.minersStudios.utils;
 
 import net.minecraft.core.BlockPosition;
 import net.minecraft.server.level.EntityPlayer;
@@ -17,7 +17,8 @@ import org.bukkit.util.RayTraceResult;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Utils {
+public class PlayerUtils {
+
     public static EnumHand parseEnumHand(@Nullable EquipmentSlot equipmentSlot) {
         return equipmentSlot == EquipmentSlot.HAND ? EnumHand.a : (equipmentSlot == EquipmentSlot.OFF_HAND ? EnumHand.b : null);
     }
