@@ -26,7 +26,6 @@ public class PlaceCustomBlockListener implements Listener {
                 event.getPlayer().getInventory().getItemInMainHand().getType() != Material.PAPER ||
                 event.getHand() != EquipmentSlot.HAND
         ) return;
-
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
 
@@ -40,22 +39,10 @@ public class PlaceCustomBlockListener implements Listener {
         assert itemMeta != null;
 
         if (!itemMeta.hasCustomModelData()) return;
+        if(clickedBlock.getType() != Material.NOTE_BLOCK) new PlaySwingAnimation(player, event.getHand());
+
         CustomBlock customBlock = new CustomBlock(blockAtFace, player);
-
-        if(clickedBlock.getType() != Material.NOTE_BLOCK)
-            new PlaySwingAnimation(player, event.getHand());
-
-        switch (itemMeta.getCustomModelData()) {
-            case 1000:
-                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_ACACIA_PLANKS);
-                break;
-            case 1001:
-                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_BIRCH_PLANKS);
-                break;
-            case 1002:
-                customBlock.setCustomBlock(CustomBlockMaterial.VERTICAL_CRIMSON_PLANKS);
-                break;
-        }
+        customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
     }
 
 }

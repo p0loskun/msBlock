@@ -7,13 +7,10 @@ import javax.annotation.Nonnull;
 
 public class PlaySwingAnimation {
     public PlaySwingAnimation(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
-        switch (equipmentSlot) {
-            case HAND:
-                player.swingMainHand();
-                break;
-            case OFF_HAND:
-                player.swingOffHand();
-                break;
+        if (equipmentSlot == EquipmentSlot.HAND) {
+            player.swingMainHand();
+        } else {
+            player.swingOffHand();
         }
     }
 }

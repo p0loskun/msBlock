@@ -50,13 +50,16 @@ public class InteractWithBlockListener implements Listener {
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         Player player = event.getPlayer();
-
-        if (player.getInventory().getItemInMainHand().getType().isAir() || player.getInventory().getItemInMainHand().getType() == Material.PAPER) return;
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
-            if(!(nearbyEntity instanceof Item)) return;
-
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemInMainHand = playerInventory.getItemInMainHand();
+
+        if (
+                itemInMainHand.getType().isAir()
+                || itemInMainHand.getType() == Material.PAPER
+                || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
+        ) return;
+        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+            if(!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
 
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
         EnumHand hand = parseEnumHand(getEquipmentSlot(playerInventory, itemInMainHand));

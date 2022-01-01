@@ -1,6 +1,9 @@
 package github.minersStudios.enumerators;
 
+import github.minersStudios.objects.CustomBlock;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -148,6 +151,21 @@ public enum CustomBlockMaterial {
                     customBlockMaterial.isPowered() == powered &&
                     customBlockMaterial.getInstrument() == instrument &&
                     customBlockMaterial.getNote().getId() == note.getId()
+            ){
+                return customBlockMaterial;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return Custom block material
+     */
+    public static CustomBlockMaterial getCustomBlockMaterialByCMD(int itemCustomModelData) {
+        for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
+        {
+            if(
+                    customBlockMaterial.itemCustomModelData == itemCustomModelData
             ){
                 return customBlockMaterial;
             }

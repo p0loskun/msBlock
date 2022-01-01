@@ -29,7 +29,6 @@ public class PlayerUtils {
 
     public static Location getInteractionPoint(@Nonnull Location location, int maxDistance, boolean ignorePassableBlocks) {
         if (location.getWorld() == null) return null;
-
         RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(
                 location,
                 location.getDirection(),

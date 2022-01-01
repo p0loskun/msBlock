@@ -21,5 +21,4 @@ public class Packets {
         ((CraftPlayer) player).getHandle().d.a(getBlockPosition(block));
     }
 
-
 }

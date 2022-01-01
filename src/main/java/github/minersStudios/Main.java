@@ -30,11 +30,9 @@ public final class Main extends JavaPlugin {
 
         new RegEvents();
 
-        getServer().getConsoleSender().sendMessage(
-                "\n         §f-------=============-------" +
-                "\n             §6msBlock §f| §aВключён!" +
-                "\n             §6By - MinersStudios" +
-                "\n         §f-------=============-------"
-        );
+        getServer().getConsoleSender().sendMessage("§f-------=============-------");
+        getServer().getConsoleSender().sendMessage("§6msBlock §f| §aВключён!");
+        getServer().getConsoleSender().sendMessage("§6By - MinersStudios");
+        getServer().getConsoleSender().sendMessage("§f-------=============-------");
     }
 }

@@ -2,6 +2,7 @@ package github.minersStudios.utils;
 
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -10,7 +11,7 @@ import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TropicalFish;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 
@@ -19,6 +20,8 @@ import java.util.Random;
 
 public class UseBucket {
     private static Player player;
+    private static Block block;
+    private static Location blockLocation;
 
     private static Axolotl.Variant randomVariant() {
         return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
@@ -37,37 +40,39 @@ public class UseBucket {
             player.getInventory().getItemInMainHand().setType(Material.BUCKET);
     }
 
+    private static void summonPrimitiveEntities(EntityType entityType){
+        block.setType(Material.WATER);
+        block.getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), entityType);
+        setBucketIfSurvival();
+    }
+
     public UseBucket(@Nonnull Player player, @Nonnull Block block) {
         UseBucket.player = player;
-        PlayerInventory inventory = player.getInventory();
-        switch (inventory.getItemInMainHand().getType()) {
+        UseBucket.block = block;
+        UseBucket.blockLocation = block.getLocation().add(.5d, .5d, .5d);
+
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        Material material = itemInMainHand.getType();
+        switch (material) {
             case LAVA_BUCKET:
-                block.setType(Material.LAVA);
-
-                setBucketIfSurvival();
-                break;
             case WATER_BUCKET:
-                block.setType(Material.WATER);
-
+                block.setType(material == Material.LAVA_BUCKET ? Material.LAVA : Material.WATER);
                 setBucketIfSurvival();
                 break;
             case PUFFERFISH_BUCKET:
-                block.setType(Material.WATER);
-                block.getLocation().getBlock().getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), EntityType.PUFFERFISH);
-
-                setBucketIfSurvival();
+                summonPrimitiveEntities(EntityType.PUFFERFISH);
                 break;
             case SALMON_BUCKET:
-                block.setType(Material.WATER);
-                block.getLocation().getBlock().getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), EntityType.SALMON);
-
-                setBucketIfSurvival();
+                summonPrimitiveEntities(EntityType.SALMON);
+                break;
+            case COD_BUCKET:
+                summonPrimitiveEntities(EntityType.COD);
+                break;
             case TROPICAL_FISH_BUCKET:
                 block.setType(Material.WATER);
-                block.getLocation().getBlock().getWorld().spawn(block.getLocation().add(.5d, .5d, .5d), TropicalFish.class, tropicalFish -> {
-                    TropicalFishBucketMeta tropicalFishBucketMeta = (TropicalFishBucketMeta) inventory.getItemInMainHand().getItemMeta();
+                block.getWorld().spawn(blockLocation, TropicalFish.class, tropicalFish -> {
+                    TropicalFishBucketMeta tropicalFishBucketMeta = (TropicalFishBucketMeta) itemInMainHand.getItemMeta();
                     assert tropicalFishBucketMeta != null;
-
                     if(tropicalFishBucketMeta.hasVariant()){
                         tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
                         tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
@@ -79,40 +84,32 @@ public class UseBucket {
                     }
 
                 });
-
-                setBucketIfSurvival();
-                break;
-            case COD_BUCKET:
-                block.setType(Material.WATER);
-                block.getLocation().getBlock().getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), EntityType.COD);
-
                 setBucketIfSurvival();
                 break;
             case AXOLOTL_BUCKET:
                 block.setType(Material.WATER);
-                block.getLocation().getBlock().getWorld().spawn(block.getLocation().add(.5d, .5d, .5d), Axolotl.class, axolotl -> {
-                    AxolotlBucketMeta axolotlBucketMeta = (AxolotlBucketMeta) inventory.getItemInMainHand().getItemMeta();
+                block.getWorld().spawn(blockLocation, Axolotl.class, axolotl -> {
+                    AxolotlBucketMeta axolotlBucketMeta = (AxolotlBucketMeta) itemInMainHand.getItemMeta();
                     assert axolotlBucketMeta != null;
-                    if (axolotlBucketMeta.hasVariant()) {
-                        axolotl.setVariant(axolotlBucketMeta.getVariant());
-                    } else {
-                        axolotl.setVariant(randomVariant());
-                    }
+                    axolotl.setVariant(
+                            axolotlBucketMeta.hasVariant() ? axolotlBucketMeta.getVariant()
+                            : randomVariant()
+                    );
                 });
+                setBucketIfSurvival();
                 break;
             case BUCKET:
                 BlockData blockData = block.getBlockData();
-
                 if (blockData instanceof Levelled) {
                     Levelled levelled = (Levelled) blockData;
 
                     if (levelled.getLevel() == 0) {
-                        if (UseBucket.player.getGameMode() == GameMode.SURVIVAL)
-                            inventory.getItemInMainHand().setType(
-                                    (block.getType() == Material.LAVA) ? Material.LAVA_BUCKET :
-                                    (block.getType() == Material.WATER) ? Material.WATER_BUCKET :
-                                    Material.BUCKET
-                            );
+                        if (UseBucket.player.getGameMode() != GameMode.SURVIVAL) return;
+                        itemInMainHand.setType(
+                                (block.getType() == Material.LAVA) ? Material.LAVA_BUCKET
+                                : (block.getType() == Material.WATER) ? Material.WATER_BUCKET
+                                : Material.BUCKET
+                        );
                         block.setType(Material.AIR);
                     }
                 }
