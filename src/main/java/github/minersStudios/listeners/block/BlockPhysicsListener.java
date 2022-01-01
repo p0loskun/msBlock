@@ -4,14 +4,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import static github.minersStudios.utils.BlockUtils.UpdateNoteBlock;
 
 public class BlockPhysicsListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+    @EventHandler
     private void onBlockPhysics(org.bukkit.event.block.BlockPhysicsEvent event) {
         Block block = event.getBlock(),
                 topBlock = block.getRelative(BlockFace.UP);

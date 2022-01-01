@@ -1,6 +1,5 @@
 package github.minersStudios.objects;
 
-import github.minersStudios.Main;
 import github.minersStudios.enumerators.CustomBlockMaterial;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -13,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static github.minersStudios.Main.coreProtectAPI;
+import static github.minersStudios.Main.plugin;
 
 public class CustomBlock {
     private Instrument instrument;
@@ -44,11 +44,10 @@ public class CustomBlock {
     }
 
     // CustomBlock
-
     /**
      * Sets custom block not with CustomBlockMaterial
      */
-    public void setCustomBlock(@Nonnull CustomBlockMaterial customBlockMaterial) {
+    public void setCustomBlock(CustomBlockMaterial customBlockMaterial) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -68,7 +67,7 @@ public class CustomBlock {
                 if (player.getGameMode() == GameMode.SURVIVAL)
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
             }
-        }.runTaskLater(Main.plugin, 1L);
+        }.runTaskLater(plugin, 1L);
     }
 
     /**
@@ -79,12 +78,11 @@ public class CustomBlock {
         Player player = event.getPlayer();
 
         setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(note, instrument, powered));
+        if(customBlockMaterial == null) return;
         event.setExpToDrop(customBlockMaterial.getExpToDrop());
         block.getWorld().playSound(blockLocation, customBlockMaterial.getSoundBreak(), 1.0f, customBlockMaterial.getPitch());
         block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.getItemStack(true));
         block.setType(Material.AIR);
-
-        player.setGameMode(player.getGameMode() == GameMode.ADVENTURE ? GameMode.SURVIVAL : player.getGameMode());
 
         coreProtectAPI.logRemoval(player.getDisplayName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
     }

@@ -6,7 +6,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import javax.annotation.Nonnull;
 
 public class PlaySwingAnimation {
-    public void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
+    public PlaySwingAnimation(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
         switch (equipmentSlot) {
             case HAND:
                 player.swingMainHand();

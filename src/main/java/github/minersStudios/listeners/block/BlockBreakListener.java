@@ -1,6 +1,7 @@
 package github.minersStudios.listeners.block;
 
 import github.minersStudios.objects.CustomBlock;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -9,14 +10,13 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BlockBreakListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block blockBraked = event.getBlock();
-        if (blockBraked.getType() != Material.NOTE_BLOCK) return;
+        if (blockBraked.getType() != Material.NOTE_BLOCK || event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
 
-        event.getPlayer().setNoDamageTicks(1);
+        event.setCancelled(true);
         CustomBlock customBlock = new CustomBlock(blockBraked, event.getPlayer());
         customBlock.breakCustomBlock(event);
-        event.setDropItems(false);
     }
 }

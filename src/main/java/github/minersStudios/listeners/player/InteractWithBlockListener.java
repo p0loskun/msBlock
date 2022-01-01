@@ -81,7 +81,6 @@ public class InteractWithBlockListener implements Listener {
         }
 
         if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
-            player.sendMessage("b");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
             Stairs data = (Stairs) blockAtFace.getBlockData();
 
@@ -102,7 +101,6 @@ public class InteractWithBlockListener implements Listener {
                 Tag.SLABS.isTagged(itemInMainHand.getType())
                 || blockAtFace.getType() == itemInMainHand.getType()
         ) {
-            player.sendMessage("c");
             Slab.Type dataType;
             if (blockAtFace.getType() == itemInMainHand.getType()) {
                 dataType = Slab.Type.DOUBLE;
@@ -125,14 +123,12 @@ public class InteractWithBlockListener implements Listener {
                 Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())
                 || blockAtFace.getType() == itemInMainHand.getType()
         ) {
-            player.sendMessage("d");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
 
             Directional directional = (Directional) blockAtFace.getBlockData();
             directional.setFacing(event.getBlockFace());
             blockAtFace.setBlockData(directional);
         } else {
-            player.sendMessage("e");
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
         }
     }

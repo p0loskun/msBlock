@@ -2,7 +2,7 @@ package github.minersStudios.listeners.player;
 
 import github.minersStudios.enumerators.CustomBlockMaterial;
 import github.minersStudios.objects.CustomBlock;
-import org.bukkit.Location;
+import github.minersStudios.utils.PlaySwingAnimation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -41,6 +41,9 @@ public class PlaceCustomBlockListener implements Listener {
 
         if (!itemMeta.hasCustomModelData()) return;
         CustomBlock customBlock = new CustomBlock(blockAtFace, player);
+
+        if(clickedBlock.getType() != Material.NOTE_BLOCK)
+            new PlaySwingAnimation(player, event.getHand());
 
         switch (itemMeta.getCustomModelData()) {
             case 1000:

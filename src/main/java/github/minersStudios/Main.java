@@ -31,10 +31,10 @@ public final class Main extends JavaPlugin {
         new RegEvents();
 
         getServer().getConsoleSender().sendMessage(
-                "\n===========================" +
-                "\n    §6msBlock §f| §aВключён! " +
-                "\n    §6By - MinersStudios §f" +
-                "\n==========================="
+                "\n         §f-------=============-------" +
+                "\n             §6msBlock §f| §aВключён!" +
+                "\n             §6By - MinersStudios" +
+                "\n         §f-------=============-------"
         );
     }
 }
