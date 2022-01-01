@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class PlaceCustomBlockListener implements Listener {
@@ -28,14 +27,12 @@ public class PlaceCustomBlockListener implements Listener {
         ) return;
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
-        Player player = event.getPlayer();
 
-        for (Entity nearbyEntity : player.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item)) return;
 
-
-        PlayerInventory inv = player.getInventory();
-        ItemStack itemInMainHand = inv.getItemInMainHand();
+        Player player = event.getPlayer();
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
         assert itemMeta != null;
 
