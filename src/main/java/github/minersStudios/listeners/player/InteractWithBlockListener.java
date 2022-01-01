@@ -58,7 +58,7 @@ public class InteractWithBlockListener implements Listener {
                 || itemInMainHand.getType() == Material.PAPER
                 || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
         ) return;
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+        for (Entity nearbyEntity : player.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
 
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);

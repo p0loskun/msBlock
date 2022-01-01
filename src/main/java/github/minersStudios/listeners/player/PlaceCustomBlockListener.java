@@ -28,11 +28,12 @@ public class PlaceCustomBlockListener implements Listener {
         ) return;
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
+        Player player = event.getPlayer();
 
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+        for (Entity nearbyEntity : player.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item)) return;
 
-        Player player = event.getPlayer();
+
         PlayerInventory inv = player.getInventory();
         ItemStack itemInMainHand = inv.getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();

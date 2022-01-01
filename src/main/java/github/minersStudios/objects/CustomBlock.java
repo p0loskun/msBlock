@@ -7,6 +7,7 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,9 +49,10 @@ public class CustomBlock {
      * Sets custom block not with CustomBlockMaterial
      */
     public void setCustomBlock(CustomBlockMaterial customBlockMaterial) {
-        new BukkitRunnable() {
+        new BukkitRunnable(){
             @Override
             public void run() {
+                if(customBlockMaterial == null) return;
                 block.setType(Material.NOTE_BLOCK);
 
                 NoteBlock noteBlock = (NoteBlock) block.getBlockData();
@@ -67,7 +69,7 @@ public class CustomBlock {
                 if (player.getGameMode() == GameMode.SURVIVAL)
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
             }
-        }.runTaskLater(plugin, 1L);
+        }.runTask(plugin);
     }
 
     /**
@@ -81,9 +83,9 @@ public class CustomBlock {
         if(customBlockMaterial == null) return;
         event.setExpToDrop(customBlockMaterial.getExpToDrop());
         block.getWorld().playSound(blockLocation, customBlockMaterial.getSoundBreak(), 1.0f, customBlockMaterial.getPitch());
-        block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.getItemStack(true));
+        block.getWorld().dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
         block.setType(Material.AIR);
 
-        coreProtectAPI.logRemoval(player.getDisplayName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
+        coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
     }
 }

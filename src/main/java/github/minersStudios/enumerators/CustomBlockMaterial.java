@@ -130,12 +130,12 @@ public enum CustomBlockMaterial {
     /**
      * @return ItemStack of item
      */
-    public ItemStack getItemStack(boolean setItemName){
+    public ItemStack getItemStack(){
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
         assert itemMeta != null;
         itemMeta.setCustomModelData(itemCustomModelData);
-        itemMeta.setDisplayName(setItemName ? ChatColor.WHITE + itemName : null);
+        itemMeta.setDisplayName(ChatColor.WHITE + itemName);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
