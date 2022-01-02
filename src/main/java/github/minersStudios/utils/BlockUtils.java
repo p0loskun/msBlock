@@ -1,11 +1,27 @@
 package github.minersStudios.utils;
 
+import com.google.common.collect.Sets;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import java.util.HashSet;
+
 public class BlockUtils {
+
+    public static final HashSet<Material> REPLACE = Sets.newHashSet(
+            Material.AIR,
+            Material.WATER,
+            Material.LAVA,
+            Material.GRASS,
+            Material.FERN,
+            Material.SEAGRASS,
+            Material.TALL_GRASS,
+            Material.LARGE_FERN,
+            Material.TALL_SEAGRASS,
+            Material.VINE
+    );
 
     public static void UpdateNoteBlock(Location loc) {
         Block block = loc.getBlock().getRelative(BlockFace.UP);

@@ -1,6 +1,5 @@
 package github.minersStudios.listeners.player;
 
-import com.google.common.collect.Sets;
 import github.minersStudios.utils.UseBucket;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
@@ -8,7 +7,6 @@ import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
@@ -23,28 +21,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.HashSet;
-
+import static github.minersStudios.utils.BlockUtils.REPLACE;
 import static github.minersStudios.utils.PlayerUtils.*;
 
 public class InteractWithBlockListener implements Listener {
 
-    private static final HashSet<Material> REPLACE = Sets.newHashSet(
-            Material.AIR,
-            Material.CAVE_AIR,
-            Material.VOID_AIR,
-            Material.GRASS,
-            Material.SEAGRASS,
-            Material.WATER,
-            Material.LAVA
-    );
-
     @EventHandler
-    public void onPlayerInteract(org.bukkit.event.player.PlayerInteractEvent event) {
+    public void onPlayerInteract(PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.NOTE_BLOCK) return;
         event.setCancelled(true);

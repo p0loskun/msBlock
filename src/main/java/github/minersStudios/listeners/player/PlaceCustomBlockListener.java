@@ -2,6 +2,7 @@ package github.minersStudios.listeners.player;
 
 import github.minersStudios.enumerators.CustomBlockMaterial;
 import github.minersStudios.objects.CustomBlock;
+import github.minersStudios.utils.BlockUtils;
 import github.minersStudios.utils.PlaySwingAnimation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class PlaceCustomBlockListener implements Listener {
 
     @EventHandler
-    public void PlayerInteractEvent(org.bukkit.event.player.PlayerInteractEvent event) {
+    public void PlayerInteractEvent(PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
         if (
                 event.getAction() != Action.RIGHT_CLICK_BLOCK ||
@@ -38,6 +40,9 @@ public class PlaceCustomBlockListener implements Listener {
 
         if (!itemMeta.hasCustomModelData()) return;
         if(clickedBlock.getType() != Material.NOTE_BLOCK) new PlaySwingAnimation(player, event.getHand());
+
+        if(BlockUtils.REPLACE.contains(clickedBlock.getType()))
+            blockAtFace = clickedBlock;
 
         CustomBlock customBlock = new CustomBlock(blockAtFace, player);
         customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
