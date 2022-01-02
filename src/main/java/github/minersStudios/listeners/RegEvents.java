@@ -12,6 +12,7 @@ public final class RegEvents {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
         pluginManager.registerEvents(new BlockBreakListener(), plugin);
+        pluginManager.registerEvents(new BlockDamageListener(), plugin);
         pluginManager.registerEvents(new BlockPhysicsListener(), plugin);
         pluginManager.registerEvents(new BlockPlaceListener(), plugin);
         pluginManager.registerEvents(new ExplosionListener(), plugin);

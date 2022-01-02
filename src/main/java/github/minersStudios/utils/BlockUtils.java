@@ -1,6 +1,5 @@
 package github.minersStudios.utils;
 
-import net.minecraft.core.BlockPosition;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,11 +17,4 @@ public class BlockUtils {
             UpdateNoteBlock(block.getLocation());
     }
 
-    public static BlockPosition getBlockPosition(Block block){
-        return new BlockPosition(block.getX(), block.getY(), block.getZ());
-    }
-
-    public static int getBlockEntityId(Block block){
-        return ((block.getX() & 0xFFF) << 20 | (block.getZ() & 0xFFF) << 8) | (block.getY() & 0xFF);
-    }
 }
