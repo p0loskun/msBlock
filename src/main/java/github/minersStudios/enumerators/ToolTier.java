@@ -5,12 +5,12 @@ import org.bukkit.inventory.ItemStack;
 public enum ToolTier
 {
     ANY(0, 0.1f),
-    WOOD(1, 0.15f),
-    STONE(2, 0.3f),
-    IRON(3, 0.4f),
-    GOLD(1, 0.65f),
-    DIAMOND(4, 0.5f),
-    NETHERITE(5, 0.65f);
+    WOOD(1, 0.3f),
+    STONE(2, 0.45f),
+    IRON(3, 0.56f),
+    GOLD(1, 0.8f),
+    DIAMOND(4, 0.65f),
+    NETHERITE(5, 0.8f);
 
     public final int order;
     public final float speed;

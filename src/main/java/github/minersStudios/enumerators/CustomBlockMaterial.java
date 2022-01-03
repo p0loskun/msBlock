@@ -23,7 +23,7 @@ public enum CustomBlockMaterial {
             Instrument.BANJO, new Note(1), false,
             Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK, Sound.BLOCK_AMETHYST_BLOCK_HIT,
             13.0f, ToolType.AXE, false,
-            10,
+            0,
             "Вертикальные берёзовые доски", 1001),
     VERTICAL_CRIMSON_PLANKS(
             Instrument.BANJO, new Note(2), false,
@@ -182,13 +182,13 @@ public enum CustomBlockMaterial {
 
         if (block.getCustomBlockMaterial().getToolType() == ToolType.getTool(heldItem)){
             base = tier.speed;
+
+            if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
+                float level = heldItem.getEnchantmentLevel(Enchantment.DIG_SPEED);
+                base += level * 0.3f;
+            }
         } else {
             base /= 5.0f;
-        }
-
-        if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
-            float level = heldItem.getEnchantmentLevel(Enchantment.DIG_SPEED);
-            base += level * 0.15f;
         }
 
         if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {

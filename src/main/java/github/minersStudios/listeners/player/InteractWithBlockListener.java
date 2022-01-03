@@ -23,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import static github.minersStudios.utils.BlockUtils.REPLACE;
 import static github.minersStudios.utils.PlayerUtils.*;
@@ -39,8 +38,7 @@ public class InteractWithBlockListener implements Listener {
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         Player player = event.getPlayer();
-        PlayerInventory playerInventory = player.getInventory();
-        ItemStack itemInMainHand = playerInventory.getItemInMainHand();
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (
                 itemInMainHand.getType().isAir()
@@ -51,11 +49,10 @@ public class InteractWithBlockListener implements Listener {
             if(!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
 
         net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
-        EnumHand hand = parseEnumHand(getEquipmentSlot(playerInventory, itemInMainHand));
+        EnumHand hand = parseEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
         Location playerEyeLocation = player.getEyeLocation();
         EntityPlayer entityPlayer = parseHuman(player);
         MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation(), false);
-
         Location interactionPoint = getInteractionPoint(playerEyeLocation, 8, true);
         assert interactionPoint != null;
 
@@ -75,7 +72,6 @@ public class InteractWithBlockListener implements Listener {
         if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
             Stairs data = (Stairs) blockAtFace.getBlockData();
-
             switch (event.getBlockFace()) {
                 case UP:
                     data.setHalf(Bisected.Half.BOTTOM);
@@ -88,19 +84,12 @@ public class InteractWithBlockListener implements Listener {
                     break;
             }
             blockAtFace.setBlockData(data);
-
-        } else if (
-                Tag.SLABS.isTagged(itemInMainHand.getType())
-                || blockAtFace.getType() == itemInMainHand.getType()
-        ) {
+        } else if (Tag.SLABS.isTagged(itemInMainHand.getType())) {
             Slab.Type dataType;
             if (blockAtFace.getType() == itemInMainHand.getType()) {
                 dataType = Slab.Type.DOUBLE;
             } else {
-                if (
-                        (interactionPoint.getY() > 0d && interactionPoint.getY() < .5d)
-                                || interactionPoint.getY() == 1d
-                ) {
+                if ((interactionPoint.getY() > 0d && interactionPoint.getY() < .5d) || interactionPoint.getY() == 1d) {
                     dataType = Slab.Type.BOTTOM;
                 } else {
                     dataType = Slab.Type.TOP;
@@ -111,10 +100,7 @@ public class InteractWithBlockListener implements Listener {
             Slab data = (Slab) blockAtFace.getBlockData();
             data.setType(dataType);
             blockAtFace.setBlockData(data);
-        } else if (
-                Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())
-                || blockAtFace.getType() == itemInMainHand.getType()
-        ) {
+        } else if (Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())) {
             nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
 
             Directional directional = (Directional) blockAtFace.getBlockData();

@@ -25,8 +25,7 @@ import static github.minersStudios.utils.PlayerUtils.diggers;
 
 public class PacketBreakListener extends PacketAdapter {
 
-    public PacketBreakListener()
-    {
+    public PacketBreakListener() {
         super(Main.plugin, PacketType.Play.Client.BLOCK_DIG);
     }
 
@@ -37,13 +36,12 @@ public class PacketBreakListener extends PacketAdapter {
         BlockPosition blockPosition = event.getPacket().getBlockPositionModifier().read(0);
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
+        Block block = blockPosition.toLocation(player.getWorld()).getBlock();
+        if (block.getType() != Material.NOTE_BLOCK) return;
         if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK)) {
-            Block block = blockPosition.toLocation(player.getWorld()).getBlock();
             Location blockLocation = block.getLocation();
-
-            if (block.getType() != Material.NOTE_BLOCK) return;
             CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
-            if(customBlock.getCustomBlockMaterial() == null) return;
+            if (customBlock.getCustomBlockMaterial() == null) return;
             ItemStack handItem = player.getInventory().getItem(EquipmentSlot.HAND);
 
             float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlock);
@@ -55,6 +53,7 @@ public class PacketBreakListener extends PacketAdapter {
 
                 @Override
                 public void run() {
+                    if (diggers.get(player) == null) return;
                     this.ticks++;
                     this.progress += digSpeed;
                     float next_stage = (this.current_stage + 1) * 0.1F;
@@ -62,8 +61,6 @@ public class PacketBreakListener extends PacketAdapter {
                     if (this.ticks % 4 == 0) {
                         player.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
                     }
-
-                    player.sendMessage(String.valueOf(diggers.values()));
 
                     if (this.progress > next_stage) {
                         this.current_stage = (int) Math.floor(this.progress * 10F);
@@ -89,7 +86,7 @@ public class PacketBreakListener extends PacketAdapter {
                         world.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
                         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.add(0.5, 0.5, 0.5), 100, 0.25, 0.25, 0.25, block.getBlockData());
                         blockLocation.add(-0.5, -0.5, -0.5);
-                        if(customBlock.getCustomBlockMaterial().getExpToDrop() != 0)
+                        if (customBlock.getCustomBlockMaterial().getExpToDrop() != 0)
                             world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlock.getCustomBlockMaterial().getExpToDrop());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
@@ -111,8 +108,8 @@ public class PacketBreakListener extends PacketAdapter {
 
         } else if (
                 (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)
-                    || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
-                && diggers.containsKey(player)
+                        || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
+                        && diggers.containsKey(player)
         ) {
             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
             packetContainer.getIntegers().write(0, 0).write(1, -1);

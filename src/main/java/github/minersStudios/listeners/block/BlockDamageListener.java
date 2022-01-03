@@ -2,6 +2,7 @@ package github.minersStudios.listeners.block;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.potion.PotionEffect;
@@ -12,14 +13,12 @@ public class BlockDamageListener implements Listener {
     @EventHandler
     public void onBlockDamage(BlockDamageEvent event)
     {
-        boolean flag = true;
-        if (event.getBlock().getType().equals(Material.NOTE_BLOCK))
-        {
-            flag = false;
+        if (event.getBlock().getType() == Material.NOTE_BLOCK) {
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
+            return;
         }
-        if (flag && event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING))
-        {
+        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
+            event.setCancelled(true);
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
         }
     }

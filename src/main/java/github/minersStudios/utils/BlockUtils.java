@@ -1,5 +1,6 @@
 package github.minersStudios.utils;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,6 +10,12 @@ import org.bukkit.block.BlockFace;
 import java.util.HashSet;
 
 public class BlockUtils {
+
+    public static final ImmutableSet<Material> TRANSPERENT = Sets.immutableEnumSet(
+            Material.AIR,
+            Material.WATER,
+            Material.LAVA
+    );
 
     public static final HashSet<Material> REPLACE = Sets.newHashSet(
             Material.AIR,
