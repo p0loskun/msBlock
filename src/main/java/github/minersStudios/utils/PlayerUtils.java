@@ -16,8 +16,12 @@ import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerUtils {
+
+    public static final Map<Player, Integer> diggers = new HashMap<>();
 
     public static EnumHand parseEnumHand(@Nullable EquipmentSlot equipmentSlot) {
         return equipmentSlot == EquipmentSlot.HAND ? EnumHand.a : (equipmentSlot == EquipmentSlot.OFF_HAND ? EnumHand.b : null);

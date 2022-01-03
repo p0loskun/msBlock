@@ -19,14 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static github.minersStudios.Main.coreProtectAPI;
 import static github.minersStudios.Main.protocolManager;
+import static github.minersStudios.utils.PlayerUtils.diggers;
 
 public class PacketBreakListener extends PacketAdapter {
-    private final Map<Player, Integer> diggers = new HashMap<>();
 
     public PacketBreakListener()
     {
@@ -65,6 +62,8 @@ public class PacketBreakListener extends PacketAdapter {
                     if (this.ticks % 4 == 0) {
                         player.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
                     }
+
+                    player.sendMessage(String.valueOf(diggers.values()));
 
                     if (this.progress > next_stage) {
                         this.current_stage = (int) Math.floor(this.progress * 10F);

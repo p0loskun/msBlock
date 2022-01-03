@@ -4,18 +4,18 @@ import org.bukkit.inventory.ItemStack;
 
 public enum ToolTier
 {
-    ANY(0, 1),
-    WOOD(1, 2),
-    STONE(2, 4),
-    IRON(3, 6),
-    GOLD(1, 12),
-    DIAMOND(4, 8),
-    NETHERITE(5, 9);
+    ANY(0, 0.1f),
+    WOOD(1, 0.15f),
+    STONE(2, 0.3f),
+    IRON(3, 0.4f),
+    GOLD(1, 0.65f),
+    DIAMOND(4, 0.5f),
+    NETHERITE(5, 0.65f);
 
     public final int order;
-    public final int speed;
+    public final float speed;
 
-    ToolTier(int order, int speed)
+    ToolTier(int order, float speed)
     {
         this.order = order;
         this.speed = speed;

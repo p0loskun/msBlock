@@ -40,7 +40,6 @@ public final class Main extends JavaPlugin {
         coreProtectAPI = getCoreProtect();
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
 
-        protocolManager.addPacketListener(new PacketBreakListener());
         new RegEvents();
     }
 }

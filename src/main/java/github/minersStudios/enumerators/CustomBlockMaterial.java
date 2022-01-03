@@ -16,49 +16,49 @@ public enum CustomBlockMaterial {
     VERTICAL_ACACIA_PLANKS(
             Instrument.BANJO, new Note(0), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные акациевые доски", 1000),
     VERTICAL_BIRCH_PLANKS(
             Instrument.BANJO, new Note(1), false,
             Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK, Sound.BLOCK_AMETHYST_BLOCK_HIT,
-            25.0f, ToolType.AXE, false,
-            0,
+            13.0f, ToolType.AXE, false,
+            10,
             "Вертикальные берёзовые доски", 1001),
     VERTICAL_CRIMSON_PLANKS(
             Instrument.BANJO, new Note(2), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные багровые доски", 1002),
     VERTICAL_DARK_OAK_PLANKS(
             Instrument.BANJO, new Note(3), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные доски из тёмной древесины", 1003),
     VERTICAL_JUNGLE_PLANKS(
             Instrument.BANJO, new Note(4), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные тропические доски", 1004),
     VERTICAL_OAK_PLANKS(
             Instrument.BANJO, new Note(5), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные дубовые доски", 1005),
     VERTICAL_SPRUCE_PLANKS(
             Instrument.BANJO, new Note(6), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные еловые доски", 1006),
     VERTICAL_WARPED_PLANKS(
             Instrument.BANJO, new Note(7), false,
             Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            25.0f, ToolType.AXE, false,
+            13.0f, ToolType.AXE, false,
             0,
             "Вертикальные искажённые доски", 1007),
     ;
@@ -188,12 +188,12 @@ public enum CustomBlockMaterial {
 
         if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
             float level = heldItem.getEnchantmentLevel(Enchantment.DIG_SPEED);
-            base += level * level + 1.0f;
+            base += level * 0.15f;
         }
 
         if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
             float level = Objects.requireNonNull(player.getPotionEffect(PotionEffectType.FAST_DIGGING)).getAmplifier() + 1;
-            base *= 1.0f + level * 0.2f;
+            base *= level * 0.32f;
         }
 
         return base / block.getCustomBlockMaterial().digSpeed;
