@@ -99,9 +99,13 @@ public class PacketBreakListener extends PacketAdapter {
 
                         if (ToolType.getTool(handItem) == ToolType.HAND) return;
                         if (!(handItem.getItemMeta() instanceof Damageable)) return;
-                        ItemMeta meta = handItem.getItemMeta();
-                        ((Damageable) meta).setDamage(((Damageable) meta).getDamage() + 1);
-                        handItem.setItemMeta(meta);
+                        Damageable itemMeta = (Damageable) handItem.getItemMeta();
+                        assert itemMeta != null;
+                        itemMeta.setDamage(itemMeta.getDamage() + 1);
+                        handItem.setItemMeta(itemMeta);
+                        if(itemMeta.getDamage() < player.getInventory().getItemInMainHand().getType().getMaxDurability())return;
+                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
+                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
                     }
                 }
             }, 0L, 1L));

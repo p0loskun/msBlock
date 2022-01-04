@@ -49,7 +49,5 @@ public final class Main extends JavaPlugin {
                 }
             }
         }.runTaskTimer(plugin, 50L, 0L);
-
-
     }
 }
