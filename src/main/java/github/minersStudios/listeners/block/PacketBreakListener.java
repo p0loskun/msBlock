@@ -57,9 +57,10 @@ public class PacketBreakListener extends PacketAdapter {
                     this.ticks++;
                     this.progress += digSpeed;
                     float next_stage = (this.current_stage + 1) * 0.1F;
+                    World world = block.getWorld();
 
                     if (this.ticks % 4 == 0) {
-                        player.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
+                        world.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
                     }
 
                     if (this.progress > next_stage) {
@@ -82,7 +83,6 @@ public class PacketBreakListener extends PacketAdapter {
                         }, 1);
                         Bukkit.getScheduler().cancelTask(diggers.remove(player));
 
-                        World world = block.getWorld();
                         world.playSound(blockLocation, customBlock.getCustomBlockMaterial().getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
                         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.add(0.5, 0.5, 0.5), 100, 0.25, 0.25, 0.25, block.getBlockData());
                         blockLocation.add(-0.5, -0.5, -0.5);
