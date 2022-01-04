@@ -42,7 +42,6 @@ public class PacketBreakListener extends PacketAdapter {
             CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
             if (customBlock.getCustomBlockMaterial() == null) return;
             ItemStack handItem = player.getInventory().getItem(EquipmentSlot.HAND);
-
             float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlock);
 
             diggers.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
@@ -52,7 +51,7 @@ public class PacketBreakListener extends PacketAdapter {
 
                 @Override
                 public void run() {
-                    if (diggers.get(player) == null) return;
+                    if(diggers.get(player) == null) return;
                     this.ticks++;
                     this.progress += digSpeed;
                     float next_stage = (this.current_stage + 1) * 0.1F;
@@ -102,7 +101,7 @@ public class PacketBreakListener extends PacketAdapter {
                         assert itemMeta != null;
                         itemMeta.setDamage(itemMeta.getDamage() + 1);
                         handItem.setItemMeta(itemMeta);
-                        if(itemMeta.getDamage() < player.getInventory().getItemInMainHand().getType().getMaxDurability())return;
+                        if(itemMeta.getDamage() < player.getInventory().getItemInMainHand().getType().getMaxDurability()) return;
                         player.getInventory().clear(player.getInventory().getHeldItemSlot());
                         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
                     }
