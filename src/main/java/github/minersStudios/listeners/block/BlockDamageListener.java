@@ -16,7 +16,6 @@ public class BlockDamageListener implements Listener {
             return;
         }
         if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
-            event.setCancelled(true);
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
         }
     }

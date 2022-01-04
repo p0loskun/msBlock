@@ -7,12 +7,12 @@ import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.SoundCategory;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.Snow;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -24,10 +24,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static github.minersStudios.utils.BlockUtils.REPLACE;
 import static github.minersStudios.utils.PlayerUtils.*;
 
 public class InteractWithBlockListener implements Listener {
+    private static ItemActionContext itemActionContext;
+    private static EnumHand enumHand;
+    private static net.minecraft.world.item.ItemStack nmsItem;
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -48,29 +50,21 @@ public class InteractWithBlockListener implements Listener {
         for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
 
-        net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
-        EnumHand hand = parseEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
+        nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
+        enumHand = parseEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
         Location playerEyeLocation = player.getEyeLocation();
         EntityPlayer entityPlayer = parseHuman(player);
         MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation(), false);
         Location interactionPoint = getInteractionPoint(playerEyeLocation, 8, true);
         assert interactionPoint != null;
-
-        if (
-                REPLACE.contains(clickedBlock.getType())
-                || (clickedBlock.getType() == Material.SNOW
-                && ((Snow) clickedBlock.getBlockData()).getLayers() == 1)
-        ) {
-            blockAtFace = clickedBlock;
-        } else if (!REPLACE.contains(blockAtFace.getType())) return;
-
         if (itemInMainHand.getType().toString().contains("BUCKET")) {
             new UseBucket(player, blockAtFace);
             return;
         }
+        itemActionContext = new ItemActionContext(entityPlayer, enumHand, movingObjectPositionBlock);
 
         if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
-            nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
+            useOn(clickedBlock.getRelative(event.getBlockFace()));
             Stairs data = (Stairs) blockAtFace.getBlockData();
             switch (event.getBlockFace()) {
                 case UP:
@@ -94,20 +88,32 @@ public class InteractWithBlockListener implements Listener {
                 } else {
                     dataType = Slab.Type.TOP;
                 }
-                nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
+                useOn(clickedBlock.getRelative(event.getBlockFace()));
             }
 
             Slab data = (Slab) blockAtFace.getBlockData();
             data.setType(dataType);
             blockAtFace.setBlockData(data);
         } else if (Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())) {
-            nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
+            useOn(clickedBlock.getRelative(event.getBlockFace()));
 
             Directional directional = (Directional) blockAtFace.getBlockData();
             directional.setFacing(event.getBlockFace());
             blockAtFace.setBlockData(directional);
         } else {
-            nmsItem.useOn(new ItemActionContext(entityPlayer, hand, movingObjectPositionBlock), hand);
+            useOn(clickedBlock.getRelative(event.getBlockFace()));
         }
     }
+
+    private static void useOn(Block block){
+        nmsItem.useOn(itemActionContext, enumHand);
+        block.getWorld().playSound(
+                block.getLocation(),
+                block.getType().createBlockData().getSoundGroup().getPlaceSound(),
+                SoundCategory.BLOCKS,
+                2.0f,
+                block.getType().createBlockData().getSoundGroup().getPitch()
+        );
+    }
+
 }

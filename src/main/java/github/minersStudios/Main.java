@@ -43,7 +43,7 @@ public final class Main extends JavaPlugin {
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()){
                     if(player.hasPotionEffect(PotionEffectType.SLOW_DIGGING)) return;
-                    Block targetBlock = player.getTargetBlock(BlockUtils.TRANSPERENT, 5);
+                    Block targetBlock = player.getTargetBlock(BlockUtils.TRANSPARENT, 5);
                     if(targetBlock.getType() != Material.NOTE_BLOCK) return;
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
                 }

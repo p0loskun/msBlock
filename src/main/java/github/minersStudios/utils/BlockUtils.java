@@ -11,7 +11,7 @@ import java.util.HashSet;
 
 public class BlockUtils {
 
-    public static final ImmutableSet<Material> TRANSPERENT = Sets.immutableEnumSet(
+    public static final ImmutableSet<Material> TRANSPARENT = Sets.immutableEnumSet(
             Material.AIR,
             Material.WATER,
             Material.LAVA
@@ -27,7 +27,8 @@ public class BlockUtils {
             Material.TALL_GRASS,
             Material.LARGE_FERN,
             Material.TALL_SEAGRASS,
-            Material.VINE
+            Material.VINE,
+            Material.SNOW
     );
 
     public static void UpdateNoteBlock(Location loc) {
