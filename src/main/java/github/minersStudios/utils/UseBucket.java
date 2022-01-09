@@ -125,28 +125,20 @@ public class UseBucket {
         setBucketIfSurvival();
     }
 
-    private static void useEmptyBucket(){
+    private static void useEmptyBucket() {
         BlockData blockData = block.getBlockData();
-        if (blockData instanceof Levelled) {
-            Levelled levelled = (Levelled) blockData;
-
-            if (levelled.getLevel() == 0) {
-                if (UseBucket.player.getGameMode() != GameMode.SURVIVAL) return;
-                if(block.getType() == Material.LAVA){
-                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
-                    block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-                    itemInMainHand.setType(Material.LAVA_BUCKET);
-                } else if (block.getType() == Material.WATER){
-                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
-                    block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
-                    itemInMainHand.setType(Material.WATER_BUCKET);
-                } else {
-                    coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.AIR, block.getBlockData());
-                    itemInMainHand.setType(Material.BUCKET);
-                }
-                block.setType(Material.AIR);
-            }
+        if (!(blockData instanceof Levelled)) return;
+        Levelled levelled = (Levelled) blockData;
+        if (levelled.getLevel() != 0) return;
+        if (block.getType() == Material.LAVA) {
+            coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
+            block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            itemInMainHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.LAVA_BUCKET : itemInMainHand.getType());
+        } else {
+            coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
+            block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            itemInMainHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.WATER_BUCKET : itemInMainHand.getType());
         }
-
+        block.setType(Material.AIR);
     }
 }
