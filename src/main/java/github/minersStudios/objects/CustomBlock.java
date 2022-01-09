@@ -72,8 +72,7 @@ public class CustomBlock {
 
                 setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
                 block.getWorld().playSound(block.getLocation(), customBlockMaterial.getSoundPlace(), 1.0f, 1.0f);
-
-                coreProtectAPI.logPlacement(player.getDisplayName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
+                coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
 
                 if (player.getGameMode() == GameMode.SURVIVAL)
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);

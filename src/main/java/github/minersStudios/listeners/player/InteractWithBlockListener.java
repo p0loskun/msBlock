@@ -24,11 +24,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static github.minersStudios.Main.coreProtectAPI;
 import static github.minersStudios.utils.PlayerUtils.*;
 
 public class InteractWithBlockListener implements Listener {
     private static ItemActionContext itemActionContext;
     private static EnumHand enumHand;
+    private static ItemStack itemInMainHand;
     private static net.minecraft.world.item.ItemStack nmsItem;
 
     @EventHandler
@@ -40,7 +42,7 @@ public class InteractWithBlockListener implements Listener {
         Block clickedBlock = event.getClickedBlock(),
                 blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         Player player = event.getPlayer();
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (
                 itemInMainHand.getType().isAir()
@@ -57,13 +59,11 @@ public class InteractWithBlockListener implements Listener {
         MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation(), false);
         Location interactionPoint = getInteractionPoint(playerEyeLocation, 8, true);
         assert interactionPoint != null;
-        if (itemInMainHand.getType().toString().contains("BUCKET")) {
-            new UseBucket(player, blockAtFace);
-            return;
-        }
         itemActionContext = new ItemActionContext(entityPlayer, enumHand, movingObjectPositionBlock);
 
-        if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
+        if (itemInMainHand.getType().toString().contains("BUCKET") && itemInMainHand.getType() != Material.POWDER_SNOW_BUCKET) {
+            new UseBucket(player, blockAtFace);
+        } else if (Tag.STAIRS.isTagged(itemInMainHand.getType())) {
             useOn(clickedBlock.getRelative(event.getBlockFace()));
             Stairs data = (Stairs) blockAtFace.getBlockData();
             switch (event.getBlockFace()) {
@@ -78,6 +78,7 @@ public class InteractWithBlockListener implements Listener {
                     break;
             }
             blockAtFace.setBlockData(data);
+            coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockAtFace.getBlockData());
         } else if (Tag.SLABS.isTagged(itemInMainHand.getType())) {
             Slab.Type dataType;
             if (blockAtFace.getType() == itemInMainHand.getType()) {
@@ -94,12 +95,14 @@ public class InteractWithBlockListener implements Listener {
             Slab data = (Slab) blockAtFace.getBlockData();
             data.setType(dataType);
             blockAtFace.setBlockData(data);
+            coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockAtFace.getBlockData());
         } else if (Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType())) {
             useOn(clickedBlock.getRelative(event.getBlockFace()));
 
             Directional directional = (Directional) blockAtFace.getBlockData();
             directional.setFacing(event.getBlockFace());
             blockAtFace.setBlockData(directional);
+            coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockAtFace.getBlockData());
         } else {
             useOn(clickedBlock.getRelative(event.getBlockFace()));
         }
@@ -107,6 +110,7 @@ public class InteractWithBlockListener implements Listener {
 
     private static void useOn(Block block){
         nmsItem.useOn(itemActionContext, enumHand);
+        if(!itemInMainHand.getType().isBlock()) return;
         block.getWorld().playSound(
                 block.getLocation(),
                 block.getType().createBlockData().getSoundGroup().getPlaceSound(),
