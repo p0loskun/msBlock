@@ -1,4 +1,4 @@
-package github.minersStudios.utils;
+package github.minersStudios.msBlock.utils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -31,8 +31,13 @@ public class BlockUtils {
             Material.SNOW
     );
 
-    public static void UpdateNoteBlock(Location loc) {
-        Block block = loc.getBlock().getRelative(BlockFace.UP);
+    /**
+     * Updates the note block and checks if there is a notes block above it
+     *
+     * @param location block location which will be updated
+     */
+    public static void UpdateNoteBlock(Location location) {
+        Block block = location.getBlock().getRelative(BlockFace.UP);
         if (block.getType() == Material.NOTE_BLOCK)
             block.getState().update(true, false);
 

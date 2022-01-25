@@ -1,6 +1,6 @@
-package github.minersStudios.listeners.block;
+package github.minersStudios.msBlock.listeners.block;
 
-import github.minersStudios.utils.BlockUtils;
+import github.minersStudios.msBlock.utils.BlockUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

@@ -1,14 +1,17 @@
-package github.minersStudios.listeners;
+package github.minersStudios.msBlock.listeners;
 
-import github.minersStudios.listeners.block.*;
-import github.minersStudios.listeners.player.*;
+import github.minersStudios.msBlock.listeners.block.*;
+import github.minersStudios.msBlock.listeners.player.*;
 import org.bukkit.plugin.PluginManager;
 
-import static github.minersStudios.Main.plugin;
-import static github.minersStudios.Main.protocolManager;
+import static github.minersStudios.msBlock.Main.plugin;
+import static github.minersStudios.msBlock.Main.protocolManager;
 
 public final class RegEvents {
 
+    /**
+     * Registers events
+     */
     public RegEvents(){
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 

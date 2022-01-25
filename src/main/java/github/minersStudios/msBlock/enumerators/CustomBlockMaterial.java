@@ -1,6 +1,6 @@
-package github.minersStudios.enumerators;
+package github.minersStudios.msBlock.enumerators;
 
-import github.minersStudios.objects.CustomBlock;
+import github.minersStudios.msBlock.objects.CustomBlock;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -119,21 +119,21 @@ public enum CustomBlockMaterial {
     // NoteBlockData
 
     /**
-     * @return Instrument of Material
+     * @return Instrument for custom block texture
      */
     public Instrument getInstrument() {
         return instrument;
     }
 
     /**
-     * @return Note of Material
+     * @return Note for custom block texture
      */
     public Note getNote() {
         return note;
     }
 
     /**
-     * @return True if Material is powered
+     * @return True if CustomDecorMaterial isPowered == true for custom block texture
      */
     public boolean isPowered() {
         return powered;
@@ -142,21 +142,21 @@ public enum CustomBlockMaterial {
     // Sound
 
     /**
-     * @return Sound place of custom block
+     * @return Place sound for custom block
      */
     public Sound getSoundPlace() {
         return soundPlace;
     }
 
     /**
-     * @return Sound break of custom block
+     * @return Break sound for custom block
      */
     public Sound getSoundBreak() {
         return soundBreak;
     }
 
     /**
-     * @return Sound hit of custom block
+     * @return Hit sound for custom block
      */
     public Sound getSoundHit() {
         return soundHit;
@@ -165,22 +165,26 @@ public enum CustomBlockMaterial {
     //Dig
 
     /**
-     * @return ToolType
+     * @return ToolType that will be used to determine the speed of digging
      */
     public ToolType getToolType() {
         return toolType;
     }
 
     /**
-     * @return Dig speed
+     * Gets dig speed float
+     *
+     * @param player player who breaks the custom block
+     * @param customBlockMaterial Custom block material enum
+     *
+     * @return dig speed float
      */
-    public static float getDigSpeed(Player player, CustomBlock block)
-    {
+    public static float getDigSpeed(Player player, CustomBlockMaterial customBlockMaterial) {
         ItemStack heldItem = player.getInventory().getItem(EquipmentSlot.HAND);
         ToolTier tier = ToolTier.fromItemStack(heldItem);
         float base = 1;
 
-        if (block.getCustomBlockMaterial().getToolType() == ToolType.getTool(heldItem)){
+        if (customBlockMaterial.getToolType() == ToolType.getTool(heldItem)){
             base = tier.speed;
 
             if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
@@ -196,7 +200,7 @@ public enum CustomBlockMaterial {
             base *= level * 0.32f;
         }
 
-        return base / block.getCustomBlockMaterial().digSpeed;
+        return base / customBlockMaterial.digSpeed;
     }
 
     /**

@@ -1,22 +1,20 @@
-package github.minersStudios.enumerators;
+package github.minersStudios.msBlock.enumerators;
 
 import org.bukkit.inventory.ItemStack;
 
 public enum ToolTier
 {
-    ANY(0, 0.1f),
-    WOOD(1, 0.3f),
-    STONE(2, 0.45f),
-    IRON(3, 0.56f),
-    GOLD(1, 0.8f),
-    DIAMOND(4, 0.65f),
-    NETHERITE(5, 0.8f);
+    ANY(0.1f),
+    WOOD(0.3f),
+    STONE(0.45f),
+    IRON(0.56f),
+    GOLD(0.8f),
+    DIAMOND(0.65f),
+    NETHERITE(0.8f);
 
-    public final int order;
     public final float speed;
 
-    ToolTier(int order, float speed) {
-        this.order = order;
+    ToolTier(float speed) {
         this.speed = speed;
     }
 

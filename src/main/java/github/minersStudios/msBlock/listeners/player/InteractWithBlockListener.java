@@ -1,6 +1,6 @@
-package github.minersStudios.listeners.player;
+package github.minersStudios.msBlock.listeners.player;
 
-import github.minersStudios.utils.UseBucket;
+import github.minersStudios.msBlock.utils.UseBucket;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
@@ -22,8 +22,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static github.minersStudios.Main.coreProtectAPI;
-import static github.minersStudios.utils.PlayerUtils.*;
+import static github.minersStudios.msBlock.Main.coreProtectAPI;
+import static github.minersStudios.msBlock.utils.PlayerUtils.*;
 
 public class InteractWithBlockListener implements Listener {
     private static ItemActionContext itemActionContext;
@@ -48,11 +48,11 @@ public class InteractWithBlockListener implements Listener {
             if(!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
 
         nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
-        enumHand = parseEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
+        enumHand = convertEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
         Location playerEyeLocation = player.getEyeLocation();
-        EntityPlayer entityPlayer = parseHuman(player);
-        MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation(), false);
-        Location interactionPoint = getInteractionPoint(playerEyeLocation, 8, true);
+        EntityPlayer entityPlayer = convertPlayer(player);
+        MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation());
+        Location interactionPoint = getInteractionPoint(playerEyeLocation, 8);
         assert interactionPoint != null;
         itemActionContext = new ItemActionContext(entityPlayer, enumHand, movingObjectPositionBlock);
 
@@ -69,6 +69,7 @@ public class InteractWithBlockListener implements Listener {
             Slab.Type dataType;
             if (blockAtFace.getType() == itemInMainHand.getType()) {
                 dataType = Slab.Type.DOUBLE;
+                blockAtFace.getWorld().playSound(blockAtFace.getLocation(), blockAtFace.getType().createBlockData().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 2.0f, blockAtFace.getType().createBlockData().getSoundGroup().getPitch());
             } else {
                 if ((interactionPoint.getY() > 0d && interactionPoint.getY() < .5d) || interactionPoint.getY() == 1d) dataType = Slab.Type.BOTTOM;
                 else dataType = Slab.Type.TOP;

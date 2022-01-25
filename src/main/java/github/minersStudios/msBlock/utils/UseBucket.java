@@ -1,4 +1,4 @@
-package github.minersStudios.utils;
+package github.minersStudios.msBlock.utils;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import javax.annotation.Nonnull;
 import java.util.Random;
 
-import static github.minersStudios.Main.coreProtectAPI;
+import static github.minersStudios.msBlock.Main.coreProtectAPI;
 
 public class UseBucket {
     private static Player player;
@@ -23,6 +23,12 @@ public class UseBucket {
     private static ItemStack itemInMainHand;
     private static Location blockLocation;
 
+    /**
+     * Uses a bucket vanillish
+     *
+     * @param player who uses the bucket
+     * @param block block at face of interacted block
+     */
     public UseBucket(@Nonnull Player player, @Nonnull Block block) {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
@@ -67,23 +73,38 @@ public class UseBucket {
         }
     }
 
+    /**
+     * @return random axolotl color variant
+     */
     private static Axolotl.Variant randomVariant() {
         return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
     }
 
+    /**
+     * @return random tropical fish body pattern variant
+     */
     private static TropicalFish.Pattern randomPattern() {
         return TropicalFish.Pattern.values()[new Random().nextInt(TropicalFish.Pattern.values().length)];
     }
 
+    /**
+     * @return random tropical fish body color variant
+     */
     private static DyeColor randomBodyColor() {
         return DyeColor.values()[new Random().nextInt(DyeColor.values().length)];
     }
 
+    /**
+     * Sets empty bucket in hand if player GameMode == survival
+     */
     private static void setBucketIfSurvival() {
         if (player.getGameMode() == GameMode.SURVIVAL)
             player.getInventory().getItemInMainHand().setType(Material.BUCKET);
     }
 
+    /**
+     * Uses bucket with tropical fish
+     */
     private static void setTropicalFish(){
         block.setType(Material.WATER);
         block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
@@ -105,6 +126,9 @@ public class UseBucket {
         setBucketIfSurvival();
     }
 
+    /**
+     * Uses bucket with axolotl
+     */
     private static void setAxolotl(){
         block.setType(Material.WATER);
         block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
@@ -117,6 +141,9 @@ public class UseBucket {
         setBucketIfSurvival();
     }
 
+    /**
+     * Uses bucket with Puffer fish / Salmon / Cod
+     */
     private static void summonPrimitiveEntities(EntityType entityType){
         block.setType(Material.WATER);
         block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
@@ -125,6 +152,9 @@ public class UseBucket {
         setBucketIfSurvival();
     }
 
+    /**
+     * Uses empty bucket
+     */
     private static void useEmptyBucket() {
         BlockData blockData = block.getBlockData();
         if (!(blockData instanceof Levelled)) return;

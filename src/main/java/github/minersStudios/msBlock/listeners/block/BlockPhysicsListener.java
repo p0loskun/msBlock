@@ -1,4 +1,4 @@
-package github.minersStudios.listeners.block;
+package github.minersStudios.msBlock.listeners.block;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
-import static github.minersStudios.utils.BlockUtils.UpdateNoteBlock;
+import static github.minersStudios.msBlock.utils.BlockUtils.UpdateNoteBlock;
 
 public class BlockPhysicsListener implements Listener {
 

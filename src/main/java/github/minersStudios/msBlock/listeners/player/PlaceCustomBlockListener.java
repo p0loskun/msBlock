@@ -1,9 +1,9 @@
-package github.minersStudios.listeners.player;
+package github.minersStudios.msBlock.listeners.player;
 
-import github.minersStudios.enumerators.CustomBlockMaterial;
-import github.minersStudios.objects.CustomBlock;
-import github.minersStudios.utils.BlockUtils;
-import github.minersStudios.utils.PlaySwingAnimation;
+import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.objects.CustomBlock;
+import github.minersStudios.msBlock.utils.BlockUtils;
+import github.minersStudios.msBlock.utils.PlaySwingAnimation;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -27,24 +27,15 @@ public class PlaceCustomBlockListener implements Listener {
                 event.getPlayer().getInventory().getItemInMainHand().getType() != Material.PAPER ||
                 event.getHand() != EquipmentSlot.HAND
         ) return;
-        Block clickedBlock = event.getClickedBlock(),
-                blockAtFace = clickedBlock.getRelative(event.getBlockFace());
-
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+        Block replaceableBlock = BlockUtils.REPLACE.contains(event.getClickedBlock().getType()) ? event.getClickedBlock() : event.getClickedBlock().getRelative(event.getBlockFace());
+        for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item)) return;
-
         Player player = event.getPlayer();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
-        assert itemMeta != null;
-
-        if (!itemMeta.hasCustomModelData()) return;
-        if(clickedBlock.getType() != Material.NOTE_BLOCK) new PlaySwingAnimation(player, event.getHand());
-
-        if(BlockUtils.REPLACE.contains(clickedBlock.getType()))
-            blockAtFace = clickedBlock;
-
-        CustomBlock customBlock = new CustomBlock(blockAtFace, player);
+        if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
+        if(replaceableBlock.getType() != Material.NOTE_BLOCK) new PlaySwingAnimation(player, event.getHand());
+        CustomBlock customBlock = new CustomBlock(replaceableBlock, player);
         customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
     }
 

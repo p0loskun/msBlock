@@ -1,4 +1,4 @@
-package github.minersStudios.enumerators;
+package github.minersStudios.msBlock.enumerators;
 
 import org.bukkit.inventory.ItemStack;
 

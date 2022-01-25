@@ -1,6 +1,6 @@
-package github.minersStudios.objects;
+package github.minersStudios.msBlock.objects;
 
-import github.minersStudios.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -8,11 +8,13 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static github.minersStudios.Main.coreProtectAPI;
-import static github.minersStudios.Main.plugin;
+import static github.minersStudios.msBlock.Main.coreProtectAPI;
+import static github.minersStudios.msBlock.Main.plugin;
 
+@Nonnull
 public class CustomBlock {
     private Block block;
     private CustomBlockMaterial customBlockMaterial;
@@ -21,6 +23,10 @@ public class CustomBlock {
     public CustomBlock(){
     }
 
+    /**
+     * @param block clicked block / block at face
+     * @param player player who interacts
+     */
     public CustomBlock(Block block, Player player) {
         this.player = player;
         this.block = block;
@@ -44,10 +50,12 @@ public class CustomBlock {
         this.customBlockMaterial = customBlockMaterial;
     }
 
-    // CustomBlock
     /**
-     * @return CustomBlock
+     * @param block clicked block
+     * @param player player who clicked block
+     * @return custom block object
      */
+    @Nullable
     public CustomBlock getCustomBlock(Block block, Player player){
         if(block.getType() == Material.NOTE_BLOCK)
             return new CustomBlock(block, player);
@@ -56,6 +64,8 @@ public class CustomBlock {
 
     /**
      * Sets custom block not with CustomBlockMaterial
+     *
+     * @param customBlockMaterial custom block material that is used to place the custom block
      */
     public void setCustomBlock(CustomBlockMaterial customBlockMaterial) {
         new BukkitRunnable(){

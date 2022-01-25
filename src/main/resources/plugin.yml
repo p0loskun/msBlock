@@ -4,7 +4,7 @@ description: A Minecraft plugin with Blocks for "Unknown server"
 authors: [MinersStudios, p0loskun]
 website: minersstudios.github.io
 
-main: github.minersStudios.Main
+main: github.minersStudios.msBlock.Main
 api-version: 1.18
 database: false
 softdepend:

@@ -1,7 +1,7 @@
-package github.minersStudios.listeners.block;
+package github.minersStudios.msBlock.listeners.block;
 
 import com.google.common.collect.Sets;
-import github.minersStudios.Main;
+import github.minersStudios.msBlock.Main;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

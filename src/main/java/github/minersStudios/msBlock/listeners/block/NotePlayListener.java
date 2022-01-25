@@ -1,4 +1,4 @@
-package github.minersStudios.listeners.block;
+package github.minersStudios.msBlock.listeners.block;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
