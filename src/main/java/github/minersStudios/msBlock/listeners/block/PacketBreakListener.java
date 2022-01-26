@@ -84,7 +84,7 @@ public class PacketBreakListener extends PacketAdapter {
                         Bukkit.getScheduler().cancelTask(diggers.remove(player));
 
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
-                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.add(0.5, 0.5, 0.5), 100, 0.25, 0.25, 0.25, block.getBlockData());
+                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.add(0.5, 0.5, 0.5), 70, 0.45, 0.3, 0.45, block.getBlockData());
                         blockLocation.add(-0.5, -0.5, -0.5);
                         if (customBlockMaterial.getExpToDrop() != 0)
                             world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
