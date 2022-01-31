@@ -1,6 +1,5 @@
 package github.minersStudios.msBlock.enumerators;
 
-import github.minersStudios.msBlock.objects.CustomBlock;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -13,54 +12,25 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public enum CustomBlockMaterial {
-    VERTICAL_ACACIA_PLANKS(
-            Instrument.BANJO, new Note(0), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные акациевые доски", 1000),
-    VERTICAL_BIRCH_PLANKS(
-            Instrument.BANJO, new Note(1), false,
-            Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_AMETHYST_BLOCK_BREAK, Sound.BLOCK_AMETHYST_BLOCK_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные берёзовые доски", 1001),
-    VERTICAL_CRIMSON_PLANKS(
-            Instrument.BANJO, new Note(2), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные багровые доски", 1002),
-    VERTICAL_DARK_OAK_PLANKS(
-            Instrument.BANJO, new Note(3), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные доски из тёмной древесины", 1003),
-    VERTICAL_JUNGLE_PLANKS(
-            Instrument.BANJO, new Note(4), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные тропические доски", 1004),
-    VERTICAL_OAK_PLANKS(
-            Instrument.BANJO, new Note(5), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные дубовые доски", 1005),
-    VERTICAL_SPRUCE_PLANKS(
-            Instrument.BANJO, new Note(6), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные еловые доски", 1006),
-    VERTICAL_WARPED_PLANKS(
-            Instrument.BANJO, new Note(7), false,
-            Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT,
-            13.0f, ToolType.AXE, false,
-            0,
-            "Вертикальные искажённые доски", 1007),
+    VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
+    VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 1001),
+    VERTICAL_CRIMSON_PLANKS(Instrument.BANJO, new Note(2), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные багровые доски", 1002),
+    VERTICAL_DARK_OAK_PLANKS(Instrument.BANJO, new Note(3), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные доски из тёмной древесины", 1003),
+    VERTICAL_JUNGLE_PLANKS(Instrument.BANJO, new Note(4), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные тропические доски", 1004),
+    VERTICAL_OAK_PLANKS(Instrument.BANJO, new Note(5), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные дубовые доски", 1005),
+    VERTICAL_SPRUCE_PLANKS(Instrument.BANJO, new Note(6), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные еловые доски", 1006),
+    VERTICAL_WARPED_PLANKS(Instrument.BANJO, new Note(7), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные искажённые доски", 1007),
+
+    CARVED_ACACIA_PLANKS(Instrument.BANJO, new Note(8), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные акациевые доски", 1008),
+    CARVED_BIRCH_PLANKS(Instrument.BANJO, new Note(9), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные берёзовые доски", 1009),
+    CARVED_CRIMSON_PLANKS(Instrument.BANJO, new Note(10), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные багровые доски", 1010),
+    CARVED_DARK_OAK_PLANKS(Instrument.BANJO, new Note(11), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные доски из тёмной древесины", 1011),
+    CARVED_JUNGLE_PLANKS(Instrument.BANJO, new Note(12), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные тропические доски", 1012),
+    CARVED_OAK_PLANKS(Instrument.BANJO, new Note(13), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные дубовые доски", 1013),
+    CARVED_SPRUCE_PLANKS(Instrument.BANJO, new Note(14), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные еловые доски", 1014),
+    CARVED_WARPED_PLANKS(Instrument.BANJO, new Note(15), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Резные искажённые доски", 1015),
+
+    CRATE_1(Instrument.BANJO, new Note(16), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Ящик", 1016),
     ;
 
     private final Instrument instrument;
@@ -231,6 +201,13 @@ public enum CustomBlockMaterial {
         itemMeta.setDisplayName(ChatColor.WHITE + itemName);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
+    }
+
+    /**
+     * @return Item display name
+     */
+    public String getItemName(){
+        return itemName;
     }
 
     /**

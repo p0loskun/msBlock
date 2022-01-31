@@ -26,6 +26,7 @@ public final class RegEvents {
         pluginManager.registerEvents(new PlaceCustomBlockListener(), plugin);
         pluginManager.registerEvents(new PlayerKickListener(), plugin);
         pluginManager.registerEvents(new PlayerQuitListener(), plugin);
+        pluginManager.registerEvents(new ItemFrameInteractListener(), plugin);
 
         protocolManager.addPacketListener(new PacketBreakListener());
     }
