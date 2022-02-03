@@ -7,10 +7,11 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BlockDamageListener implements Listener {
+import javax.annotation.Nonnull;
 
+public class BlockDamageListener implements Listener {
     @EventHandler
-    public void onBlockDamage(BlockDamageEvent event) {
+    public void onBlockDamage(@Nonnull BlockDamageEvent event) {
         if (event.getBlock().getType() == Material.NOTE_BLOCK) {
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
             return;
@@ -19,5 +20,4 @@ public class BlockDamageListener implements Listener {
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
         }
     }
-
 }

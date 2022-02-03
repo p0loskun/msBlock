@@ -1,6 +1,9 @@
 package github.minersStudios.msBlock.objects;
 
 import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,18 +19,20 @@ import static github.minersStudios.msBlock.Main.plugin;
 
 @Nonnull
 public class CustomBlock {
+
     private Block block;
-    private CustomBlockMaterial customBlockMaterial;
     private Player player;
 
-    public CustomBlock(){
-    }
+    /** CustomBlockMaterial param of a custom block */
+    @Nullable @Getter @Setter(AccessLevel.PRIVATE) private CustomBlockMaterial customBlockMaterial;
+
+    public CustomBlock(){}
 
     /**
      * @param block clicked block / block at face
      * @param player player who interacts
      */
-    public CustomBlock(Block block, Player player) {
+    public CustomBlock(@Nonnull Block block, @Nonnull Player player) {
         this.player = player;
         this.block = block;
 
@@ -37,26 +42,13 @@ public class CustomBlock {
     }
 
     /**
-     * @return CustomBlockMaterial param of a custom block
-     */
-    public CustomBlockMaterial getCustomBlockMaterial(){
-        return customBlockMaterial;
-    }
-
-    /**
-     * Sets CustomBlockMaterial param of a custom block
-     */
-    public void setCustomBlockMaterial(@Nullable CustomBlockMaterial customBlockMaterial){
-        this.customBlockMaterial = customBlockMaterial;
-    }
-
-    /**
      * @param block clicked block
      * @param player player who clicked block
+     *
      * @return custom block object
      */
     @Nullable
-    public CustomBlock getCustomBlock(Block block, Player player){
+    public CustomBlock getCustomBlock(@Nonnull Block block, @Nonnull Player player){
         if(block.getType() == Material.NOTE_BLOCK)
             return new CustomBlock(block, player);
         return null;

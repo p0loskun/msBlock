@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 
 public class BlockUtils {
@@ -36,7 +37,7 @@ public class BlockUtils {
      *
      * @param location block location which will be updated
      */
-    public static void UpdateNoteBlock(Location location) {
+    public static void UpdateNoteBlock(@Nonnull Location location) {
         Block block = location.getBlock().getRelative(BlockFace.UP);
         if (block.getType() == Material.NOTE_BLOCK)
             block.getState().update(true, false);
@@ -45,5 +46,4 @@ public class BlockUtils {
         if (nextBlock.getType() == Material.NOTE_BLOCK)
             UpdateNoteBlock(block.getLocation());
     }
-
 }

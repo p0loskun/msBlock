@@ -18,6 +18,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 
+import javax.annotation.Nonnull;
+
 import static github.minersStudios.msBlock.Main.coreProtectAPI;
 import static github.minersStudios.msBlock.Main.protocolManager;
 import static github.minersStudios.msBlock.utils.PlayerUtils.diggers;
@@ -29,7 +31,7 @@ public class PacketBreakListener extends PacketAdapter {
     }
 
     @Override
-    public void onPacketReceiving(final PacketEvent event) {
+    public void onPacketReceiving(@Nonnull final PacketEvent event) {
         Player player = event.getPlayer();
         if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
         BlockPosition blockPosition = event.getPacket().getBlockPositionModifier().read(0);
@@ -93,11 +95,11 @@ public class PacketBreakListener extends PacketAdapter {
 
                         if (!customBlockMaterial.isForceTool()) {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
-                        } else if (customBlockMaterial.getToolType() == ToolType.getTool(handItem)) {
+                        } else if (customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
                         }
 
-                        if (ToolType.getTool(handItem) == ToolType.HAND) return;
+                        if (ToolType.getToolType(handItem) == ToolType.HAND) return;
                         if (!(handItem.getItemMeta() instanceof Damageable)) return;
                         Damageable itemMeta = (Damageable) handItem.getItemMeta();
                         assert itemMeta != null;

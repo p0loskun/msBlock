@@ -18,10 +18,12 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+
 public class PlaceCustomBlockListener implements Listener {
 
     @EventHandler
-    public void PlayerInteractEvent(PlayerInteractEvent event) {
+    public void PlayerInteractEvent(@Nonnull PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
         if (
                 event.getAction() != Action.RIGHT_CLICK_BLOCK ||
@@ -39,5 +41,4 @@ public class PlaceCustomBlockListener implements Listener {
         CustomBlock customBlock = new CustomBlock(replaceableBlock, player);
         customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
     }
-
 }

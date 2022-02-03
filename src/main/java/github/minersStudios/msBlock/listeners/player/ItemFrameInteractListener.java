@@ -14,18 +14,25 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+
 public class ItemFrameInteractListener implements Listener {
 
     @EventHandler
-    public void onPutInItemFrameCustomBlock(PlayerInteractEntityEvent event){
+    public void onPutInItemFrameCustomBlock(@Nonnull PlayerInteractEntityEvent event){
         if (!(event.getRightClicked() instanceof ItemFrame)) return;
         Player player = event.getPlayer();
         if(player.getInventory().getItemInMainHand().getType().isAir()) return;
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand().clone();
-        ItemMeta itemMeta = itemInMainHand.getItemMeta();
-        if(itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
-        event.setCancelled(true);
         ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
+        if(!itemFrame.getItem().getType().isAir()) return;
+        ItemStack originalItemInMainHand = player.getInventory().getItemInMainHand(),
+                itemInMainHand = originalItemInMainHand.clone();
+        ItemMeta itemMeta = itemInMainHand.getItemMeta(),
+                originalItemMeta = originalItemInMainHand.getItemMeta();
+        if(originalItemMeta == null || itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
+        event.setCancelled(true);
+        originalItemMeta.setDisplayName(originalItemMeta.getDisplayName() + "");
+        originalItemInMainHand.setItemMeta(originalItemMeta);
         itemFrame.setCustomName(itemMeta.getDisplayName());
         itemMeta.setDisplayName(null);
         itemInMainHand.setItemMeta(itemMeta);
@@ -34,7 +41,7 @@ public class ItemFrameInteractListener implements Listener {
     }
 
     @EventHandler
-    public void onHangingBreakByEntity(EntityDamageByEntityEvent event) {
+    public void onHangingBreakByEntity(@Nonnull EntityDamageByEntityEvent event) {
         if(!(event.getEntity() instanceof ItemFrame) || !(event.getDamager() instanceof Player && ((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE || event.getDamager() instanceof Projectile)) return;
         if(event.getDamager() instanceof Projectile && !(((Projectile) event.getDamager()).getShooter() instanceof Player)) return;
         if(event.getDamager() instanceof Projectile) event.getDamager().remove();

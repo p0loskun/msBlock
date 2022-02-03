@@ -15,6 +15,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public final class Main extends JavaPlugin {
+
     public static Main plugin;
     public static CoreProtectAPI coreProtectAPI = new CoreProtectAPI();
     public static ProtocolManager protocolManager;
@@ -29,9 +30,8 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        protocolManager = ProtocolLibrary.getProtocolManager();
         plugin = this;
-
+        protocolManager = ProtocolLibrary.getProtocolManager();
         coreProtectAPI = getCoreProtect();
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
 

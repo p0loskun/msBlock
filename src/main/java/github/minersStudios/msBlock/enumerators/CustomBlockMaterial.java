@@ -1,5 +1,6 @@
 package github.minersStudios.msBlock.enumerators;
 
+import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -9,8 +10,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
+/**
+ * CustomBlockMaterial enum with blocks parameters
+ */
 public enum CustomBlockMaterial {
     VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
     VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 1001),
@@ -33,21 +38,48 @@ public enum CustomBlockMaterial {
     CRATE_1(Instrument.BANJO, new Note(16), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Ящик", 1016),
     ;
 
-    private final Instrument instrument;
-    private final Note note;
-    private final boolean powered;
+    // NoteBlock Data
 
-    private final Sound soundPlace;
-    private final Sound soundBreak;
-    private final Sound soundHit;
+    /** Instrument for custom block texture */
+    @Getter private final Instrument instrument;
 
+    /** Note for custom block texture */
+    @Getter private final Note note;
+
+    /** True if CustomDecorMaterial isPowered == true for custom block texture */
+    @Getter private final boolean powered;
+
+    // Sounds
+
+    /** Place sound for custom block */
+    @Getter private final Sound soundPlace;
+
+    /** Break sound for custom block */
+    @Getter private final Sound soundBreak;
+
+    /** Hit sound for custom block */
+    @Getter private final Sound soundHit;
+
+    // Digging
+
+    /** Dig speed float */
     private final float digSpeed;
-    private final ToolType toolType;
-    private final boolean forceTool;
 
-    private final int expToDrop;
+    /** ToolType that will be used to determine the speed of digging */
+    @Getter private final ToolType toolType;
 
+    /** True if force tool type */
+    @Getter private final boolean forceTool;
+
+    // Other
+
+    /** Experience to drop */
+    @Getter private final int expToDrop;
+
+    /** CustomBlock item name */
     private final String itemName;
+
+    /** CustomBlock item CustomModelData */
     private final int itemCustomModelData;
 
     CustomBlockMaterial(
@@ -86,61 +118,6 @@ public enum CustomBlockMaterial {
         this.forceTool = forceTool;
     }
 
-    // NoteBlockData
-
-    /**
-     * @return Instrument for custom block texture
-     */
-    public Instrument getInstrument() {
-        return instrument;
-    }
-
-    /**
-     * @return Note for custom block texture
-     */
-    public Note getNote() {
-        return note;
-    }
-
-    /**
-     * @return True if CustomDecorMaterial isPowered == true for custom block texture
-     */
-    public boolean isPowered() {
-        return powered;
-    }
-
-    // Sound
-
-    /**
-     * @return Place sound for custom block
-     */
-    public Sound getSoundPlace() {
-        return soundPlace;
-    }
-
-    /**
-     * @return Break sound for custom block
-     */
-    public Sound getSoundBreak() {
-        return soundBreak;
-    }
-
-    /**
-     * @return Hit sound for custom block
-     */
-    public Sound getSoundHit() {
-        return soundHit;
-    }
-
-    //Dig
-
-    /**
-     * @return ToolType that will be used to determine the speed of digging
-     */
-    public ToolType getToolType() {
-        return toolType;
-    }
-
     /**
      * Gets dig speed float
      *
@@ -149,13 +126,13 @@ public enum CustomBlockMaterial {
      *
      * @return dig speed float
      */
-    public static float getDigSpeed(Player player, CustomBlockMaterial customBlockMaterial) {
+    public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
         ItemStack heldItem = player.getInventory().getItem(EquipmentSlot.HAND);
         ToolTier tier = ToolTier.fromItemStack(heldItem);
         float base = 1;
 
-        if (customBlockMaterial.getToolType() == ToolType.getTool(heldItem)){
-            base = tier.speed;
+        if (customBlockMaterial.getToolType() == ToolType.getToolType(heldItem)){
+            base = tier.getSpeed();
 
             if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
                 float level = heldItem.getEnchantmentLevel(Enchantment.DIG_SPEED);
@@ -174,25 +151,9 @@ public enum CustomBlockMaterial {
     }
 
     /**
-     * @return True if force tool type
-     */
-    public boolean isForceTool() {
-        return forceTool;
-    }
-
-
-    // Other
-
-    /**
-     * @return Exp int to drop
-     */
-    public int getExpToDrop() {
-        return expToDrop;
-    }
-
-    /**
      * @return ItemStack of item
      */
+    @Nonnull
     public ItemStack getItemStack(){
         ItemStack itemStack = new ItemStack(Material.PAPER);
         ItemMeta itemMeta = itemStack.getItemMeta();
@@ -204,15 +165,9 @@ public enum CustomBlockMaterial {
     }
 
     /**
-     * @return Item display name
-     */
-    public String getItemName(){
-        return itemName;
-    }
-
-    /**
      * @return Custom block material
      */
+    @Nullable
     @SuppressWarnings("deprecation")
     public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
         for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
@@ -231,6 +186,7 @@ public enum CustomBlockMaterial {
     /**
      * @return Custom block material
      */
+    @Nullable
     public static CustomBlockMaterial getCustomBlockMaterialByCMD(int itemCustomModelData) {
         for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
         {

@@ -2,28 +2,32 @@ package github.minersStudios.msBlock.enumerators;
 
 import org.bukkit.inventory.ItemStack;
 
-public enum ToolType {
-    HAND,
-    SWORD,
-    PICKAXE,
-    AXE,
-    SHOVEL,
-    HOE,
-    SHEARS;
+import javax.annotation.Nonnull;
 
-    public static ToolType getTool(ItemStack stack)
-    {
-        if(stack.getType().toString().contains("SHEARS")){
+/**
+ * Tool type used for custom block dig speed and force tool param
+ */
+@Nonnull
+public enum ToolType {
+    HAND, SWORD, PICKAXE, AXE, SHOVEL, HOE, SHEARS;
+
+    /**
+     * @param itemStack item in hand
+     *
+     * @return ToolType from item in hand
+     */
+    public static ToolType getToolType(@Nonnull ItemStack itemStack) {
+        if(itemStack.getType().toString().contains("SHEARS")){
             return SHEARS;
-        } else if(stack.getType().toString().contains("_HOE")){
+        } else if(itemStack.getType().toString().contains("_HOE")){
             return HOE;
-        } else if(stack.getType().toString().contains("_SHOVEL")){
+        } else if(itemStack.getType().toString().contains("_SHOVEL")){
             return SHOVEL;
-        } else if(stack.getType().toString().contains("_AXE")){
+        } else if(itemStack.getType().toString().contains("_AXE")){
             return AXE;
-        } else if(stack.getType().toString().contains("_PICKAXE")){
+        } else if(itemStack.getType().toString().contains("_PICKAXE")){
             return PICKAXE;
-        } else if(stack.getType().toString().contains("_SWORD")){
+        } else if(itemStack.getType().toString().contains("_SWORD")){
             return SWORD;
         }
         return HAND;

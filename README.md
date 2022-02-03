@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-A Minecraft plugin with Blocks for "Unknown server" <br>
+A Minecraft plugin with Blocks for WhoMine <br>
   (Project is in development, so there is shit code)
 </p>
   

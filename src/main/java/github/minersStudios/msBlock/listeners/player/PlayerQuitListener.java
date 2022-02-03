@@ -6,15 +6,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import javax.annotation.Nonnull;
+
 import static github.minersStudios.msBlock.utils.PlayerUtils.diggers;
 
 public class PlayerQuitListener implements Listener {
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event){
+    public void onPlayerLeave(@Nonnull PlayerQuitEvent event){
         Player player = event.getPlayer();
-        if(diggers.get(player) == null) return;
-        Bukkit.getScheduler().cancelTask(diggers.remove(player));
+        if(diggers.get(player) != null) Bukkit.getScheduler().cancelTask(diggers.remove(player));
     }
-
 }

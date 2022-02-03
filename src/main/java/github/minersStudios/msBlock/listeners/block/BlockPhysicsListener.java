@@ -7,12 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
+import javax.annotation.Nonnull;
+
 import static github.minersStudios.msBlock.utils.BlockUtils.UpdateNoteBlock;
 
 public class BlockPhysicsListener implements Listener {
 
     @EventHandler
-    private void onBlockPhysics(BlockPhysicsEvent event) {
+    private void onBlockPhysics(@Nonnull BlockPhysicsEvent event) {
         Block block = event.getBlock(),
                 topBlock = block.getRelative(BlockFace.UP);
 
@@ -25,5 +27,4 @@ public class BlockPhysicsListener implements Listener {
             event.setCancelled(true);
         }
     }
-
 }

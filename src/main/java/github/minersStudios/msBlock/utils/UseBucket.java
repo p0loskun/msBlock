@@ -18,6 +18,7 @@ import java.util.Random;
 import static github.minersStudios.msBlock.Main.coreProtectAPI;
 
 public class UseBucket {
+
     private static Player player;
     private static Block block;
     private static ItemStack itemInMainHand;

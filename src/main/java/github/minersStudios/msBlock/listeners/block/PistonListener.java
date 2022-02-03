@@ -7,10 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 
+import javax.annotation.Nonnull;
+
 public class PistonListener implements Listener {
 
     @EventHandler
-    public void onPistonExtends(BlockPistonExtendEvent event){
+    public void onPistonExtends(@Nonnull BlockPistonExtendEvent event){
         for (Block blocks : event.getBlocks()) {
             if (blocks.getType().equals(Material.NOTE_BLOCK))
                 event.setCancelled(true);
@@ -18,11 +20,10 @@ public class PistonListener implements Listener {
     }
 
     @EventHandler
-    public void onPistonEvent(BlockPistonRetractEvent event){
+    public void onPistonEvent(@Nonnull BlockPistonRetractEvent event){
         for (Block blocks : event.getBlocks()) {
             if (blocks.getType().equals(Material.NOTE_BLOCK))
                 event.setCancelled(true);
         }
     }
-
 }

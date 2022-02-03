@@ -1,6 +1,6 @@
 name: msBlock
 version: ${project.version}
-description: A Minecraft plugin with Blocks for "Unknown server"
+description: A Minecraft plugin with Blocks for WhoMine
 authors: [MinersStudios, p0loskun]
 website: minersstudios.github.io
 

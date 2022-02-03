@@ -22,10 +22,13 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+
 import static github.minersStudios.msBlock.Main.coreProtectAPI;
 import static github.minersStudios.msBlock.utils.PlayerUtils.*;
 
 public class InteractWithBlockListener implements Listener {
+
     private static ItemActionContext itemActionContext;
     private static EnumHand enumHand;
     private static ItemStack itemInMainHand;
@@ -33,7 +36,7 @@ public class InteractWithBlockListener implements Listener {
     private static net.minecraft.world.item.ItemStack nmsItem;
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
+    public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
         player = event.getPlayer();
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.NOTE_BLOCK || player.isSneaking()) return;
@@ -88,7 +91,7 @@ public class InteractWithBlockListener implements Listener {
         }
     }
 
-    private static void useOn(Block block){
+    private static void useOn(@Nonnull Block block){
         nmsItem.useOn(itemActionContext, enumHand);
         if(!itemInMainHand.getType().isBlock()) return;
         coreProtectAPI.logPlacement(player.getName(), block.getLocation(), itemInMainHand.getType(), block.getBlockData());
@@ -100,5 +103,4 @@ public class InteractWithBlockListener implements Listener {
                 block.getType().createBlockData().getSoundGroup().getPitch()
         );
     }
-
 }

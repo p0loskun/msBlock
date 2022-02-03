@@ -8,12 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import javax.annotation.Nonnull;
+
 import static github.minersStudios.msBlock.utils.PlayerUtils.diggers;
 
 public class BlockBreakListener implements Listener {
 
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void onBlockBreak(@Nonnull BlockBreakEvent event) {
         Player player = event.getPlayer();
         if(player.getGameMode() != GameMode.SURVIVAL) return;
         event.setCancelled(event.getBlock().getType() == Material.NOTE_BLOCK);
