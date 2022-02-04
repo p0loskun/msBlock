@@ -18,9 +18,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
 
@@ -43,7 +40,6 @@ public class PacketBreakListener extends PacketAdapter {
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
         if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) && block.getType() == Material.NOTE_BLOCK && !blocks.containsKey(block)) {
-            addSlowDigging(player);
             player.sendMessage(blocks.keySet() + "\n" + Bukkit.getScheduler().getPendingTasks());
             CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
             if (customBlock == null) return;
@@ -89,7 +85,7 @@ public class PacketBreakListener extends PacketAdapter {
 
                         World world = block.getWorld();
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
-                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5, 0.5, 0.5), 70, 0.45, 0.3, 0.45, block.getBlockData());
+                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5, 0.25, 0.5), 80, 0.35, 0.35, 0.35, block.getBlockData());
                         if (customBlockMaterial.getExpToDrop() != 0) world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
@@ -124,15 +120,5 @@ public class PacketBreakListener extends PacketAdapter {
             Bukkit.getScheduler().cancelTask(blocks.get(block));
             blocks.keySet().remove(block);
         }
-    }
-
-    public void addSlowDigging(Player player){
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                if(!player.hasPotionEffect(PotionEffectType.SLOW_DIGGING))
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
-            }
-        }.runTask(plugin);
     }
 }
