@@ -55,17 +55,17 @@ public class PacketBreakListener extends PacketAdapter {
 
                 @Override
                 public void run() {
-                    this.ticks++;
-                    this.progress += digSpeed;
-                    float next_stage = (this.current_stage + 1) * 0.1f;
+                    ticks++;
+                    progress += digSpeed;
+                    float next_stage = (current_stage + 1) * 0.1f;
 
                     if (this.ticks % 4.0f == 0.0f) player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
 
-                    if (this.progress > next_stage) {
-                        this.current_stage = (int) Math.floor(this.progress * 10.0f);
-                        if (this.current_stage <= 9) {
+                    if (progress > next_stage) {
+                        current_stage = (int) Math.floor(progress * 10.0f);
+                        if (current_stage <= 9) {
                             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-                            packetContainer.getIntegers().write(0, 0).write(1, this.current_stage - 1);
+                            packetContainer.getIntegers().write(0, 0).write(1, current_stage - 1);
                             packetContainer.getBlockPositionModifier().write(0, blockPosition);
                             protocolManager.broadcastServerPacket(packetContainer);
                         }
@@ -79,20 +79,18 @@ public class PacketBreakListener extends PacketAdapter {
                             protocolManager.broadcastServerPacket(packetContainer);
                         }, 1);
                         if(blocks.get(block) == null) return;
-                        Bukkit.getScheduler().cancelTask(blocks.get(block));
-                        blocks.keySet().remove(block);
+                        Bukkit.getScheduler().cancelTask(blocks.remove(block));
 
                         World world = block.getWorld();
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
                         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5, 0.25, 0.5), 80, 0.35, 0.35, 0.35, block.getBlockData());
-                        if (customBlockMaterial.getExpToDrop() != 0) world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 
-                        if (!customBlockMaterial.isForceTool()) {
+                        if (!customBlockMaterial.isForceTool() || customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
-                        } else if (customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) {
-                            world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
+                            if (customBlockMaterial.getExpToDrop() != 0)
+                                world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
                         }
 
                         if (ToolType.getToolType(handItem) != ToolType.HAND && handItemMeta instanceof Damageable) {
@@ -107,7 +105,8 @@ public class PacketBreakListener extends PacketAdapter {
                     }
                 }
             }, 0L, 1L));
-        } else if (
+        }
+        if (
                 (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK) || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
                 && blocks.containsKey(block)
         ) {
@@ -116,8 +115,7 @@ public class PacketBreakListener extends PacketAdapter {
             packetContainer.getBlockPositionModifier().write(0, blockPosition);
             protocolManager.broadcastServerPacket(packetContainer);
             if(blocks.get(block) == null) return;
-            Bukkit.getScheduler().cancelTask(blocks.get(block));
-            blocks.keySet().remove(block);
+            Bukkit.getScheduler().cancelTask(blocks.remove(block));
         }
     }
 }

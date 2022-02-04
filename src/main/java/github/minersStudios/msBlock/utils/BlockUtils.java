@@ -9,7 +9,6 @@ import org.bukkit.block.BlockFace;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class BlockUtils {
@@ -22,7 +21,7 @@ public class BlockUtils {
             Material.LAVA
     );
 
-    public static final HashSet<Material> REPLACE = Sets.newHashSet(
+    public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
             Material.AIR,
             Material.WATER,
             Material.LAVA,

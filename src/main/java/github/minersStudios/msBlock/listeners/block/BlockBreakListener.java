@@ -13,7 +13,6 @@ import javax.annotation.Nonnull;
 import static github.minersStudios.msBlock.utils.BlockUtils.blocks;
 
 public class BlockBreakListener implements Listener {
-
     @EventHandler
     public void onBlockBreak(@Nonnull BlockBreakEvent event) {
         if(event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;

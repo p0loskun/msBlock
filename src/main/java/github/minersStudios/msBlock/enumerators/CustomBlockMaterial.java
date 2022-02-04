@@ -161,7 +161,7 @@ public enum CustomBlockMaterial {
         ItemMeta itemMeta = itemStack.getItemMeta();
         assert itemMeta != null;
         itemMeta.setCustomModelData(itemCustomModelData);
-        itemMeta.setDisplayName(ChatColor.WHITE + itemName);
+        itemMeta.setDisplayName(ChatColor.RESET + itemName);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

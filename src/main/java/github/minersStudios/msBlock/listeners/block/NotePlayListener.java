@@ -7,7 +7,6 @@ import org.bukkit.event.block.NotePlayEvent;
 import javax.annotation.Nonnull;
 
 public class NotePlayListener implements Listener {
-
     @EventHandler
     public void onNotePlay(@Nonnull NotePlayEvent event) {
         event.setCancelled(true);

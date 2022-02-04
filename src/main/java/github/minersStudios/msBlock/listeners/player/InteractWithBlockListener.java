@@ -42,8 +42,7 @@ public class InteractWithBlockListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.NOTE_BLOCK || player.isSneaking()) return;
         event.setCancelled(true);
 
-        Block clickedBlock = event.getClickedBlock(),
-                blockAtFace = clickedBlock.getRelative(event.getBlockFace());
+        Block clickedBlock = event.getClickedBlock(), blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (itemInMainHand.getType().isAir() || itemInMainHand.getType() == Material.PAPER || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR || player.getGameMode() == GameMode.ADVENTURE) return;
@@ -56,8 +55,8 @@ public class InteractWithBlockListener implements Listener {
         EntityPlayer entityPlayer = convertPlayer(player);
         MovingObjectPositionBlock movingObjectPositionBlock = getMovingObjectPositionBlock(player, blockAtFace.getLocation());
         Location interactionPoint = getInteractionPoint(playerEyeLocation, 8);
-        assert interactionPoint != null;
         itemActionContext = new ItemActionContext(entityPlayer, enumHand, movingObjectPositionBlock);
+        if(interactionPoint == null) return;
 
         if (itemInMainHand.getType().toString().contains("BUCKET") && itemInMainHand.getType() != Material.POWDER_SNOW_BUCKET) {
             new UseBucket(player, blockAtFace);
@@ -66,7 +65,8 @@ public class InteractWithBlockListener implements Listener {
             Stairs data = (Stairs) blockAtFace.getBlockData();
             data.setHalf(event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
                     : event.getBlockFace() == BlockFace.DOWN ? Bisected.Half.TOP
-                    : (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM : Bisected.Half.TOP));
+                    : (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
+                    : Bisected.Half.TOP));
             blockAtFace.setBlockData(data);
         } else if (Tag.SLABS.isTagged(itemInMainHand.getType()) || blockAtFace.getType() == itemInMainHand.getType()) {
             Slab.Type dataType;
