@@ -130,8 +130,8 @@ public enum CustomBlockMaterial {
      */
     public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
         ItemStack heldItem = player.getInventory().getItem(EquipmentSlot.HAND);
-        ToolTier tier = ToolTier.fromItemStack(heldItem);
-        float base = 1;
+        ToolTier tier = ToolTier.getToolTier(heldItem);
+        float base = 1.0f;
 
         if (customBlockMaterial.getToolType() == ToolType.getToolType(heldItem)){
             base = tier.getSpeed();
@@ -190,13 +190,8 @@ public enum CustomBlockMaterial {
      */
     @Nullable
     public static CustomBlockMaterial getCustomBlockMaterialByCMD(int itemCustomModelData) {
-        for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
-        {
-            if(
-                    customBlockMaterial.itemCustomModelData == itemCustomModelData
-            ){
-                return customBlockMaterial;
-            }
+        for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
+            if(customBlockMaterial.itemCustomModelData == itemCustomModelData) return customBlockMaterial;
         }
         return null;
     }

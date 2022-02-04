@@ -20,8 +20,8 @@ import static github.minersStudios.msBlock.Main.plugin;
 @Nonnull
 public class CustomBlock {
 
-    @Getter public Block block;
-    @Getter public Player player;
+    private Block block;
+    private Player player;
 
     /** CustomBlockMaterial param of a custom block */
     @Nullable @Getter @Setter(AccessLevel.PRIVATE) private CustomBlockMaterial customBlockMaterial;

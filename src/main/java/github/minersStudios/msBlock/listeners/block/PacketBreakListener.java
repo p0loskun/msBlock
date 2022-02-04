@@ -40,7 +40,6 @@ public class PacketBreakListener extends PacketAdapter {
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
         if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) && block.getType() == Material.NOTE_BLOCK && !blocks.containsKey(block)) {
-            player.sendMessage(blocks.keySet() + "\n" + Bukkit.getScheduler().getPendingTasks());
             CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
             if (customBlock == null) return;
             CustomBlockMaterial customBlockMaterial = customBlock.getCustomBlockMaterial();

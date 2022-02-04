@@ -10,19 +10,23 @@ import javax.annotation.Nonnull;
  */
 @Nonnull
 public enum ToolTier {
-    ANY(0.1f),
-    WOOD(0.3f),
-    STONE(0.45f),
-    IRON(0.56f),
-    GOLD(0.8f),
-    DIAMOND(0.65f),
-    NETHERITE(0.8f);
+    HAND("HAND", 0.1f),
+    WOOD("WOODEN_", 0.3f),
+    STONE("STONE_", 0.45f),
+    IRON("IRON_", 0.56f),
+    GOLD("GOLDEN_", 0.8f),
+    DIAMOND("DIAMOND_", 0.65f),
+    NETHERITE("NETHERITE_", 0.8f);
 
 
     /** Tool tier float speed */
     @Getter private final float speed;
 
-    ToolTier(float speed) {
+    /** Tool tier name */
+    private final String itemTierName;
+
+    ToolTier(String itemTierName, float speed) {
+        this.itemTierName = itemTierName;
         this.speed = speed;
     }
 
@@ -31,20 +35,10 @@ public enum ToolTier {
      *
      * @return ToolTier from item in hand
      */
-    public static ToolTier fromItemStack(@Nonnull ItemStack itemStack) {
-        if (itemStack.getType().toString().contains("WOODEN_")) {
-            return WOOD;
-        } else if (itemStack.getType().toString().contains("STONE_")) {
-            return STONE;
-        } else if (itemStack.getType().toString().contains("IRON_")) {
-            return IRON;
-        } else if (itemStack.getType().toString().contains("GOLDEN_")) {
-            return GOLD;
-        } else if (itemStack.getType().toString().contains("DIAMOND_")) {
-            return DIAMOND;
-        } else if (itemStack.getType().toString().contains("NETHERITE_")) {
-            return NETHERITE;
+    public static ToolTier getToolTier(@Nonnull ItemStack itemStack) {
+        for(ToolTier toolTier : ToolTier.values()) {
+            if(itemStack.getType().name().contains(toolTier.itemTierName)) return toolTier;
         }
-        return ANY;
+        return HAND;
     }
 }

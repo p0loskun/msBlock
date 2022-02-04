@@ -9,7 +9,20 @@ import javax.annotation.Nonnull;
  */
 @Nonnull
 public enum ToolType {
-    HAND, SWORD, PICKAXE, AXE, SHOVEL, HOE, SHEARS;
+    HAND("HAND"),
+    SWORD("_SWORD"),
+    PICKAXE("_PICKAXE"),
+    AXE("_AXE"),
+    SHOVEL("_SHOVEL"),
+    HOE("_HOE"),
+    SHEARS("SHEARS");
+
+    /** Tool type name */
+    private final String itemTypeName;
+
+    ToolType(String itemTypeName) {
+        this.itemTypeName = itemTypeName;
+    }
 
     /**
      * @param itemStack item in hand
@@ -17,18 +30,8 @@ public enum ToolType {
      * @return ToolType from item in hand
      */
     public static ToolType getToolType(@Nonnull ItemStack itemStack) {
-        if(itemStack.getType().toString().contains("SHEARS")){
-            return SHEARS;
-        } else if(itemStack.getType().toString().contains("_HOE")){
-            return HOE;
-        } else if(itemStack.getType().toString().contains("_SHOVEL")){
-            return SHOVEL;
-        } else if(itemStack.getType().toString().contains("_AXE")){
-            return AXE;
-        } else if(itemStack.getType().toString().contains("_PICKAXE")){
-            return PICKAXE;
-        } else if(itemStack.getType().toString().contains("_SWORD")){
-            return SWORD;
+        for(ToolType toolType : ToolType.values()) {
+            if(itemStack.getType().name().contains(toolType.itemTypeName)) return toolType;
         }
         return HAND;
     }
