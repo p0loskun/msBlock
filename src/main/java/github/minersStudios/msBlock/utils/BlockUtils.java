@@ -8,9 +8,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class BlockUtils {
+
+    public static final Map<Block, Integer> blocks = new HashMap<>();
 
     public static final ImmutableSet<Material> TRANSPARENT = Sets.immutableEnumSet(
             Material.AIR,

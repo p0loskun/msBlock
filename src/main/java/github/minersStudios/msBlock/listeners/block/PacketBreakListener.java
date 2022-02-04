@@ -17,12 +17,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nonnull;
 
 import static github.minersStudios.msBlock.Main.coreProtectAPI;
 import static github.minersStudios.msBlock.Main.protocolManager;
-import static github.minersStudios.msBlock.utils.PlayerUtils.diggers;
+import static github.minersStudios.msBlock.utils.BlockUtils.blocks;
 
 public class PacketBreakListener extends PacketAdapter {
 
@@ -35,39 +39,35 @@ public class PacketBreakListener extends PacketAdapter {
         Player player = event.getPlayer();
         if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
         BlockPosition blockPosition = event.getPacket().getBlockPositionModifier().read(0);
+        Block block = blockPosition.toLocation(player.getWorld()).getBlock();
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
-        Block block = blockPosition.toLocation(player.getWorld()).getBlock();
-        if (block.getType() != Material.NOTE_BLOCK) return;
-        if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK)) {
+        if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) && block.getType() == Material.NOTE_BLOCK && !blocks.containsKey(block)) {
+            addSlowDigging(player);
+            player.sendMessage(blocks.keySet() + "\n" + Bukkit.getScheduler().getPendingTasks());
             CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
-            if(customBlock == null) return;
+            if (customBlock == null) return;
             CustomBlockMaterial customBlockMaterial = customBlock.getCustomBlockMaterial();
             if (customBlockMaterial == null) return;
             Location blockLocation = block.getLocation();
             ItemStack handItem = player.getInventory().getItem(EquipmentSlot.HAND);
+            ItemMeta handItemMeta = handItem.getItemMeta();
             float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
 
-            diggers.put(player, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
-                float ticks = 0;
-                float progress = 0;
+            blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+                float ticks, progress = 0.0f;
                 int current_stage = 0;
 
                 @Override
                 public void run() {
-                    if(diggers.get(player) == null) return;
                     this.ticks++;
                     this.progress += digSpeed;
-                    float next_stage = (this.current_stage + 1) * 0.1F;
-                    World world = block.getWorld();
+                    float next_stage = (this.current_stage + 1) * 0.1f;
 
-                    if (this.ticks % 4 == 0) {
-                        world.playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
-                    }
+                    if (this.ticks % 4.0f == 0.0f) player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
 
                     if (this.progress > next_stage) {
-                        this.current_stage = (int) Math.floor(this.progress * 10F);
-
+                        this.current_stage = (int) Math.floor(this.progress * 10.0f);
                         if (this.current_stage <= 9) {
                             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
                             packetContainer.getIntegers().write(0, 0).write(1, this.current_stage - 1);
@@ -83,13 +83,14 @@ public class PacketBreakListener extends PacketAdapter {
                             packetContainer.getBlockPositionModifier().write(0, blockPosition);
                             protocolManager.broadcastServerPacket(packetContainer);
                         }, 1);
-                        Bukkit.getScheduler().cancelTask(diggers.remove(player));
+                        if(blocks.get(block) == null) return;
+                        Bukkit.getScheduler().cancelTask(blocks.get(block));
+                        blocks.keySet().remove(block);
 
+                        World world = block.getWorld();
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
-                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.add(0.5, 0.5, 0.5), 70, 0.45, 0.3, 0.45, block.getBlockData());
-                        blockLocation.add(-0.5, -0.5, -0.5);
-                        if (customBlockMaterial.getExpToDrop() != 0)
-                            world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
+                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5, 0.5, 0.5), 70, 0.45, 0.3, 0.45, block.getBlockData());
+                        if (customBlockMaterial.getExpToDrop() != 0) world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 
@@ -99,29 +100,39 @@ public class PacketBreakListener extends PacketAdapter {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
                         }
 
-                        if (ToolType.getToolType(handItem) == ToolType.HAND) return;
-                        if (!(handItem.getItemMeta() instanceof Damageable)) return;
-                        Damageable itemMeta = (Damageable) handItem.getItemMeta();
-                        assert itemMeta != null;
-                        itemMeta.setDamage(itemMeta.getDamage() + 1);
-                        handItem.setItemMeta(itemMeta);
-                        if(itemMeta.getDamage() < player.getInventory().getItemInMainHand().getType().getMaxDurability()) return;
-                        player.getInventory().clear(player.getInventory().getHeldItemSlot());
-                        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+                        if (ToolType.getToolType(handItem) != ToolType.HAND && handItemMeta instanceof Damageable) {
+                            Damageable handItemItemDamageable = (Damageable) handItemMeta;
+                            handItemItemDamageable.setDamage(handItemItemDamageable.getDamage() + 1);
+                            handItem.setItemMeta(handItemItemDamageable);
+                            if (handItemItemDamageable.getDamage() > handItem.getType().getMaxDurability()) {
+                                handItem.setAmount(handItem.getAmount() - 1);
+                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+                            }
+                        }
                     }
                 }
             }, 0L, 1L));
-
         } else if (
-                (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)
-                        || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
-                        && diggers.containsKey(player)
+                (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK) || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
+                && blocks.containsKey(block)
         ) {
             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
             packetContainer.getIntegers().write(0, 0).write(1, -1);
             packetContainer.getBlockPositionModifier().write(0, blockPosition);
             protocolManager.broadcastServerPacket(packetContainer);
-            Bukkit.getScheduler().cancelTask(diggers.get(player));
+            if(blocks.get(block) == null) return;
+            Bukkit.getScheduler().cancelTask(blocks.get(block));
+            blocks.keySet().remove(block);
         }
+    }
+
+    public void addSlowDigging(Player player){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                if(!player.hasPotionEffect(PotionEffectType.SLOW_DIGGING))
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
+            }
+        }.runTask(plugin);
     }
 }

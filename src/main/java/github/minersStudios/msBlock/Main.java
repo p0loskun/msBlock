@@ -37,11 +37,13 @@ public final class Main extends JavaPlugin {
 
         new RegEvents();
 
+        /*
         getServer().getScheduler().runTaskTimer(this, () -> {
             for(Player player : Bukkit.getOnlinePlayers()){
                 if(!player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) && player.getTargetBlock(BlockUtils.TRANSPARENT, 5).getType() == Material.NOTE_BLOCK)
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
             }
         }, 50L, 0L);
+         */
     }
 }

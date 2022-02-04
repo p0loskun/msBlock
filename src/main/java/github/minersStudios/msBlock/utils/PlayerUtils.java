@@ -1,6 +1,5 @@
 package github.minersStudios.msBlock.utils;
 
-import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.server.level.EntityPlayer;
 import net.minecraft.world.EnumHand;
@@ -17,11 +16,8 @@ import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 
 public class PlayerUtils {
-
-    public static final HashMap<Player, Integer> diggers = Maps.newHashMap();
 
     /**
      * Converts bukkit EquipmentSlot to NMS EnumHand
