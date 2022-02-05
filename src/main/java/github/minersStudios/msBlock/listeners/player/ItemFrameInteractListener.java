@@ -1,6 +1,7 @@
 package github.minersStudios.msBlock.listeners.player;
 
 import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -31,7 +32,7 @@ public class ItemFrameInteractListener implements Listener {
                 originalItemMeta = originalItemInMainHand.getItemMeta();
         if(originalItemMeta == null || itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
         event.setCancelled(true);
-        originalItemMeta.setDisplayName(originalItemMeta.getDisplayName() + "");
+        originalItemMeta.setDisplayName(ChatColor.RESET + originalItemMeta.getDisplayName() + "");
         originalItemInMainHand.setItemMeta(originalItemMeta);
         itemFrame.setCustomName(itemMeta.getDisplayName());
         itemMeta.setDisplayName(null);
@@ -51,7 +52,7 @@ public class ItemFrameInteractListener implements Listener {
         ItemMeta itemMeta = itemInFrame.getItemMeta();
         if(itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
         event.setCancelled(true);
-        itemMeta.setDisplayName(itemFrame.getName());
+        itemMeta.setDisplayName(ChatColor.RESET + itemFrame.getName());
         itemInFrame.setItemMeta(itemMeta);
         itemFrame.setItem(null);
         itemFrame.setCustomName(null);

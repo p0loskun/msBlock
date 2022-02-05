@@ -15,12 +15,6 @@ public class BlockUtils {
 
     public static final Map<Block, Integer> blocks = new HashMap<>();
 
-    public static final ImmutableSet<Material> TRANSPARENT = Sets.immutableEnumSet(
-            Material.AIR,
-            Material.WATER,
-            Material.LAVA
-    );
-
     public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
             Material.AIR,
             Material.WATER,
