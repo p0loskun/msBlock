@@ -26,7 +26,8 @@ public class BlockUtils {
             Material.LARGE_FERN,
             Material.TALL_SEAGRASS,
             Material.VINE,
-            Material.SNOW
+            Material.SNOW,
+            Material.FIRE
     );
 
     /**

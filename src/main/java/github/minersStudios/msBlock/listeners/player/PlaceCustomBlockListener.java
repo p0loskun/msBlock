@@ -4,6 +4,7 @@ import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
 import github.minersStudios.msBlock.objects.CustomBlock;
 import github.minersStudios.msBlock.utils.BlockUtils;
 import github.minersStudios.msBlock.utils.PlaySwingAnimation;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -25,15 +26,24 @@ public class PlaceCustomBlockListener implements Listener {
     @EventHandler
     public void PlayerInteractEvent(@Nonnull PlayerInteractEvent event) {
         assert event.getClickedBlock() != null;
+        Player player = event.getPlayer();
         if (
-                event.getAction() != Action.RIGHT_CLICK_BLOCK ||
-                event.getPlayer().getInventory().getItemInMainHand().getType() != Material.PAPER ||
-                event.getHand() != EquipmentSlot.HAND
+                event.getAction() != Action.RIGHT_CLICK_BLOCK
+                || event.getPlayer().getInventory().getItemInMainHand().getType() != Material.PAPER
+                || event.getHand() != EquipmentSlot.HAND
+                || event.getPlayer().getGameMode() == GameMode.ADVENTURE
+                || (event.getClickedBlock().getType().isInteractable() && event.getClickedBlock().getType() != Material.NOTE_BLOCK) && !player.isSneaking()
+                || !BlockUtils.REPLACE.contains(event.getClickedBlock().getRelative(event.getBlockFace()).getType())
         ) return;
         Block replaceableBlock = BlockUtils.REPLACE.contains(event.getClickedBlock().getType()) ? event.getClickedBlock() : event.getClickedBlock().getRelative(event.getBlockFace());
+        if(
+                replaceableBlock.getType() == Material.TALL_GRASS && replaceableBlock.getLocation().clone().add(0.0f, -1.0f, 0.0f).getBlock().getType() == Material.TALL_GRASS
+                || replaceableBlock.getType() == Material.TALL_SEAGRASS && replaceableBlock.getLocation().clone().add(0.0f, -1.0f, 0.0f).getBlock().getType() == Material.TALL_SEAGRASS
+        ) {
+            replaceableBlock.getLocation().clone().add(0.0f, -1.0f, 0.0f).getBlock().breakNaturally();
+        }
         for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if(!(nearbyEntity instanceof Item) && !(nearbyEntity instanceof ItemFrame)) return;
-        Player player = event.getPlayer();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
         if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
