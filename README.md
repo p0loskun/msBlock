@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.codefactor.io/repository/github/minersstudios/msblock">
+  <a href="https://www.codefactor.io/repository/github/minersstudios/msblock/overview/1.18.1">
     <img src="https://www.codefactor.io/repository/github/minersstudios/msblock/badge/1.18.1" alt="Discord">
   </a>
   <a href="https://stdrp.ga/discord">
