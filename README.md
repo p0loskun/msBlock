@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://www.codefactor.io/repository/github/minersstudios/msblock">
-    <img src="https://www.codefactor.io/repository/github/minersstudios/msblock/badge" alt="Discord">
+    <img src="https://www.codefactor.io/repository/github/minersstudios/msblock/badge/1.18.1" alt="Discord">
   </a>
   <a href="https://stdrp.ga/discord">
     <img src="https://discordapp.com/api/guilds/704273784378753124/widget.png?style=shield" alt="Discord">
