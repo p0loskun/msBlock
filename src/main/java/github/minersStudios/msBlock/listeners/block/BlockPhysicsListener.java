@@ -15,14 +15,8 @@ public class BlockPhysicsListener implements Listener {
 
     @EventHandler
     private void onBlockPhysics(@Nonnull BlockPhysicsEvent event) {
-        Block block = event.getBlock(),
-                topBlock = block.getRelative(BlockFace.UP);
-
-        if (topBlock.getType() == Material.NOTE_BLOCK) {
-            UpdateNoteBlock(block.getLocation());
-            event.setCancelled(true);
-        }
-        if (block.getType() == Material.NOTE_BLOCK) {
+        Block block = event.getBlock(), topBlock = block.getRelative(BlockFace.UP);
+        if (topBlock.getType() == Material.NOTE_BLOCK || block.getType() == Material.NOTE_BLOCK) {
             UpdateNoteBlock(block.getLocation());
             event.setCancelled(true);
         }

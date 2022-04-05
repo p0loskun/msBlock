@@ -46,33 +46,36 @@ public class PacketBreakListener extends PacketAdapter {
             if (customBlockMaterial == null) return;
             Location blockLocation = block.getLocation();
             ItemStack handItem = player.getInventory().getItem(EquipmentSlot.HAND);
+            assert handItem != null;
             ItemMeta handItemMeta = handItem.getItemMeta();
             float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
 
             blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                 float ticks, progress = 0.0f;
-                int current_stage = 0;
+                int currentStage = 0;
 
                 @Override
                 public void run() {
-                    ticks++;
-                    progress += digSpeed;
-                    float next_stage = (current_stage + 1) * 0.1f;
+                    this.ticks++;
+                    this.progress += digSpeed;
+                    float nextStage = (this.currentStage + 1) * 0.1f;
 
-                    if (this.ticks % 4.0f == 0.0f) player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
+                    if (this.ticks % 4.0f == 0.0f){
+                        player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
+                    }
 
-                    if (progress > next_stage) {
-                        current_stage = (int) Math.floor(progress * 10.0f);
-                        if (current_stage <= 9) {
+                    if (this.progress > nextStage) {
+                        this.currentStage = (int) Math.floor(this.progress * 10.0f);
+                        if (this.currentStage <= 9) {
                             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-                            packetContainer.getIntegers().write(0, 0).write(1, current_stage - 1);
+                            packetContainer.getIntegers().write(0, 0).write(1, this.currentStage - 1);
                             packetContainer.getBlockPositionModifier().write(0, blockPosition);
                             protocolManager.broadcastServerPacket(packetContainer);
                         }
                     }
 
-                    if (progress > 1F) {
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if (this.progress > 1F) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
                             packetContainer.getIntegers().write(0, 0).write(1, -1);
                             packetContainer.getBlockPositionModifier().write(0, blockPosition);
@@ -83,7 +86,7 @@ public class PacketBreakListener extends PacketAdapter {
 
                         World world = block.getWorld();
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
-                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5, 0.25, 0.5), 80, 0.35, 0.35, 0.35, block.getBlockData());
+                        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 

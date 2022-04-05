@@ -1,6 +1,6 @@
 name: msBlock
 version: ${project.version}
-description: A Minecraft plugin with Blocks for WhoMine
+description: A Minecraft plugin with custom blocks for WhoMine
 authors: [MinersStudios, p0loskun]
 website: minersstudios.github.io
 

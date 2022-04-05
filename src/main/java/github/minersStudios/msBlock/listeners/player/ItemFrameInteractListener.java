@@ -41,7 +41,7 @@ public class ItemFrameInteractListener implements Listener {
     }
 
     @EventHandler
-    public void onHangingBreakByEntity(@Nonnull EntityDamageByEntityEvent event) {
+    public void onDamageByEntity(@Nonnull EntityDamageByEntityEvent event) {
         if(!(event.getEntity() instanceof ItemFrame) || !(event.getDamager() instanceof Player && ((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE || event.getDamager() instanceof Projectile)) return;
         if(event.getDamager() instanceof Projectile && !(((Projectile) event.getDamager()).getShooter() instanceof Player)) return;
         if(event.getDamager() instanceof Projectile) event.getDamager().remove();

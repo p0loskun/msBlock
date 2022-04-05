@@ -36,12 +36,12 @@ public class BlockUtils {
      * @param location block location which will be updated
      */
     public static void UpdateNoteBlock(@Nonnull Location location) {
-        Block block = location.getBlock().getRelative(BlockFace.UP);
-        if (block.getType() == Material.NOTE_BLOCK)
+        Block block = location.getBlock().getRelative(BlockFace.UP), nextBlock = block.getRelative(BlockFace.UP);
+        if (block.getType() == Material.NOTE_BLOCK) {
             block.getState().update(true, false);
-
-        Block nextBlock = block.getRelative(BlockFace.UP);
-        if (nextBlock.getType() == Material.NOTE_BLOCK)
+        }
+        if (nextBlock.getType() == Material.NOTE_BLOCK) {
             UpdateNoteBlock(block.getLocation());
+        }
     }
 }

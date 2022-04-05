@@ -11,7 +11,7 @@
 
     <name>msBlock</name>
 
-    <description>A Minecraft plugin with Blocks for WhoMine</description>
+    <description>A Minecraft plugin with custom blocks for WhoMine</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>net.coreprotect</groupId>
             <artifactId>coreprotect</artifactId>
-            <version>20.0</version>
+            <version>21.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

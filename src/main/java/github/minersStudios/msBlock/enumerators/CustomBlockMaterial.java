@@ -40,8 +40,6 @@ public enum CustomBlockMaterial {
     CRATE_1(Instrument.BANJO, new Note(16), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Ящик", 1016),
     ;
 
-    // NoteBlock Data
-
     /** Instrument for custom block texture */
     @Getter private final Instrument instrument;
 
@@ -50,8 +48,6 @@ public enum CustomBlockMaterial {
 
     /** True if CustomDecorMaterial isPowered == true for custom block texture */
     @Getter private final boolean powered;
-
-    // Sounds
 
     /** Place sound for custom block */
     @Getter private final Sound soundPlace;
@@ -62,8 +58,6 @@ public enum CustomBlockMaterial {
     /** Hit sound for custom block */
     @Getter private final Sound soundHit;
 
-    // Digging
-
     /** Dig speed float */
     private final float digSpeed;
 
@@ -72,8 +66,6 @@ public enum CustomBlockMaterial {
 
     /** True if force tool type */
     @Getter private final boolean forceTool;
-
-    // Other
 
     /** Experience to drop */
     @Getter private final int expToDrop;
@@ -130,6 +122,7 @@ public enum CustomBlockMaterial {
      */
     public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
         ItemStack heldItem = player.getInventory().getItem(EquipmentSlot.HAND);
+        assert heldItem != null;
         ToolTier tier = ToolTier.getToolTier(heldItem);
         float base = 1.0f;
 
