@@ -55,16 +55,8 @@ public class PlayerUtils {
     @Nullable
     public static Location getInteractionPoint(@Nonnull Location location, int maxDistance) {
         if (location.getWorld() == null) return null;
-        RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(
-                location,
-                location.getDirection(),
-                maxDistance,
-                FluidCollisionMode.NEVER,
-                true
-        );
-        if (rayTraceResult == null || rayTraceResult.getHitBlock() == null) return null;
-
-        return rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
+        RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(location, location.getDirection(), maxDistance, FluidCollisionMode.NEVER, true);
+        return rayTraceResult == null || rayTraceResult.getHitBlock() == null ? null : rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
     }
 
     /**
@@ -89,10 +81,21 @@ public class PlayerUtils {
      */
     @Nonnull
     public static MovingObjectPositionBlock getMovingObjectPositionBlock(@Nonnull Player player, @Nonnull Location blockLoc) {
-        Vec3D vec3D = new Vec3D(player.getEyeLocation().getX(), player.getEyeLocation().getY(), player.getEyeLocation().getZ());
-        BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
-
-        return new MovingObjectPositionBlock(vec3D, convertPlayer(player).ct(), blockPosition, false);
+        Location playerEyeLoc = player.getEyeLocation();
+        return new MovingObjectPositionBlock(new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ()), convertPlayer(player).ct(), new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ()), false);
     }
 
+    /**
+     * Swings player hand
+     *
+     * @param player player who will swing hand
+     * @param equipmentSlot equipment slot which used for checking what hand will swing
+     */
+    public static void playSwingAnimation(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
+        if (equipmentSlot == EquipmentSlot.HAND) {
+            player.swingMainHand();
+        } else {
+            player.swingOffHand();
+        }
+    }
 }

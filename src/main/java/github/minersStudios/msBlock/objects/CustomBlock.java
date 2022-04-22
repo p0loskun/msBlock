@@ -20,13 +20,11 @@ import static github.minersStudios.msBlock.Main.plugin;
 @Nonnull
 public class CustomBlock {
 
-    private Block block;
-    private Player player;
+    private final Block block;
+    private final Player player;
 
     /** CustomBlockMaterial param of a custom block */
     @Nullable @Getter @Setter(AccessLevel.PRIVATE) private CustomBlockMaterial customBlockMaterial;
-
-    public CustomBlock(){}
 
     /**
      * @param block clicked block / block at face
@@ -39,19 +37,6 @@ public class CustomBlock {
         if(block.getType() != Material.NOTE_BLOCK) return;
         NoteBlock noteBlock = (NoteBlock) block.getBlockData();
         setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
-    }
-
-    /**
-     * @param block clicked block
-     * @param player player who clicked block
-     *
-     * @return custom block object
-     */
-    @Nullable
-    public CustomBlock getCustomBlock(@Nonnull Block block, @Nonnull Player player){
-        if(block.getType() == Material.NOTE_BLOCK)
-            return new CustomBlock(block, player);
-        return null;
     }
 
     /**

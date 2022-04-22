@@ -74,7 +74,7 @@ public class InteractWithBlockListener implements Listener {
                 dataType = Slab.Type.DOUBLE;
                 blockAtFace.getWorld().playSound(blockAtFace.getLocation(), blockAtFace.getType().createBlockData().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 2.0f, blockAtFace.getType().createBlockData().getSoundGroup().getPitch());
             } else {
-                if ((interactionPoint.getY() > 0d && interactionPoint.getY() < .5d) || interactionPoint.getY() == 1d) dataType = Slab.Type.BOTTOM;
+                if ((interactionPoint.getY() > 0.0d && interactionPoint.getY() < 0.5d) || interactionPoint.getY() == 1.0d) dataType = Slab.Type.BOTTOM;
                 else dataType = Slab.Type.TOP;
                 useOn(clickedBlock.getRelative(event.getBlockFace()));
             }

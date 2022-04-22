@@ -19,7 +19,7 @@ public final class Main extends JavaPlugin {
 
         if (coreProtect == null) return null;
         CoreProtectAPI CoreProtect = ((CoreProtect)coreProtect).getAPI();
-        return (!CoreProtect.isEnabled() || CoreProtect.APIVersion() < 7 ? null : CoreProtect);
+        return (!CoreProtect.isEnabled() || CoreProtect.APIVersion() < 9 ? null : CoreProtect);
     }
 
     @Override

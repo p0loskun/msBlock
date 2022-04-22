@@ -40,8 +40,7 @@ public class PacketBreakListener extends PacketAdapter {
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
         if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) && block.getType() == Material.NOTE_BLOCK && !blocks.containsKey(block)) {
-            CustomBlock customBlock = new CustomBlock().getCustomBlock(block, player);
-            if (customBlock == null) return;
+            CustomBlock customBlock = new CustomBlock(block, player);
             CustomBlockMaterial customBlockMaterial = customBlock.getCustomBlockMaterial();
             if (customBlockMaterial == null) return;
             Location blockLocation = block.getLocation();
@@ -102,7 +101,7 @@ public class PacketBreakListener extends PacketAdapter {
                             handItem.setItemMeta(handItemItemDamageable);
                             if (handItemItemDamageable.getDamage() > handItem.getType().getMaxDurability()) {
                                 handItem.setAmount(handItem.getAmount() - 1);
-                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1, 1);
+                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                             }
                         }
                     }

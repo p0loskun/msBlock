@@ -36,7 +36,7 @@ public class UseBucket {
         UseBucket.player = player;
         UseBucket.block = block;
         UseBucket.itemInMainHand = itemInMainHand;
-        UseBucket.blockLocation = block.getLocation().add(.5d, .5d, .5d);
+        UseBucket.blockLocation = block.getLocation().add(0.5d, 0.5d, 0.5d);
 
         Material itemMaterial = itemInMainHand.getType();
         switch (itemMaterial) {
@@ -149,7 +149,7 @@ public class UseBucket {
         block.setType(Material.WATER);
         block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
         coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
-        block.getWorld().spawnEntity(block.getLocation().add(.5d, .5d, .5d), entityType);
+        block.getWorld().spawnEntity(block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
         setBucketIfSurvival();
     }
 

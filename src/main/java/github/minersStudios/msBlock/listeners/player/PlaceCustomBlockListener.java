@@ -3,7 +3,7 @@ package github.minersStudios.msBlock.listeners.player;
 import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
 import github.minersStudios.msBlock.objects.CustomBlock;
 import github.minersStudios.msBlock.utils.BlockUtils;
-import github.minersStudios.msBlock.utils.PlaySwingAnimation;
+import github.minersStudios.msBlock.utils.PlayerUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -47,7 +47,7 @@ public class PlaceCustomBlockListener implements Listener {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
         if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-        if(replaceableBlock.getType() != Material.NOTE_BLOCK) new PlaySwingAnimation(player, event.getHand());
+        if(replaceableBlock.getType() != Material.NOTE_BLOCK) PlayerUtils.playSwingAnimation(player, event.getHand());
         CustomBlock customBlock = new CustomBlock(replaceableBlock, player);
         customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
     }

@@ -14,9 +14,7 @@ public class BlockDamageListener implements Listener {
     public void onBlockDamage(@Nonnull BlockDamageEvent event) {
         if (event.getBlock().getType() == Material.NOTE_BLOCK) {
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
-            return;
-        }
-        if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
+        } else if (event.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)) {
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW_DIGGING);
         }
     }
