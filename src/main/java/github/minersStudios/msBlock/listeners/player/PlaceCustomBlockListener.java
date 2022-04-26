@@ -49,6 +49,7 @@ public class PlaceCustomBlockListener implements Listener {
         if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
         if(replaceableBlock.getType() != Material.NOTE_BLOCK) PlayerUtils.playSwingAnimation(player, event.getHand());
         CustomBlock customBlock = new CustomBlock(replaceableBlock, player);
-        customBlock.setCustomBlock(CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData()));
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterialByCMD(itemInMainHand.getItemMeta().getCustomModelData());
+        if(customBlockMaterial != null) customBlock.setCustomBlock(customBlockMaterial);
     }
 }

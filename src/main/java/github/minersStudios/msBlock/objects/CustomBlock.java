@@ -44,11 +44,10 @@ public class CustomBlock {
      *
      * @param customBlockMaterial custom block material that is used to place the custom block
      */
-    public void setCustomBlock(CustomBlockMaterial customBlockMaterial) {
+    public void setCustomBlock(@Nonnull CustomBlockMaterial customBlockMaterial) {
         new BukkitRunnable(){
             @Override
             public void run() {
-                if(customBlockMaterial == null) return;
                 block.setType(Material.NOTE_BLOCK);
 
                 NoteBlock noteBlock = (NoteBlock) block.getBlockData();

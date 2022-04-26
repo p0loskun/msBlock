@@ -10,10 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 
+import javax.annotation.Nonnull;
+
 public class CreativeCopyBlockListener implements Listener {
 
     @EventHandler
-    public void onCopyBlock(InventoryCreativeEvent event){
+    public void onCopyBlock(@Nonnull InventoryCreativeEvent event){
         if(event.getClick() != ClickType.CREATIVE) return;
         Player player = (Player) event.getWhoClicked();
         Block clickedBlock = player.getTargetBlockExact(5);
