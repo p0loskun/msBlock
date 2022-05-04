@@ -1,7 +1,9 @@
 package github.minersStudios.msBlock.listeners.block;
 
+import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.objects.CustomBlock;
 import github.minersStudios.msBlock.utils.BlockUtils;
-import org.bukkit.ChatColor;
+import github.minersStudios.msBlock.utils.PlayerUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -16,8 +18,10 @@ public class BlockPlaceListener implements Listener {
         Block block = event.getBlockPlaced();
         if(block.getType() == Material.NOTE_BLOCK){
             event.setCancelled(true);
-            event.getPlayer().sendMessage("ꑜ" + ChatColor.DARK_RED + " Простите, но нотные блоки не разрешено устанавливать");
-            BlockUtils.UpdateNoteBlock(block.getLocation());
+            CustomBlock customBlock = new CustomBlock(block, event.getPlayer());
+            CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.DEFAULT;
+            customBlock.setCustomBlock(customBlockMaterial);
+            BlockUtils.removeBlock(block.getLocation());
         }
     }
 }

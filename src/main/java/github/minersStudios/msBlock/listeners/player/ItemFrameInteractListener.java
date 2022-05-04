@@ -29,7 +29,7 @@ public class ItemFrameInteractListener implements Listener {
                 itemInMainHand = originalItemInMainHand.clone();
         ItemMeta itemMeta = itemInMainHand.getItemMeta(),
                 originalItemMeta = originalItemInMainHand.getItemMeta();
-        if(originalItemMeta == null || itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
+        if(originalItemMeta == null || itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData()) == null) return;
         event.setCancelled(true);
         originalItemMeta.setDisplayName(originalItemMeta.getDisplayName() + "");
         originalItemInMainHand.setItemMeta(originalItemMeta);
@@ -49,7 +49,7 @@ public class ItemFrameInteractListener implements Listener {
         if(itemFrame.getItem().getType().isAir()) return;
         ItemStack itemInFrame = itemFrame.getItem().clone();
         ItemMeta itemMeta = itemInFrame.getItemMeta();
-        if(itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterialByCMD(itemMeta.getCustomModelData()) == null) return;
+        if(itemMeta == null || !itemMeta.hasCustomModelData() || CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData()) == null) return;
         event.setCancelled(true);
         itemMeta.setDisplayName(itemFrame.getName());
         itemInFrame.setItemMeta(itemMeta);

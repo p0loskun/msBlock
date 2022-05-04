@@ -89,10 +89,12 @@ public class PacketBreakListener extends PacketAdapter {
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 
-                        if (!customBlockMaterial.isForceTool() || customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) {
+                        if ((!customBlockMaterial.isForceTool() || customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) && customBlockMaterial != CustomBlockMaterial.DEFAULT) {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
                             if (customBlockMaterial.getExpToDrop() != 0)
                                 world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
+                        } else if(customBlockMaterial == CustomBlockMaterial.DEFAULT){
+                            world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
                         }
 
                         if (ToolType.getToolType(handItem) != ToolType.HAND && handItemMeta instanceof Damageable) {

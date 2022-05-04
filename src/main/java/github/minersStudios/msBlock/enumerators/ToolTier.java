@@ -35,6 +35,7 @@ public enum ToolTier {
      *
      * @return ToolTier from item in hand
      */
+    @Nonnull
     public static ToolTier getToolTier(@Nonnull ItemStack itemStack) {
         for(ToolTier toolTier : ToolTier.values()) {
             if(itemStack.getType().name().contains(toolTier.itemTierName)) return toolTier;

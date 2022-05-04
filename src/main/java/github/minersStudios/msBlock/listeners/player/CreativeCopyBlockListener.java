@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -25,6 +26,10 @@ public class CreativeCopyBlockListener implements Listener {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
         if(customBlockMaterial == null) return;
         event.setCancelled(true);
-        player.getInventory().setItem(event.getSlot(), customBlockMaterial.getItemStack());
+        if(customBlockMaterial != CustomBlockMaterial.DEFAULT){
+            player.getInventory().setItem(event.getSlot(), customBlockMaterial.getItemStack());
+        } else {
+            player.getInventory().setItem(event.getSlot(), new ItemStack(Material.NOTE_BLOCK));
+        }
     }
 }

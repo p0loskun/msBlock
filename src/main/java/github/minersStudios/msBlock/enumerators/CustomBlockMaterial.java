@@ -17,6 +17,8 @@ import java.util.Objects;
  * CustomBlockMaterial enum with blocks parameters
  */
 public enum CustomBlockMaterial {
+    DEFAULT(Instrument.BIT, new Note(0), false, null, null, null, 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
+
     TEST(Instrument.XYLOPHONE, new Note(1), true, null, null, null, -1.0f, ToolType.HOE, true, 10, "Test block", 999999),
 
     VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
@@ -182,7 +184,7 @@ public enum CustomBlockMaterial {
      * @return Custom block material
      */
     @Nullable
-    public static CustomBlockMaterial getCustomBlockMaterialByCMD(int itemCustomModelData) {
+    public static CustomBlockMaterial getCustomBlockMaterial(int itemCustomModelData) {
         for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
             if(customBlockMaterial.itemCustomModelData == itemCustomModelData) return customBlockMaterial;
         }

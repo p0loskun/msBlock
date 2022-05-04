@@ -30,18 +30,40 @@ public class BlockUtils {
             Material.FIRE
     );
 
+    private static final ImmutableSet<Material> BREAK_ON_BLOCK_PLACE = Sets.immutableEnumSet(
+            Material.TALL_GRASS,
+            Material.LARGE_FERN,
+            Material.TALL_SEAGRASS
+    );
+
     /**
      * Updates the note block and checks if there is a notes block above it
      *
      * @param location block location which will be updated
      */
-    public static void UpdateNoteBlock(@Nonnull Location location) {
+    public static void updateNoteBlock(@Nonnull Location location) {
         Block block = location.getBlock().getRelative(BlockFace.UP), nextBlock = block.getRelative(BlockFace.UP);
         if (block.getType() == Material.NOTE_BLOCK) {
             block.getState().update(true, false);
         }
         if (nextBlock.getType() == Material.NOTE_BLOCK) {
-            UpdateNoteBlock(block.getLocation());
+            updateNoteBlock(block.getLocation());
+        }
+    }
+
+    /**
+     * Breaks top/bottom block
+     *
+     * @param location location around which the blocks break
+     */
+    public static void removeBlock(@Nonnull Location location) {
+        Block topBlock = location.clone().add(0.0f, 1.0f, 0.0f).getBlock(),
+                bottomBlock = location.clone().add(0.0f, -1.0f, 0.0f).getBlock();
+        if(BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())){
+            topBlock.breakNaturally();
+        }
+        if(BREAK_ON_BLOCK_PLACE.contains(bottomBlock.getType())){
+            bottomBlock.breakNaturally();
         }
     }
 }
