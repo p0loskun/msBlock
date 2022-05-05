@@ -44,7 +44,6 @@ public class InteractWithBlockListener implements Listener {
                 event.getAction() != Action.RIGHT_CLICK_BLOCK
                 || clickedBlock.getType() != Material.NOTE_BLOCK
                 || player.isSneaking()
-                || player.getGameMode() == GameMode.ADVENTURE
         ) return;
         event.setCancelled(true);
         itemInMainHand = player.getInventory().getItemInMainHand();
@@ -53,6 +52,7 @@ public class InteractWithBlockListener implements Listener {
                 itemInMainHand.getType().isAir()
                 || itemInMainHand.getType() == Material.PAPER
                 || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
+                || player.getGameMode() == GameMode.ADVENTURE
         ) return;
         for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
