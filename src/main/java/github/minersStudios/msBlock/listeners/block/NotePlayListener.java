@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 public class NotePlayListener implements Listener {
     @EventHandler
     public void onNotePlay(@Nonnull NotePlayEvent event) {
-        if(event.getInstrument() != Instrument.BIT && !event.getNote().equals(new Note(0)))
-        event.setCancelled(true);
+        event.setCancelled(!(event.getInstrument() == Instrument.BIT && event.getNote().equals(new Note(0))));
     }
 }

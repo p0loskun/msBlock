@@ -60,7 +60,7 @@ public class PacketBreakListener extends PacketAdapter {
                     float nextStage = (this.currentStage + 1) * 0.1f;
 
                     if (this.ticks % 4.0f == 0.0f){
-                        player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.25f, 0.5f);
+                        player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.5f, 0.5f);
                     }
 
                     if (this.progress > nextStage) {

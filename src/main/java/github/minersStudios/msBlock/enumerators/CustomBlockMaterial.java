@@ -17,9 +17,9 @@ import java.util.Objects;
  * CustomBlockMaterial enum with blocks parameters
  */
 public enum CustomBlockMaterial {
-    DEFAULT(Instrument.BIT, new Note(0), false, null, null, null, 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
+    DEFAULT(Instrument.BIT, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
 
-    TEST(Instrument.XYLOPHONE, new Note(1), true, null, null, null, -1.0f, ToolType.HOE, true, 10, "Test block", 999999),
+    TEST(Instrument.XYLOPHONE, new Note(1), true, Sound.BLOCK_AMETHYST_BLOCK_PLACE, null, Sound.BLOCK_AMETHYST_BLOCK_HIT, 1.0f, ToolType.HOE, true, 10, "Test block", 999999),
 
     VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
     VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 1001),
