@@ -42,73 +42,42 @@ public enum CustomBlockMaterial {
     CRATE_1(Instrument.BANJO, new Note(16), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Ящик", 1016),
     ;
 
-    /** Instrument for custom block texture */
     @Getter private final Instrument instrument;
-
-    /** Note for custom block texture */
     @Getter private final Note note;
-
-    /** True if CustomDecorMaterial isPowered == true for custom block texture */
     @Getter private final boolean powered;
-
-    /** Place sound for custom block */
     @Getter private final Sound soundPlace;
-
-    /** Break sound for custom block */
     @Getter private final Sound soundBreak;
-
-    /** Hit sound for custom block */
     @Getter private final Sound soundHit;
-
-    /** Dig speed float */
     private final float digSpeed;
-
-    /** ToolType that will be used to determine the speed of digging */
     @Getter private final ToolType toolType;
-
-    /** True if force tool type */
     @Getter private final boolean forceTool;
-
-    /** Experience to drop */
     @Getter private final int expToDrop;
-
-    /** CustomBlock item name */
     private final String itemName;
-
-    /** CustomBlock item CustomModelData */
     private final int itemCustomModelData;
 
     CustomBlockMaterial(
             @Nonnull Instrument instrument,
             @Nonnull Note note,
             boolean powered,
-
             @Nullable Sound soundPlace,
             @Nullable Sound soundBreak,
             @Nullable Sound soundHit,
-
             float digSpeed,
             ToolType toolType,
             boolean forceTool,
-
             int expToDrop,
-
             String itemName,
             int itemCustomModelData
     ) {
         this.instrument = instrument;
         this.note = note;
         this.powered = powered;
-
         this.itemName = itemName;
         this.itemCustomModelData = itemCustomModelData;
-
         this.expToDrop = expToDrop;
-
         this.soundPlace = soundPlace;
         this.soundBreak = soundBreak;
         this.soundHit = soundHit;
-
         this.digSpeed = digSpeed;
         this.toolType = toolType;
         this.forceTool = forceTool;
@@ -156,7 +125,7 @@ public enum CustomBlockMaterial {
         ItemMeta itemMeta = itemStack.getItemMeta();
         assert itemMeta != null;
         itemMeta.setCustomModelData(this.itemCustomModelData);
-        itemMeta.setDisplayName(ChatColor.WHITE + itemName);
+        itemMeta.setDisplayName(ChatColor.WHITE + this.itemName);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }

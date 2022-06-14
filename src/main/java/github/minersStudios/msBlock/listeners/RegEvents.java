@@ -22,12 +22,12 @@ public final class RegEvents {
         pluginManager.registerEvents(new ExplosionListener(), plugin);
         pluginManager.registerEvents(new NotePlayListener(), plugin);
         pluginManager.registerEvents(new PistonListener(), plugin);
-        pluginManager.registerEvents(new InteractWithBlockListener(), plugin);
+        pluginManager.registerEvents(new PlayerInteractListener(), plugin);
         pluginManager.registerEvents(new PlaceCustomBlockListener(), plugin);
         pluginManager.registerEvents(new ItemFrameInteractListener(), plugin);
         pluginManager.registerEvents(new PlayerMoveListener(), plugin);
-        pluginManager.registerEvents(new CreativeCopyBlockListener(), plugin);
-        pluginManager.registerEvents(new PlayerLeaveListener(), plugin);
+        pluginManager.registerEvents(new InventoryCreativeListener(), plugin);
+        pluginManager.registerEvents(new PlayerQuitListener(), plugin);
 
         protocolManager.addPacketListener(new PacketBreakListener());
     }

@@ -36,7 +36,7 @@ public class CustomBlock {
 
         if(block.getType() != Material.NOTE_BLOCK) return;
         NoteBlock noteBlock = (NoteBlock) block.getBlockData();
-        setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
+        this.setCustomBlockMaterial(CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()));
     }
 
     /**

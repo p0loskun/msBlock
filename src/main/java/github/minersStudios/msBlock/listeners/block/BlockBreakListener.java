@@ -18,6 +18,7 @@ public class BlockBreakListener implements Listener {
         if(event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
         Block block = event.getBlock();
         event.setCancelled(block.getType() == Material.NOTE_BLOCK);
-        if(blocks.get(block) != null) Bukkit.getScheduler().cancelTask(blocks.remove(block));
+        if(blocks.get(block) != null)
+            Bukkit.getScheduler().cancelTask(blocks.remove(block));
     }
 }

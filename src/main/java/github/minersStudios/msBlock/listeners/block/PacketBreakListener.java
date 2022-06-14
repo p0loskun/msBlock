@@ -14,10 +14,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 
@@ -35,21 +33,24 @@ public class PacketBreakListener extends PacketAdapter {
     public void onPacketReceiving(@Nonnull final PacketEvent event) {
         Player player = event.getPlayer();
         if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
+        World world = player.getWorld();
         BlockPosition blockPosition = event.getPacket().getBlockPositionModifier().read(0);
-        Block block = blockPosition.toLocation(player.getWorld()).getBlock();
+        Block block = blockPosition.toLocation(world).getBlock();
         EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
-        if (digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) && block.getType() == Material.NOTE_BLOCK && !blocks.containsKey(block)) {
+        if (
+                digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK)
+                && block.getType() == Material.NOTE_BLOCK
+                && !blocks.containsKey(block)
+        ) {
             CustomBlock customBlock = new CustomBlock(block, player);
             CustomBlockMaterial customBlockMaterial = customBlock.getCustomBlockMaterial();
             if (customBlockMaterial == null) return;
             Location blockLocation = block.getLocation();
-            ItemStack handItem = player.getInventory().getItem(EquipmentSlot.HAND);
-            assert handItem != null;
-            ItemMeta handItemMeta = handItem.getItemMeta();
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
             float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
 
-            blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+            blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
                 float ticks, progress = 0.0f;
                 int currentStage = 0;
 
@@ -60,7 +61,7 @@ public class PacketBreakListener extends PacketAdapter {
                     float nextStage = (this.currentStage + 1) * 0.1f;
 
                     if (this.ticks % 4.0f == 0.0f){
-                        player.getWorld().playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.5f, 0.5f);
+                        world.playSound(blockLocation, customBlockMaterial.getSoundHit(), SoundCategory.BLOCKS, 0.5f, 0.5f);
                     }
 
                     if (this.progress > nextStage) {
@@ -73,36 +74,43 @@ public class PacketBreakListener extends PacketAdapter {
                         }
                     }
 
-                    if (this.progress > 1F) {
+                    if (this.progress > 1.0f) {
                         Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
                             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
                             packetContainer.getIntegers().write(0, 0).write(1, -1);
                             packetContainer.getBlockPositionModifier().write(0, blockPosition);
                             protocolManager.broadcastServerPacket(packetContainer);
                         }, 1);
+
                         if(blocks.get(block) == null) return;
                         Bukkit.getScheduler().cancelTask(blocks.remove(block));
 
-                        World world = block.getWorld();
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
                         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
                         coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 
-                        if ((!customBlockMaterial.isForceTool() || customBlockMaterial.getToolType() == ToolType.getToolType(handItem)) && customBlockMaterial != CustomBlockMaterial.DEFAULT) {
+                        if (
+                                (!customBlockMaterial.isForceTool()
+                                        || customBlockMaterial.getToolType() == ToolType.getToolType(itemInMainHand))
+                                && customBlockMaterial != CustomBlockMaterial.DEFAULT
+                        ) {
                             world.dropItemNaturally(blockLocation, customBlockMaterial.getItemStack());
-                            if (customBlockMaterial.getExpToDrop() != 0)
+                            if (customBlockMaterial.getExpToDrop() != 0) {
                                 world.spawn(blockLocation, ExperienceOrb.class).setExperience(customBlockMaterial.getExpToDrop());
+                            }
                         } else if(customBlockMaterial == CustomBlockMaterial.DEFAULT){
                             world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
                         }
 
-                        if (ToolType.getToolType(handItem) != ToolType.HAND && handItemMeta instanceof Damageable) {
-                            Damageable handItemItemDamageable = (Damageable) handItemMeta;
+                        if (
+                                ToolType.getToolType(itemInMainHand) != ToolType.HAND
+                                && itemInMainHand.getItemMeta() instanceof Damageable handItemItemDamageable
+                        ) {
                             handItemItemDamageable.setDamage(handItemItemDamageable.getDamage() + 1);
-                            handItem.setItemMeta(handItemItemDamageable);
-                            if (handItemItemDamageable.getDamage() > handItem.getType().getMaxDurability()) {
-                                handItem.setAmount(handItem.getAmount() - 1);
+                            itemInMainHand.setItemMeta(handItemItemDamageable);
+                            if (handItemItemDamageable.getDamage() > itemInMainHand.getType().getMaxDurability()) {
+                                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
                                 player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                             }
                         }
@@ -111,7 +119,8 @@ public class PacketBreakListener extends PacketAdapter {
             }, 0L, 1L));
         }
         if (
-                (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK) || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
+                (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)
+                        || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
                 && blocks.containsKey(block)
         ) {
             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);

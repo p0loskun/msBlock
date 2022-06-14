@@ -2,8 +2,7 @@ package github.minersStudios.msBlock.utils;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.Axolotl;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -59,18 +58,14 @@ public class UseBucket {
                 useEmptyBucket();
                 break;
             default:
-                if(itemMaterial == Material.LAVA_BUCKET){
+                if(itemMaterial == Material.LAVA_BUCKET && !block.getType().isSolid()){
                     block.setType(Material.LAVA);
                     block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
                     coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
                     setBucketIfSurvival();
                 } else if(itemMaterial == Material.WATER_BUCKET){
-                    block.setType(Material.WATER);
-                    block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-                    coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
-                    setBucketIfSurvival();
+                    setWater();
                 }
-                break;
         }
     }
 
@@ -107,9 +102,7 @@ public class UseBucket {
      * Uses bucket with tropical fish
      */
     private static void setTropicalFish(){
-        block.setType(Material.WATER);
-        block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
+        setWater();
         block.getWorld().spawn(blockLocation, TropicalFish.class, tropicalFish -> {
             TropicalFishBucketMeta tropicalFishBucketMeta = (TropicalFishBucketMeta) itemInMainHand.getItemMeta();
             assert tropicalFishBucketMeta != null;
@@ -122,54 +115,60 @@ public class UseBucket {
                 tropicalFish.setPattern(randomPattern());
                 tropicalFish.setPatternColor(randomBodyColor());
             }
-
         });
-        setBucketIfSurvival();
     }
 
     /**
      * Uses bucket with axolotl
      */
     private static void setAxolotl(){
-        block.setType(Material.WATER);
-        block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
+        setWater();
         block.getWorld().spawn(blockLocation, Axolotl.class, axolotl -> {
             AxolotlBucketMeta axolotlBucketMeta = (AxolotlBucketMeta) itemInMainHand.getItemMeta();
             assert axolotlBucketMeta != null;
             axolotl.setVariant(axolotlBucketMeta.hasVariant() ? axolotlBucketMeta.getVariant() : randomVariant());
         });
-        setBucketIfSurvival();
     }
 
     /**
      * Uses bucket with Puffer fish / Salmon / Cod
      */
     private static void summonPrimitiveEntities(EntityType entityType){
-        block.setType(Material.WATER);
-        block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-        coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
+        setWater();
         block.getWorld().spawnEntity(block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
-        setBucketIfSurvival();
     }
 
     /**
      * Uses empty bucket
      */
     private static void useEmptyBucket() {
-        BlockData blockData = block.getBlockData();
-        if (!(blockData instanceof Levelled)) return;
-        Levelled levelled = (Levelled) blockData;
-        if (levelled.getLevel() != 0) return;
         if (block.getType() == Material.LAVA) {
             coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
             block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
             itemInMainHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.LAVA_BUCKET : itemInMainHand.getType());
+            block.setType(Material.AIR);
         } else {
             coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
             block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
+            if(block.getBlockData() instanceof Waterlogged waterlogged){
+                waterlogged.setWaterlogged(false);
+                block.setBlockData(waterlogged);
+            } else {
+                block.setType(Material.AIR);
+            }
             itemInMainHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.WATER_BUCKET : itemInMainHand.getType());
         }
-        block.setType(Material.AIR);
+    }
+
+    private static void setWater(){
+        if(block.getBlockData() instanceof Waterlogged waterlogged){
+            waterlogged.setWaterlogged(true);
+            block.setBlockData(waterlogged);
+        } else {
+            block.setType(Material.WATER);
+        }
+        block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
+        coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
+        setBucketIfSurvival();
     }
 }

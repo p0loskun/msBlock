@@ -10,16 +10,17 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import javax.annotation.Nonnull;
 
 public class PistonListener implements Listener {
-
     @EventHandler
     public void onPistonExtends(@Nonnull BlockPistonExtendEvent event){
-        for (Block blocks : event.getBlocks())
+        for (Block blocks : event.getBlocks()) {
             event.setCancelled(blocks.getType().equals(Material.NOTE_BLOCK));
+        }
     }
 
     @EventHandler
     public void onPistonEvent(@Nonnull BlockPistonRetractEvent event){
-        for (Block blocks : event.getBlocks())
+        for (Block blocks : event.getBlocks()) {
             event.setCancelled(blocks.getType().equals(Material.NOTE_BLOCK));
+        }
     }
 }

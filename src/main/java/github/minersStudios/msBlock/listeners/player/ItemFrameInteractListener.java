@@ -20,10 +20,9 @@ public class ItemFrameInteractListener implements Listener {
 
     @EventHandler
     public void onPutInItemFrameCustomBlock(@Nonnull PlayerInteractEntityEvent event){
-        if (!(event.getRightClicked() instanceof ItemFrame)) return;
+        if (!(event.getRightClicked() instanceof ItemFrame itemFrame)) return;
         Player player = event.getPlayer();
         if(player.getInventory().getItemInMainHand().getType().isAir()) return;
-        ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
         if(!itemFrame.getItem().getType().isAir()) return;
         ItemStack originalItemInMainHand = player.getInventory().getItemInMainHand(),
                 itemInMainHand = originalItemInMainHand.clone();
@@ -42,10 +41,9 @@ public class ItemFrameInteractListener implements Listener {
 
     @EventHandler
     public void onDamageByEntity(@Nonnull EntityDamageByEntityEvent event) {
-        if(!(event.getEntity() instanceof ItemFrame) || !(event.getDamager() instanceof Player && ((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE || event.getDamager() instanceof Projectile)) return;
+        if(!(event.getEntity() instanceof ItemFrame itemFrame) || !(event.getDamager() instanceof Player && ((Player) event.getDamager()).getGameMode() != GameMode.CREATIVE || event.getDamager() instanceof Projectile)) return;
         if(event.getDamager() instanceof Projectile && !(((Projectile) event.getDamager()).getShooter() instanceof Player)) return;
         if(event.getDamager() instanceof Projectile) event.getDamager().remove();
-        ItemFrame itemFrame = (ItemFrame) event.getEntity();
         if(itemFrame.getItem().getType().isAir()) return;
         ItemStack itemInFrame = itemFrame.getItem().clone();
         ItemMeta itemMeta = itemInFrame.getItemMeta();

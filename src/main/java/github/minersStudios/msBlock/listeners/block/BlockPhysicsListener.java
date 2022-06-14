@@ -11,10 +11,10 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import javax.annotation.Nonnull;
 
 public class BlockPhysicsListener implements Listener {
-
     @EventHandler
     private void onBlockPhysics(@Nonnull BlockPhysicsEvent event) {
-        Block block = event.getBlock(), topBlock = block.getRelative(BlockFace.UP);
+        Block block = event.getBlock(),
+                topBlock = block.getRelative(BlockFace.UP);
         if (topBlock.getType() == Material.NOTE_BLOCK || block.getType() == Material.NOTE_BLOCK) {
             BlockUtils.updateNoteBlock(block.getLocation());
             event.setCancelled(true);

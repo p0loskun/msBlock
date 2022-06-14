@@ -17,7 +17,6 @@ public enum ToolType {
     HOE("_HOE"),
     SHEARS("SHEARS");
 
-    /** Tool type name */
     private final String itemTypeName;
 
     ToolType(String itemTypeName) {

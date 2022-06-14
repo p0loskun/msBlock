@@ -2,11 +2,14 @@ package github.minersStudios.msBlock;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import github.minersStudios.msBlock.crafts.RegCrafts;
 import github.minersStudios.msBlock.listeners.RegEvents;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.annotation.Nullable;
 
 public final class Main extends JavaPlugin {
 
@@ -14,6 +17,7 @@ public final class Main extends JavaPlugin {
     public static CoreProtectAPI coreProtectAPI = new CoreProtectAPI();
     public static ProtocolManager protocolManager;
 
+    @Nullable
     private CoreProtectAPI getCoreProtect() {
         final Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
 
@@ -29,5 +33,6 @@ public final class Main extends JavaPlugin {
         coreProtectAPI = getCoreProtect();
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
         new RegEvents();
+        new RegCrafts();
     }
 }
