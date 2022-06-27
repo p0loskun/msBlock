@@ -1,13 +1,10 @@
-package github.minersStudios.msBlock.enumerators;
+package github.minersStudios.msBlock.enums;
 
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
-/**
- * Tool tier with speed float used for custom block dig speed
- */
 public enum ToolTier {
     HAND("HAND", 0.1f),
     WOOD("WOODEN_", 0.3f),
@@ -26,14 +23,14 @@ public enum ToolTier {
     }
 
     /**
-     * @param itemStack item in hand
+     * @param itemInMainHand item in main hand
      *
-     * @return ToolTier from item in hand
+     * @return ToolTier from item in main hand
      */
     @Nonnull
-    public static ToolTier getToolTier(@Nonnull ItemStack itemStack) {
+    public static ToolTier getToolTier(@Nonnull ItemStack itemInMainHand) {
         for(ToolTier toolTier : ToolTier.values()) {
-            if(itemStack.getType().name().contains(toolTier.itemTierName)) return toolTier;
+            if(itemInMainHand.getType().name().contains(toolTier.itemTierName)) return toolTier;
         }
         return HAND;
     }

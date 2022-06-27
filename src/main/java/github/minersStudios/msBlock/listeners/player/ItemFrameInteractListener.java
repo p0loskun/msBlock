@@ -1,6 +1,6 @@
 package github.minersStudios.msBlock.listeners.player;
 
-import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;

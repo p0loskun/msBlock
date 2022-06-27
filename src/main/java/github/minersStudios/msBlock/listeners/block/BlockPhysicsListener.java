@@ -16,7 +16,7 @@ public class BlockPhysicsListener implements Listener {
         Block block = event.getBlock(),
                 topBlock = block.getRelative(BlockFace.UP);
         if (topBlock.getType() == Material.NOTE_BLOCK || block.getType() == Material.NOTE_BLOCK) {
-            BlockUtils.updateNoteBlock(block.getLocation());
+            BlockUtils.updateNoteBlock(block);
             event.setCancelled(true);
         }
     }

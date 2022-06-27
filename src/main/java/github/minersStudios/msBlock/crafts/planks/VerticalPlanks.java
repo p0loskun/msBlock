@@ -1,6 +1,6 @@
 package github.minersStudios.msBlock.crafts.planks;
 
-import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;

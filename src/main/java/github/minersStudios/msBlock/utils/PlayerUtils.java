@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class PlayerUtils {
-
     /**
      * Converts bukkit EquipmentSlot to NMS EnumHand
      *
@@ -83,19 +82,5 @@ public class PlayerUtils {
     public static MovingObjectPositionBlock getMovingObjectPositionBlock(@Nonnull Player player, @Nonnull Location blockLoc) {
         Location playerEyeLoc = player.getEyeLocation();
         return new MovingObjectPositionBlock(new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ()), convertPlayer(player).ct(), new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ()), false);
-    }
-
-    /**
-     * Swings player hand
-     *
-     * @param player player who will swing hand
-     * @param equipmentSlot equipment slot which used for checking what hand will swing
-     */
-    public static void playSwingAnimation(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
-        if (equipmentSlot == EquipmentSlot.HAND) {
-            player.swingMainHand();
-        } else {
-            player.swingOffHand();
-        }
     }
 }

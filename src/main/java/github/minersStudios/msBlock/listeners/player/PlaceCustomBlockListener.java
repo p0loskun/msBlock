@@ -1,9 +1,7 @@
 package github.minersStudios.msBlock.listeners.player;
 
-import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
-import github.minersStudios.msBlock.objects.CustomBlock;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
-import github.minersStudios.msBlock.utils.PlayerUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,7 +23,7 @@ public class PlaceCustomBlockListener implements Listener {
 
     @EventHandler
     public void PlayerInteractEvent(@Nonnull PlayerInteractEvent event) {
-        assert event.getClickedBlock() != null;
+        if(event.getClickedBlock() == null) return;
         Player player = event.getPlayer();
         if (
                 event.getAction() != Action.RIGHT_CLICK_BLOCK
@@ -35,18 +33,18 @@ public class PlaceCustomBlockListener implements Listener {
                         || (event.getClickedBlock().getType().isInteractable() && event.getClickedBlock().getType() != Material.NOTE_BLOCK) && !player.isSneaking()
                         || !BlockUtils.REPLACE.contains(event.getClickedBlock().getRelative(event.getBlockFace()).getType())
         ) return;
-        Block replaceableBlock = BlockUtils.REPLACE.contains(event.getClickedBlock().getType()) ? event.getClickedBlock() : event.getClickedBlock().getRelative(event.getBlockFace());
+        Block replaceableBlock =
+                BlockUtils.REPLACE.contains(event.getClickedBlock().getType())
+                ? event.getClickedBlock()
+                : event.getClickedBlock().getRelative(event.getBlockFace());
         for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
             if (!(nearbyEntity instanceof Item) && !(nearbyEntity instanceof ItemFrame)) return;
         }
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
         if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-        CustomBlock customBlock = new CustomBlock(replaceableBlock, player);
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData());
         if(customBlockMaterial == null) return;
-        PlayerUtils.playSwingAnimation(player, event.getHand());
-        customBlock.setCustomBlock(customBlockMaterial);
-        BlockUtils.removeBlock(replaceableBlock.getLocation());
+        customBlockMaterial.setCustomBlock(replaceableBlock, player);
     }
 }

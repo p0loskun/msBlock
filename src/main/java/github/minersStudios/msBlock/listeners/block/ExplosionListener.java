@@ -1,6 +1,6 @@
 package github.minersStudios.msBlock.listeners.block;
 
-import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;

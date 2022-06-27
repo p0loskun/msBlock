@@ -1,25 +1,25 @@
-package github.minersStudios.msBlock.enumerators;
+package github.minersStudios.msBlock.enums;
 
+import github.minersStudios.msBlock.Main;
+import github.minersStudios.msBlock.utils.BlockUtils;
 import lombok.Getter;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
-/**
- * CustomBlockMaterial enum with blocks parameters
- */
 public enum CustomBlockMaterial {
     DEFAULT(Instrument.BIT, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
 
-    TEST(Instrument.XYLOPHONE, new Note(1), true, Sound.BLOCK_AMETHYST_BLOCK_PLACE, null, Sound.BLOCK_AMETHYST_BLOCK_HIT, 1.0f, ToolType.HOE, true, 10, "Test block", 999999),
+    TEST(Instrument.XYLOPHONE, new Note(1), true, Sound.BLOCK_AMETHYST_BLOCK_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_AMETHYST_BLOCK_HIT, 1.0f, ToolType.HOE, true, 10, "Test block", 999999),
 
     VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
     VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 1001),
@@ -59,9 +59,9 @@ public enum CustomBlockMaterial {
             @Nonnull Instrument instrument,
             @Nonnull Note note,
             boolean powered,
-            @Nullable Sound soundPlace,
-            @Nullable Sound soundBreak,
-            @Nullable Sound soundHit,
+            @Nonnull Sound soundPlace,
+            @Nonnull Sound soundBreak,
+            @Nonnull Sound soundHit,
             float digSpeed,
             ToolType toolType,
             boolean forceTool,
@@ -84,40 +84,35 @@ public enum CustomBlockMaterial {
     }
 
     /**
-     * Gets dig speed float
-     *
      * @param player player who breaks the custom block
-     * @param customBlockMaterial Custom block material enum
+     * @param customBlockMaterial CustomBlockMaterial of custom block
+     * @param itemInMainHand item in main hand
      *
      * @return dig speed float
      */
-    public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
-        ItemStack heldItem = player.getInventory().getItem(EquipmentSlot.HAND);
-        assert heldItem != null;
-        ToolTier tier = ToolTier.getToolTier(heldItem);
+    public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial, @Nonnull ItemStack itemInMainHand) {
         float base = 1.0f;
 
-        if (customBlockMaterial.getToolType() == ToolType.getToolType(heldItem)){
-            base = tier.getSpeed();
+        if (customBlockMaterial.getToolType() == ToolType.getToolType(itemInMainHand)) {
+            base = ToolTier.getToolTier(itemInMainHand).getSpeed();
 
-            if (heldItem.containsEnchantment(Enchantment.DIG_SPEED)) {
-                float level = heldItem.getEnchantmentLevel(Enchantment.DIG_SPEED);
-                base += level * 0.3f;
+            if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
+                base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
             }
         } else {
             base /= 5.0f;
         }
 
-        if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
-            float level = Objects.requireNonNull(player.getPotionEffect(PotionEffectType.FAST_DIGGING)).getAmplifier() + 1;
-            base *= level * 0.32f;
+        PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+        if (potionEffect != null) {
+            base *= (potionEffect.getAmplifier() + 1) * 0.32f;
         }
 
         return base / customBlockMaterial.digSpeed;
     }
 
     /**
-     * @return ItemStack of item
+     * @return ItemStack of custom block item
      */
     @Nonnull
     public ItemStack getItemStack(){
@@ -131,13 +126,15 @@ public enum CustomBlockMaterial {
     }
 
     /**
-     * @return Custom block material
+     * @param note noteblock note
+     * @param instrument noteblock instrument
+     * @param powered noteblock powered
+     * @return CustomBlockMaterial by noteblock
      */
     @Nullable
     @SuppressWarnings("deprecation")
     public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
-        for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
-        {
+        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
             if(
                     customBlockMaterial.isPowered() == powered &&
                     customBlockMaterial.getInstrument() == instrument &&
@@ -150,13 +147,36 @@ public enum CustomBlockMaterial {
     }
 
     /**
-     * @return Custom block material
+     * @param itemCustomModelData CustomModelData of item in main hand
+     *
+     * @return Custom block material by item in main hand
      */
     @Nullable
     public static CustomBlockMaterial getCustomBlockMaterial(int itemCustomModelData) {
-        for(CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
+        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
             if(customBlockMaterial.itemCustomModelData == itemCustomModelData) return customBlockMaterial;
         }
         return null;
+    }
+
+    public void setCustomBlock(@Nonnull Block block, @Nonnull Player player) {
+        Bukkit.getScheduler().runTask(Main.plugin, () -> {
+            block.setType(Material.NOTE_BLOCK);
+
+            NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+            noteBlock.setInstrument(instrument);
+            noteBlock.setNote(note);
+            noteBlock.setPowered(powered);
+            block.setBlockData(noteBlock);
+
+            block.getWorld().playSound(block.getLocation(), soundPlace, 1.0f, 1.0f);
+            Main.coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
+            BlockUtils.removeBlock(block.getLocation());
+            player.swingMainHand();
+
+            if (player.getGameMode() != GameMode.SURVIVAL) return;
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+        });
     }
 }

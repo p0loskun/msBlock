@@ -1,13 +1,9 @@
-package github.minersStudios.msBlock.enumerators;
+package github.minersStudios.msBlock.enums;
 
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
-/**
- * Tool type used for custom block dig speed and force tool param
- */
-@Nonnull
 public enum ToolType {
     HAND("HAND"),
     SWORD("_SWORD"),
@@ -24,13 +20,14 @@ public enum ToolType {
     }
 
     /**
-     * @param itemStack item in hand
+     * @param itemInMainHand item in main hand
      *
-     * @return ToolType from item in hand
+     * @return ToolType from item in main hand
      */
-    public static ToolType getToolType(@Nonnull ItemStack itemStack) {
+    @Nonnull
+    public static ToolType getToolType(@Nonnull ItemStack itemInMainHand) {
         for(ToolType toolType : ToolType.values()) {
-            if(itemStack.getType().name().contains(toolType.itemTypeName)) return toolType;
+            if(itemInMainHand.getType().name().contains(toolType.itemTypeName)) return toolType;
         }
         return HAND;
     }

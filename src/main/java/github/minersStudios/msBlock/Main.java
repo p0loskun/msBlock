@@ -12,19 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import javax.annotation.Nullable;
 
 public final class Main extends JavaPlugin {
-
     public static Main plugin;
     public static CoreProtectAPI coreProtectAPI = new CoreProtectAPI();
     public static ProtocolManager protocolManager;
-
-    @Nullable
-    private CoreProtectAPI getCoreProtect() {
-        final Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
-
-        if (coreProtect == null) return null;
-        CoreProtectAPI CoreProtect = ((CoreProtect)coreProtect).getAPI();
-        return (!CoreProtect.isEnabled() || CoreProtect.APIVersion() < 9 ? null : CoreProtect);
-    }
 
     @Override
     public void onEnable() {
@@ -34,5 +24,14 @@ public final class Main extends JavaPlugin {
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
         new RegEvents();
         new RegCrafts();
+    }
+
+    @Nullable
+    private CoreProtectAPI getCoreProtect() {
+        final Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
+
+        if (coreProtect == null) return null;
+        CoreProtectAPI coreProtectAPI = ((CoreProtect)coreProtect).getAPI();
+        return (!coreProtectAPI.isEnabled() || coreProtectAPI.APIVersion() < 9 ? null : coreProtectAPI);
     }
 }

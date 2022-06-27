@@ -1,4 +1,4 @@
-package github.minersStudios.msBlock.listeners.block;
+package github.minersStudios.msBlock.listeners.player;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -7,11 +7,11 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import github.minersStudios.msBlock.Main;
-import github.minersStudios.msBlock.enumerators.CustomBlockMaterial;
-import github.minersStudios.msBlock.enumerators.ToolType;
-import github.minersStudios.msBlock.objects.CustomBlock;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
+import github.minersStudios.msBlock.enums.ToolType;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,38 +19,38 @@ import org.bukkit.inventory.meta.Damageable;
 
 import javax.annotation.Nonnull;
 
-import static github.minersStudios.msBlock.Main.coreProtectAPI;
 import static github.minersStudios.msBlock.Main.protocolManager;
 import static github.minersStudios.msBlock.utils.BlockUtils.blocks;
 
-public class PacketBreakListener extends PacketAdapter {
+public class PacketPlayerBlockDigListener extends PacketAdapter {
 
-    public PacketBreakListener() {
+    public PacketPlayerBlockDigListener() {
         super(Main.plugin, PacketType.Play.Client.BLOCK_DIG);
     }
 
     @Override
-    public void onPacketReceiving(@Nonnull final PacketEvent event) {
+    public void onPacketReceiving(@Nonnull PacketEvent event) {
         Player player = event.getPlayer();
+        PacketContainer packet = event.getPacket();
         if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
         World world = player.getWorld();
-        BlockPosition blockPosition = event.getPacket().getBlockPositionModifier().read(0);
+        EnumWrappers.PlayerDigType digType = packet.getPlayerDigTypes().read(0);
+        BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
         Block block = blockPosition.toLocation(world).getBlock();
-        EnumWrappers.PlayerDigType digType = event.getPacket().getPlayerDigTypes().read(0);
 
         if (
-                digType.equals(EnumWrappers.PlayerDigType.START_DESTROY_BLOCK)
+                digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK
                 && block.getType() == Material.NOTE_BLOCK
-                && !blocks.containsKey(block)
+                && (!blocks.containsKey(block) && !blocks.containsValue(blocks.get(block)))
         ) {
-            CustomBlock customBlock = new CustomBlock(block, player);
-            CustomBlockMaterial customBlockMaterial = customBlock.getCustomBlockMaterial();
+            NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+            CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
             if (customBlockMaterial == null) return;
             Location blockLocation = block.getLocation();
             ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-            float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
+            float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial, itemInMainHand);
 
-            blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.plugin, new Runnable() {
+            blocks.put(block, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                 float ticks, progress = 0.0f;
                 int currentStage = 0;
 
@@ -87,7 +87,7 @@ public class PacketBreakListener extends PacketAdapter {
 
                         world.playSound(blockLocation, customBlockMaterial.getSoundBreak(), SoundCategory.BLOCKS, 1.0f, 0.8f);
                         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
-                        coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.NOTE_BLOCK, block.getBlockData());
+                        Main.coreProtectAPI.logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, block.getBlockData());
                         block.setType(Material.AIR);
 
                         if (
@@ -105,13 +105,13 @@ public class PacketBreakListener extends PacketAdapter {
 
                         if (
                                 ToolType.getToolType(itemInMainHand) != ToolType.HAND
-                                && itemInMainHand.getItemMeta() instanceof Damageable handItemItemDamageable
+                                && itemInMainHand.getItemMeta() instanceof Damageable handItemDamageable
                         ) {
-                            handItemItemDamageable.setDamage(handItemItemDamageable.getDamage() + 1);
-                            itemInMainHand.setItemMeta(handItemItemDamageable);
-                            if (handItemItemDamageable.getDamage() > itemInMainHand.getType().getMaxDurability()) {
+                            handItemDamageable.setDamage(handItemDamageable.getDamage() + 1);
+                            itemInMainHand.setItemMeta(handItemDamageable);
+                            if (handItemDamageable.getDamage() > itemInMainHand.getType().getMaxDurability()) {
                                 itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+                                world.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
                             }
                         }
                     }
@@ -119,16 +119,15 @@ public class PacketBreakListener extends PacketAdapter {
             }, 0L, 1L));
         }
         if (
-                (digType.equals(EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK)
-                        || digType.equals(EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK))
+                (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK
+                        || digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK)
                 && blocks.containsKey(block)
         ) {
             PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
             packetContainer.getIntegers().write(0, 0).write(1, -1);
             packetContainer.getBlockPositionModifier().write(0, blockPosition);
             protocolManager.broadcastServerPacket(packetContainer);
-            if(blocks.get(block) == null) return;
-            Bukkit.getScheduler().cancelTask(blocks.remove(block));
+            if(blocks.get(block) != null) Bukkit.getScheduler().cancelTask(blocks.remove(block));
         }
     }
 }

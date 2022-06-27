@@ -1,5 +1,6 @@
 package github.minersStudios.msBlock.listeners.player;
 
+import github.minersStudios.msBlock.Main;
 import github.minersStudios.msBlock.utils.UseBucket;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
@@ -24,11 +25,9 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
-import static github.minersStudios.msBlock.Main.coreProtectAPI;
 import static github.minersStudios.msBlock.utils.PlayerUtils.*;
 
 public class PlayerInteractListener implements Listener {
-
     private static Block blockAtFace;
     private static Location interactionPoint;
     private static ItemActionContext itemActionContext;
@@ -41,9 +40,9 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
         Block clickedBlock = event.getClickedBlock();
-        player = event.getPlayer();
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK || clickedBlock.getType() != Material.NOTE_BLOCK) return;
         event.setCancelled(true);
+        player = event.getPlayer();
         itemInMainHand = player.getInventory().getItemInMainHand();
         blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         if (
@@ -116,7 +115,7 @@ public class PlayerInteractListener implements Listener {
         nmsItem.useOn(itemActionContext, enumHand);
         if(!itemInMainHand.getType().isBlock()) return;
         BlockData blockData = blockAtFace.getBlockData();
-        coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockData);
+        Main.coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockData);
         blockAtFace.getWorld().playSound(
                 blockAtFace.getLocation(),
                 blockData.getSoundGroup().getPlaceSound(),
