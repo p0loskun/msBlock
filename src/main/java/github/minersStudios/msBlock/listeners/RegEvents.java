@@ -17,7 +17,6 @@ public final class RegEvents {
         pluginManager.registerEvents(new BlockPlaceListener(), plugin);
         pluginManager.registerEvents(new ExplosionListener(), plugin);
         pluginManager.registerEvents(new NotePlayListener(), plugin);
-        pluginManager.registerEvents(new PistonListener(), plugin);
 
         pluginManager.registerEvents(new PlayerInteractListener(), plugin);
         pluginManager.registerEvents(new PlaceCustomBlockListener(), plugin);
