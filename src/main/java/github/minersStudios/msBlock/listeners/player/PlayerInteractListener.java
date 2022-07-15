@@ -1,6 +1,8 @@
 package github.minersStudios.msBlock.listeners.player;
 
 import github.minersStudios.msBlock.Main;
+import github.minersStudios.msBlock.enums.CustomBlockMaterial;
+import github.minersStudios.msBlock.utils.BlockUtils;
 import github.minersStudios.msBlock.utils.UseBucket;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
@@ -15,13 +17,16 @@ import org.bukkit.block.data.type.Stairs;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 
@@ -40,25 +45,46 @@ public class PlayerInteractListener implements Listener {
     public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
         Block clickedBlock = event.getClickedBlock();
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK || clickedBlock.getType() != Material.NOTE_BLOCK) return;
-        event.setCancelled(true);
         player = event.getPlayer();
         itemInMainHand = player.getInventory().getItemInMainHand();
-        blockAtFace = clickedBlock.getRelative(event.getBlockFace());
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && clickedBlock.getType() == Material.NOTE_BLOCK) {
+            event.setCancelled(true);
+            blockAtFace = clickedBlock.getRelative(event.getBlockFace());
+            if (
+                    !itemInMainHand.getType().isAir()
+                            && itemInMainHand.getType() != Material.PAPER
+                            && itemInMainHand.getType() != Material.LEATHER_HORSE_ARMOR
+                            && player.getGameMode() != GameMode.ADVENTURE
+            ) {
+                for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+                    if (!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
+                nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
+                enumHand = EnumHand.a;
+                interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
+                itemActionContext = new ItemActionContext(convertPlayer(player), enumHand, getMovingObjectPositionBlock(player, blockAtFace.getLocation()));
+                if (interactionPoint != null)
+                    useItemInHand(event);
+            }
+        }
         if (
-                itemInMainHand.getType().isAir()
-                        || itemInMainHand.getType() == Material.PAPER
-                        || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
-                        || player.getGameMode() == GameMode.ADVENTURE
-        ) return;
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
-            if (!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
-        nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
-        enumHand = EnumHand.a;
-        interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
-        itemActionContext = new ItemActionContext(convertPlayer(player), enumHand, getMovingObjectPositionBlock(player, blockAtFace.getLocation()));
-        if (interactionPoint != null)
-            useItemInHand(event);
+                event.getAction() == Action.RIGHT_CLICK_BLOCK
+                        && itemInMainHand.getType() == Material.PAPER
+                        && event.getHand() == EquipmentSlot.HAND
+                        && player.getGameMode() != GameMode.ADVENTURE
+                        && BlockUtils.REPLACE.contains(event.getClickedBlock().getRelative(event.getBlockFace()).getType())
+        ) {
+            if ((event.getClickedBlock().getType().isInteractable() && event.getClickedBlock().getType() != Material.NOTE_BLOCK) && !player.isSneaking()) return;
+            Block replaceableBlock = BlockUtils.REPLACE.contains(event.getClickedBlock().getType())
+                    ? event.getClickedBlock()
+                    : event.getClickedBlock().getRelative(event.getBlockFace());
+            for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
+                if (!(nearbyEntity instanceof Item) && !(nearbyEntity instanceof ItemFrame)) return;
+            ItemMeta itemMeta = itemInMainHand.getItemMeta();
+            if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
+            CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData());
+            if (customBlockMaterial != null)
+                customBlockMaterial.setCustomBlock(replaceableBlock, player);
+        }
     }
 
     private static void useItemInHand(@Nonnull PlayerInteractEvent event) {
@@ -93,8 +119,14 @@ public class PlayerInteractListener implements Listener {
                     );
                     if (player.getGameMode() == GameMode.SURVIVAL)
                         itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+                } else if (event.getBlockFace() == BlockFace.UP) {
+                    slab.setType(Slab.Type.BOTTOM);
+                } else if (event.getBlockFace() == BlockFace.DOWN) {
+                    slab.setType(Slab.Type.TOP);
                 } else if (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d && blockAtFace.getType() == itemMaterial) {
                     slab.setType(Slab.Type.BOTTOM);
+                } else if (interactionPoint.getY() > 0.5d && interactionPoint.getY() <= 1.0d && blockAtFace.getType() == itemMaterial) {
+                    slab.setType(Slab.Type.TOP);
                 }
                 blockAtFace.setBlockData(slab);
             }

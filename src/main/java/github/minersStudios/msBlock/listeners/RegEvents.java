@@ -20,7 +20,6 @@ public final class RegEvents {
         pluginManager.registerEvents(new NotePlayListener(), plugin);
 
         pluginManager.registerEvents(new PlayerInteractListener(), plugin);
-        pluginManager.registerEvents(new PlaceCustomBlockListener(), plugin);
         pluginManager.registerEvents(new PlayerMoveListener(), plugin);
         pluginManager.registerEvents(new InventoryCreativeListener(), plugin);
         pluginManager.registerEvents(new PlayerQuitListener(), plugin);

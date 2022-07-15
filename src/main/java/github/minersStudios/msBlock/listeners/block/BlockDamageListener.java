@@ -1,9 +1,7 @@
 package github.minersStudios.msBlock.listeners.block;
 
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
-import github.minersStudios.msBlock.utils.BlockUtils;
 import org.bukkit.Material;
-import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.EventHandler;
@@ -19,10 +17,6 @@ public class BlockDamageListener implements Listener {
     @EventHandler
     public void onBlockDamage(@Nonnull BlockDamageEvent event) {
         Block block = event.getBlock();
-        if (BlockUtils.isWoodenSound(block.getType())) {
-            SoundGroup soundGroup = block.getBlockData().getSoundGroup();
-            block.getWorld().playSound(block.getLocation(), "custom." + soundGroup.getHitSound().getKey().getKey(), soundGroup.getVolume(), soundGroup.getPitch());
-        }
         if (block.getType() == Material.NOTE_BLOCK) {
             NoteBlock noteBlock = (NoteBlock) block.getBlockData();
             CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
