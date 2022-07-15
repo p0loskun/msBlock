@@ -22,14 +22,13 @@ public final class Main extends JavaPlugin {
         protocolManager = ProtocolLibrary.getProtocolManager();
         coreProtectAPI = getCoreProtect();
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
-        new RegEvents();
-        new RegCrafts();
+        RegEvents.init();
+        RegCrafts.init();
     }
 
     @Nullable
     private CoreProtectAPI getCoreProtect() {
         final Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
-
         if (coreProtect == null) return null;
         CoreProtectAPI coreProtectAPI = ((CoreProtect)coreProtect).getAPI();
         return (!coreProtectAPI.isEnabled() || coreProtectAPI.APIVersion() < 9 ? null : coreProtectAPI);

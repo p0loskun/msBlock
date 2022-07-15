@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import javax.annotation.Nonnull;
 
 public class BlockPhysicsListener implements Listener {
+
     @EventHandler
     private void onBlockPhysics(@Nonnull BlockPhysicsEvent event) {
         Block block = event.getBlock(),

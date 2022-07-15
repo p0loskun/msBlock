@@ -26,7 +26,7 @@ public class UseBucket {
      * Uses a bucket vanillish
      *
      * @param player who uses the bucket
-     * @param block block at face of interacted block
+     * @param block  block at face of interacted block
      */
     public UseBucket(@Nonnull Player player, @Nonnull Block block) {
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
@@ -57,12 +57,12 @@ public class UseBucket {
                 useEmptyBucket();
                 break;
             default:
-                if(itemMaterial == Material.LAVA_BUCKET && !block.getType().isSolid()){
+                if (itemMaterial == Material.LAVA_BUCKET && !block.getType().isSolid()) {
                     block.setType(Material.LAVA);
                     block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
                     coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
                     setBucketIfSurvival();
-                } else if(itemMaterial == Material.WATER_BUCKET){
+                } else if (itemMaterial == Material.WATER_BUCKET) {
                     setWater();
                 }
         }
@@ -100,12 +100,12 @@ public class UseBucket {
     /**
      * Uses bucket with tropical fish
      */
-    private static void setTropicalFish(){
+    private static void setTropicalFish() {
         setWater();
         block.getWorld().spawn(blockLocation, TropicalFish.class, tropicalFish -> {
             TropicalFishBucketMeta tropicalFishBucketMeta = (TropicalFishBucketMeta) itemInMainHand.getItemMeta();
             assert tropicalFishBucketMeta != null;
-            if(tropicalFishBucketMeta.hasVariant()){
+            if (tropicalFishBucketMeta.hasVariant()) {
                 tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
                 tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
                 tropicalFish.setPatternColor(tropicalFishBucketMeta.getPatternColor());
@@ -120,7 +120,7 @@ public class UseBucket {
     /**
      * Uses bucket with axolotl
      */
-    private static void setAxolotl(){
+    private static void setAxolotl() {
         setWater();
         block.getWorld().spawn(blockLocation, Axolotl.class, axolotl -> {
             AxolotlBucketMeta axolotlBucketMeta = (AxolotlBucketMeta) itemInMainHand.getItemMeta();
@@ -132,7 +132,7 @@ public class UseBucket {
     /**
      * Uses bucket with Puffer fish / Salmon / Cod
      */
-    private static void summonPrimitiveEntities(EntityType entityType){
+    private static void summonPrimitiveEntities(EntityType entityType) {
         setWater();
         block.getWorld().spawnEntity(block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
     }
@@ -149,7 +149,7 @@ public class UseBucket {
         } else {
             coreProtectAPI.logRemoval(player.getName(), block.getLocation(), Material.WATER, block.getBlockData());
             block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
-            if(block.getBlockData() instanceof Waterlogged waterlogged){
+            if (block.getBlockData() instanceof Waterlogged waterlogged) {
                 waterlogged.setWaterlogged(false);
                 block.setBlockData(waterlogged);
             } else {
@@ -159,8 +159,8 @@ public class UseBucket {
         }
     }
 
-    private static void setWater(){
-        if(block.getBlockData() instanceof Waterlogged waterlogged){
+    private static void setWater() {
+        if (block.getBlockData() instanceof Waterlogged waterlogged) {
             waterlogged.setWaterlogged(true);
             block.setBlockData(waterlogged);
         } else {

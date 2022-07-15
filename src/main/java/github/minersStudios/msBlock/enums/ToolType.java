@@ -21,14 +21,13 @@ public enum ToolType {
 
     /**
      * @param itemInMainHand item in main hand
-     *
      * @return ToolType from item in main hand
      */
     @Nonnull
     public static ToolType getToolType(@Nonnull ItemStack itemInMainHand) {
-        for(ToolType toolType : ToolType.values()) {
-            if(itemInMainHand.getType().name().contains(toolType.itemTypeName)) return toolType;
-        }
+        for (ToolType toolType : ToolType.values())
+            if (itemInMainHand.getType().name().contains(toolType.itemTypeName))
+                return toolType;
         return HAND;
     }
 }

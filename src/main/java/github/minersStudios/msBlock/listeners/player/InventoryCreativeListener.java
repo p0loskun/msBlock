@@ -15,14 +15,14 @@ import javax.annotation.Nonnull;
 public class InventoryCreativeListener implements Listener {
 
     @EventHandler
-    public void onInventoryCreative(@Nonnull InventoryCreativeEvent event){
-        if(event.getClick() != ClickType.CREATIVE) return;
+    public void onInventoryCreative(@Nonnull InventoryCreativeEvent event) {
+        if (event.getClick() != ClickType.CREATIVE) return;
         Player player = (Player) event.getWhoClicked();
         Block clickedBlock = player.getTargetBlockExact(5);
-        if(event.getCursor().getType() != Material.NOTE_BLOCK || clickedBlock == null) return;
+        if (event.getCursor().getType() != Material.NOTE_BLOCK || clickedBlock == null || clickedBlock.getType() != Material.NOTE_BLOCK) return;
         NoteBlock noteBlock = (NoteBlock) clickedBlock.getBlockData();
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-        if(customBlockMaterial != null && customBlockMaterial != CustomBlockMaterial.DEFAULT){
+        if (customBlockMaterial != null && customBlockMaterial != CustomBlockMaterial.DEFAULT) {
             player.getInventory().setItem(event.getSlot(), customBlockMaterial.getItemStack());
             event.setCancelled(true);
         }

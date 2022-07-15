@@ -36,7 +36,7 @@ public class PlayerInteractListener implements Listener {
     private static Player player;
     private static net.minecraft.world.item.ItemStack nmsItem;
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
         Block clickedBlock = event.getClickedBlock();
@@ -47,30 +47,27 @@ public class PlayerInteractListener implements Listener {
         blockAtFace = clickedBlock.getRelative(event.getBlockFace());
         if (
                 itemInMainHand.getType().isAir()
-                || itemInMainHand.getType() == Material.PAPER
-                || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
-                || player.getGameMode() == GameMode.ADVENTURE
+                        || itemInMainHand.getType() == Material.PAPER
+                        || itemInMainHand.getType() == Material.LEATHER_HORSE_ARMOR
+                        || player.getGameMode() == GameMode.ADVENTURE
         ) return;
-        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
+        for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if (!(nearbyEntity instanceof Item) && itemInMainHand.getType().isSolid()) return;
-        }
         nmsItem = CraftItemStack.asNMSCopy(itemInMainHand);
-        enumHand = convertEnumHand(getEquipmentSlot(player.getInventory(), itemInMainHand));
+        enumHand = EnumHand.a;
         interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
         itemActionContext = new ItemActionContext(convertPlayer(player), enumHand, getMovingObjectPositionBlock(player, blockAtFace.getLocation()));
-        if (interactionPoint != null) {
+        if (interactionPoint != null)
             useItemInHand(event);
-        }
     }
 
-    private static void useItemInHand(@Nonnull PlayerInteractEvent event){
+    private static void useItemInHand(@Nonnull PlayerInteractEvent event) {
         if (itemInMainHand.getType().toString().contains("BUCKET") && itemInMainHand.getType() != Material.POWDER_SNOW_BUCKET) {
             new UseBucket(player, blockAtFace);
         } else if (Tag.STAIRS.isTagged(itemInMainHand.getType()) && !blockAtFace.getType().isSolid()) {
             useOn();
             if (blockAtFace.getBlockData() instanceof Stairs stairs) {
-                stairs.setHalf(
-                        event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
+                stairs.setHalf(event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
                         : event.getBlockFace() == BlockFace.DOWN ? Bisected.Half.TOP
                         : (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
                         : Bisected.Half.TOP)
@@ -80,12 +77,12 @@ public class PlayerInteractListener implements Listener {
         } else if (Tag.SLABS.isTagged(itemInMainHand.getType())) {
             boolean placeDouble = true;
             Material itemMaterial = itemInMainHand.getType();
-            if(blockAtFace.getType() != itemMaterial){
+            if (blockAtFace.getType() != itemMaterial) {
                 useOn();
                 placeDouble = false;
             }
             if (blockAtFace.getBlockData() instanceof Slab slab) {
-                if(placeDouble && blockAtFace.getType() == itemMaterial){
+                if (placeDouble && blockAtFace.getType() == itemMaterial) {
                     slab.setType(Slab.Type.DOUBLE);
                     blockAtFace.getWorld().playSound(
                             blockAtFace.getLocation(),
@@ -94,26 +91,27 @@ public class PlayerInteractListener implements Listener {
                             slab.getSoundGroup().getVolume(),
                             slab.getSoundGroup().getPitch()
                     );
-                    if(player.getGameMode() == GameMode.SURVIVAL) itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-                } else if(interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d && blockAtFace.getType() == itemMaterial){
+                    if (player.getGameMode() == GameMode.SURVIVAL)
+                        itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+                } else if (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d && blockAtFace.getType() == itemMaterial) {
                     slab.setType(Slab.Type.BOTTOM);
                 }
                 blockAtFace.setBlockData(slab);
             }
         } else if (Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType()) && !blockAtFace.getType().isSolid()) {
             useOn();
-            if(blockAtFace.getBlockData() instanceof Directional directional){
+            if (blockAtFace.getBlockData() instanceof Directional directional) {
                 directional.setFacing(event.getBlockFace());
                 blockAtFace.setBlockData(directional);
             }
-        } else if(!blockAtFace.getType().isSolid() && blockAtFace.getType() != itemInMainHand.getType()){
+        } else if (!blockAtFace.getType().isSolid() && blockAtFace.getType() != itemInMainHand.getType()) {
             useOn();
         }
     }
 
-    private static void useOn(){
+    private static void useOn() {
         nmsItem.useOn(itemActionContext, enumHand);
-        if(!itemInMainHand.getType().isBlock()) return;
+        if (!itemInMainHand.getType().isBlock()) return;
         BlockData blockData = blockAtFace.getBlockData();
         Main.coreProtectAPI.logPlacement(player.getName(), blockAtFace.getLocation(), itemInMainHand.getType(), blockData);
         blockAtFace.getWorld().playSound(

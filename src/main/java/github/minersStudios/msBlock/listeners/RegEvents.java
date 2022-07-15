@@ -8,7 +8,8 @@ import static github.minersStudios.msBlock.Main.plugin;
 import static github.minersStudios.msBlock.Main.protocolManager;
 
 public final class RegEvents {
-    public RegEvents(){
+
+    public static void init() {
         PluginManager pluginManager = plugin.getServer().getPluginManager();
 
         pluginManager.registerEvents(new BlockBreakListener(), plugin);
@@ -23,6 +24,9 @@ public final class RegEvents {
         pluginManager.registerEvents(new PlayerMoveListener(), plugin);
         pluginManager.registerEvents(new InventoryCreativeListener(), plugin);
         pluginManager.registerEvents(new PlayerQuitListener(), plugin);
+        pluginManager.registerEvents(new PlayerGameModeChangeListener(), plugin);
+        pluginManager.registerEvents(new PlayerTeleportListener(), plugin);
+        pluginManager.registerEvents(new PlayerDeathListener(), plugin);
         protocolManager.addPacketListener(new PacketPlayerBlockDigListener());
     }
 }

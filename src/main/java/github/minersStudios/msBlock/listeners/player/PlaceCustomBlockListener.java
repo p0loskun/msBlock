@@ -23,7 +23,7 @@ public class PlaceCustomBlockListener implements Listener {
 
     @EventHandler
     public void PlayerInteractEvent(@Nonnull PlayerInteractEvent event) {
-        if(event.getClickedBlock() == null) return;
+        if (event.getClickedBlock() == null) return;
         Player player = event.getPlayer();
         if (
                 event.getAction() != Action.RIGHT_CLICK_BLOCK
@@ -33,18 +33,16 @@ public class PlaceCustomBlockListener implements Listener {
                         || (event.getClickedBlock().getType().isInteractable() && event.getClickedBlock().getType() != Material.NOTE_BLOCK) && !player.isSneaking()
                         || !BlockUtils.REPLACE.contains(event.getClickedBlock().getRelative(event.getBlockFace()).getType())
         ) return;
-        Block replaceableBlock =
-                BlockUtils.REPLACE.contains(event.getClickedBlock().getType())
+        Block replaceableBlock = BlockUtils.REPLACE.contains(event.getClickedBlock().getType())
                 ? event.getClickedBlock()
                 : event.getClickedBlock().getRelative(event.getBlockFace());
-        for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d)) {
+        for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
             if (!(nearbyEntity instanceof Item) && !(nearbyEntity instanceof ItemFrame)) return;
-        }
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         ItemMeta itemMeta = itemInMainHand.getItemMeta();
         if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData());
-        if(customBlockMaterial == null) return;
+        if (customBlockMaterial == null) return;
         customBlockMaterial.setCustomBlock(replaceableBlock, player);
     }
 }

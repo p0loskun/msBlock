@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 public class VerticalPlanks {
 
-    public static void addRecipes(){
+    public static void addRecipes() {
         Bukkit.addRecipe(craftVerticalAcaciaPlanks());
         Bukkit.addRecipe(craftVerticalBirchPlanks());
         Bukkit.addRecipe(craftVerticalCrimsonPlanks());
@@ -23,7 +23,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalAcaciaPlanks(){
+    public static ShapedRecipe craftVerticalAcaciaPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_ACACIA_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_acacia_planks"), itemStack);
@@ -37,7 +37,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalBirchPlanks(){
+    public static ShapedRecipe craftVerticalBirchPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_BIRCH_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_birch_planks"), itemStack);
@@ -51,7 +51,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalCrimsonPlanks(){
+    public static ShapedRecipe craftVerticalCrimsonPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_CRIMSON_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_crimson_planks"), itemStack);
@@ -65,7 +65,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalDarkOakPlanks(){
+    public static ShapedRecipe craftVerticalDarkOakPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_DARK_OAK_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_dark_oak_planks"), itemStack);
@@ -79,7 +79,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalJunglePlanks(){
+    public static ShapedRecipe craftVerticalJunglePlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_JUNGLE_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_jungle_planks"), itemStack);
@@ -93,7 +93,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalOakPlanks(){
+    public static ShapedRecipe craftVerticalOakPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_OAK_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_oak_planks"), itemStack);
@@ -107,7 +107,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalSprucePlanks(){
+    public static ShapedRecipe craftVerticalSprucePlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_SPRUCE_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_spruce_planks"), itemStack);
@@ -121,7 +121,7 @@ public class VerticalPlanks {
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalWarpedPlanks(){
+    public static ShapedRecipe craftVerticalWarpedPlanks() {
         ItemStack itemStack = CustomBlockMaterial.VERTICAL_WARPED_PLANKS.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_warped_planks"), itemStack);

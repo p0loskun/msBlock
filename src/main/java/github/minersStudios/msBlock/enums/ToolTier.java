@@ -24,14 +24,13 @@ public enum ToolTier {
 
     /**
      * @param itemInMainHand item in main hand
-     *
      * @return ToolTier from item in main hand
      */
     @Nonnull
     public static ToolTier getToolTier(@Nonnull ItemStack itemInMainHand) {
-        for(ToolTier toolTier : ToolTier.values()) {
-            if(itemInMainHand.getType().name().contains(toolTier.itemTierName)) return toolTier;
-        }
+        for (ToolTier toolTier : ToolTier.values())
+            if (itemInMainHand.getType().name().contains(toolTier.itemTierName))
+                return toolTier;
         return HAND;
     }
 }
