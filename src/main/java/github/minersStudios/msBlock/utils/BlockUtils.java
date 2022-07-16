@@ -62,6 +62,16 @@ public class BlockUtils {
             Material.BEE_NEST,
             Material.BEEHIVE,
             Material.LECTERN,
+            Material.LEVER,
+            Material.REPEATER,
+            Material.COMPARATOR,
+            Material.MUSHROOM_STEM,
+            Material.RED_MUSHROOM_BLOCK,
+            Material.BROWN_MUSHROOM_BLOCK,
+            Material.COCOA,
+            Material.LIGHT_WEIGHTED_PRESSURE_PLATE,
+            Material.HEAVY_WEIGHTED_PRESSURE_PLATE,
+            Material.DAYLIGHT_DETECTOR,
             Material.OAK_PLANKS,
             Material.SPRUCE_PLANKS,
             Material.BIRCH_PLANKS,
@@ -179,7 +189,39 @@ public class BlockUtils {
             Material.DARK_OAK_TRAPDOOR,
             Material.MANGROVE_TRAPDOOR,
             Material.CRIMSON_TRAPDOOR,
-            Material.WARPED_TRAPDOOR
+            Material.WARPED_TRAPDOOR,
+            Material.WHITE_BED,
+            Material.ORANGE_BED,
+            Material.MAGENTA_BED,
+            Material.LIGHT_BLUE_BED,
+            Material.YELLOW_BED,
+            Material.LIME_BED,
+            Material.PINK_BED,
+            Material.GRAY_BED,
+            Material.LIGHT_GRAY_BED,
+            Material.CYAN_BED,
+            Material.PURPLE_BED,
+            Material.BLUE_BED,
+            Material.BROWN_BED,
+            Material.GREEN_BED,
+            Material.RED_BED,
+            Material.BLACK_BED,
+            Material.WHITE_BANNER,
+            Material.ORANGE_BANNER,
+            Material.MAGENTA_BANNER,
+            Material.LIGHT_BLUE_BANNER,
+            Material.YELLOW_BANNER,
+            Material.LIME_BANNER,
+            Material.PINK_BANNER,
+            Material.GRAY_BANNER,
+            Material.LIGHT_GRAY_BANNER,
+            Material.CYAN_BANNER,
+            Material.PURPLE_BANNER,
+            Material.BLUE_BANNER,
+            Material.BROWN_BANNER,
+            Material.GREEN_BANNER,
+            Material.RED_BANNER,
+            Material.BLACK_BANNER
     );
 
 
@@ -202,8 +244,8 @@ public class BlockUtils {
      * @param location location around which the blocks break
      */
     public static void removeBlock(@Nonnull Location location) {
-        Block topBlock = location.clone().add(0.0f, 1.0f, 0.0f).getBlock(),
-                bottomBlock = location.clone().add(0.0f, -1.0f, 0.0f).getBlock();
+        Block topBlock = location.clone().add(0.0d, 1.0d, 0.0d).getBlock(),
+                bottomBlock = location.clone().subtract(0.0d, 1.0d, 0.0d).getBlock();
         World world = topBlock.getWorld();
         if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
             SoundGroup tobBlockSoundGroup = topBlock.getBlockData().getSoundGroup();
@@ -231,36 +273,26 @@ public class BlockUtils {
     }
 
     /**
-     * @param location block location
+     * @param block block
      * @return Object[] (Block[0] Player[1])
      */
     @Nullable
-    public static Object[] getObjectByLocation(@Nonnull Location location) {
-        for (Object[] objects : blocks.keySet()) {
-            Location objectLocation = (Location) objects[0];
-            if (
-                    objectLocation.getX() == location.getX()
-                            && objectLocation.getY() == location.getY()
-                            && objectLocation.getZ() == location.getZ()
-            ) return objects;
-        }
+    public static Object[] getObjectByBlock(@Nonnull Block block) {
+        for (Object[] objects : blocks.keySet())
+            if (objects[0].equals(block))
+                return objects;
         return null;
     }
 
     /**
      * Cancels all block break tasks with block at certain location
      *
-     * @param location block location
+     * @param block block
      */
-    public static void cancelAllTasksWithThisBlock(@Nonnull Location location) {
-        for (Object[] objects : blocks.keySet()) {
-            Location objectLocation = (Location) objects[0];
-            if (
-                    objectLocation.getX() == location.getX()
-                            && objectLocation.getY() == location.getY()
-                            && objectLocation.getZ() == location.getZ()
-            ) Bukkit.getScheduler().cancelTask(blocks.remove(objects));
-        }
+    public static void cancelAllTasksWithThisBlock(@Nonnull Block block) {
+        for (Object[] objects : blocks.keySet())
+            if (objects[0].equals(block))
+                Bukkit.getScheduler().cancelTask(blocks.remove(objects));
     }
 
     /**

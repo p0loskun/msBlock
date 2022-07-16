@@ -1,7 +1,6 @@
 package github.minersStudios.msBlock.listeners.block;
 
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.EventHandler;
@@ -17,11 +16,10 @@ public class BlockDamageListener implements Listener {
     @EventHandler
     public void onBlockDamage(@Nonnull BlockDamageEvent event) {
         Block block = event.getBlock();
-        if (block.getType() == Material.NOTE_BLOCK) {
-            NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+        if (block.getBlockData() instanceof NoteBlock noteBlock) {
             CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
             if (customBlockMaterial != null)
-                block.getWorld().playSound(block.getLocation(), customBlockMaterial.getSoundHit(), 1.0f, 1.0f);
+                customBlockMaterial.playHitSound(block);
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
         }
     }

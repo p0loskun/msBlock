@@ -16,8 +16,7 @@ public class ExplosionListener implements Listener {
     @EventHandler
     public void onEntityExplode(@Nonnull EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
-            if (block.getType() == Material.NOTE_BLOCK) {
-                NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+            if (block.getBlockData() instanceof NoteBlock noteBlock) {
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 block.setType(Material.AIR);
                 if (customBlockMaterial != null)
@@ -29,8 +28,7 @@ public class ExplosionListener implements Listener {
     @EventHandler
     public void onBlockExplode(@Nonnull BlockExplodeEvent event) {
         for (Block block : event.blockList()) {
-            if (block.getType() == Material.NOTE_BLOCK) {
-                NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+            if (block.getBlockData() instanceof NoteBlock noteBlock) {
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 block.setType(Material.AIR);
                 if (customBlockMaterial != null)

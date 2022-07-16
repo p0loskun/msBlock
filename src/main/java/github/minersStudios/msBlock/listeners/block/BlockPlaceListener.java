@@ -18,7 +18,7 @@ public class BlockPlaceListener implements Listener {
         Block block = event.getBlockPlaced();
         if (BlockUtils.isWoodenSound(block.getType())) {
             SoundGroup soundGroup = block.getBlockData().getSoundGroup();
-            block.getWorld().playSound(block.getLocation(), "custom." + soundGroup.getPlaceSound().getKey().getKey(), soundGroup.getVolume(), soundGroup.getPitch());
+            block.getWorld().playSound(block.getLocation(), "custom.block.wood.place", soundGroup.getVolume(), soundGroup.getPitch());
         }
         if (block.getType() != Material.NOTE_BLOCK) return;
         event.setCancelled(true);

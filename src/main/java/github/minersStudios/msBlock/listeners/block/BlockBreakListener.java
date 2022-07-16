@@ -24,12 +24,11 @@ public class BlockBreakListener implements Listener {
         event.setCancelled(block.getType() == Material.NOTE_BLOCK && player.getGameMode() == GameMode.SURVIVAL);
         if (BlockUtils.isWoodenSound(block.getType())) {
             SoundGroup soundGroup = block.getBlockData().getSoundGroup();
-            block.getWorld().playSound(block.getLocation(), "custom." + soundGroup.getBreakSound().getKey().getKey(), soundGroup.getVolume(), soundGroup.getPitch());
-        } else if (block.getType() == Material.NOTE_BLOCK && player.getGameMode() == GameMode.CREATIVE) {
-            NoteBlock noteBlock = (NoteBlock) block.getBlockData();
+            block.getWorld().playSound(block.getLocation(), "custom.block.wood.break", soundGroup.getVolume(), soundGroup.getPitch());
+        } else if (block.getBlockData() instanceof NoteBlock noteBlock && player.getGameMode() == GameMode.CREATIVE) {
             CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
             if (customBlockMaterial != null)
-                block.getWorld().playSound(block.getLocation(), customBlockMaterial.getSoundBreak(), 1.0f, 0.9f);
+                customBlockMaterial.playBreakSound(block);
         }
     }
 }

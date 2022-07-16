@@ -7,8 +7,10 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -17,37 +19,36 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public enum CustomBlockMaterial {
-    DEFAULT(Instrument.BIT, new Note(0), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
+    DEFAULT(Instrument.BIT, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Нотный блок", 13),
 
-    VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 1000),
-    VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 1001),
-    VERTICAL_CRIMSON_PLANKS(Instrument.BANJO, new Note(2), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные багровые доски", 1002),
-    VERTICAL_DARK_OAK_PLANKS(Instrument.BANJO, new Note(3), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные доски из тёмной древесины", 1003),
-    VERTICAL_JUNGLE_PLANKS(Instrument.BANJO, new Note(4), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные тропические доски", 1004),
-    VERTICAL_OAK_PLANKS(Instrument.BANJO, new Note(5), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные дубовые доски", 1005),
-    VERTICAL_SPRUCE_PLANKS(Instrument.BANJO, new Note(6), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные еловые доски", 1006),
-    VERTICAL_WARPED_PLANKS(Instrument.BANJO, new Note(7), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Вертикальные искажённые доски", 1007),
+    VERTICAL_ACACIA_PLANKS(Instrument.BANJO, new Note(0), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные акациевые доски", 13000),
+    VERTICAL_BIRCH_PLANKS(Instrument.BANJO, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные берёзовые доски", 13001),
+    VERTICAL_CRIMSON_PLANKS(Instrument.BANJO, new Note(2), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные багровые доски", 13002),
+    VERTICAL_DARK_OAK_PLANKS(Instrument.BANJO, new Note(3), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные доски из тёмной древесины", 13003),
+    VERTICAL_JUNGLE_PLANKS(Instrument.BANJO, new Note(4), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные тропические доски", 13004),
+    VERTICAL_OAK_PLANKS(Instrument.BANJO, new Note(5), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные дубовые доски", 13005),
+    VERTICAL_SPRUCE_PLANKS(Instrument.BANJO, new Note(6), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные еловые доски", 13006),
+    VERTICAL_WARPED_PLANKS(Instrument.BANJO, new Note(7), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные искажённые доски", 13007),
+    VERTICAL_MANGROVE_PLANKS(Instrument.BANJO, new Note(8), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные мангровые доски", 13008),
 
-    CARVED_ACACIA_PLANKS(Instrument.BANJO, new Note(8), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные акациевые доски", 1008),
-    CARVED_BIRCH_PLANKS(Instrument.BANJO, new Note(9), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные берёзовые доски", 1009),
-    CARVED_CRIMSON_PLANKS(Instrument.BANJO, new Note(10), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные багровые доски", 1010),
-    CARVED_DARK_OAK_PLANKS(Instrument.BANJO, new Note(11), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные доски из тёмной древесины", 1011),
-    CARVED_JUNGLE_PLANKS(Instrument.BANJO, new Note(12), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные тропические доски", 1012),
-    CARVED_OAK_PLANKS(Instrument.BANJO, new Note(13), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные дубовые доски", 1013),
-    CARVED_SPRUCE_PLANKS(Instrument.BANJO, new Note(14), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные еловые доски", 1014),
-    CARVED_WARPED_PLANKS(Instrument.BANJO, new Note(15), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Резные искажённые доски", 1015),
-
-    CRATE_1(Instrument.BANJO, new Note(16), false, "custom.block.wood.place", "custom.block.wood.break", "custom.block.wood.hit", "custom.block.wood.step", "custom.block.wood.fall", 13.0f, ToolType.AXE, false, 0, "Ящик", 1016),
+    CARVED_ACACIA_PLANKS(Instrument.BANJO, new Note(9), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные акациевые доски", 13009),
+    CARVED_BIRCH_PLANKS(Instrument.BANJO, new Note(10), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные берёзовые доски", 13010),
+    CARVED_CRIMSON_PLANKS(Instrument.BANJO, new Note(11), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные багровые доски", 13011),
+    CARVED_DARK_OAK_PLANKS(Instrument.BANJO, new Note(12), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные доски из тёмной древесины", 13012),
+    CARVED_JUNGLE_PLANKS(Instrument.BANJO, new Note(13), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные тропические доски", 13013),
+    CARVED_OAK_PLANKS(Instrument.BANJO, new Note(14), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные дубовые доски", 13014),
+    CARVED_SPRUCE_PLANKS(Instrument.BANJO, new Note(15), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные еловые доски", 13015),
+    CARVED_WARPED_PLANKS(Instrument.BANJO, new Note(16), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Резные искажённые доски", 13016),
+    CARVED_MANGROVE_PLANKS(Instrument.BANJO, new Note(17), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 13.0f, ToolType.AXE, false, 0, "Вертикальные мангровые доски", 13017),
     ;
 
     @Getter private final Instrument instrument;
     @Getter private final Note note;
     @Getter private final boolean powered;
-    @Getter private final String soundPlace;
-    @Getter private final String soundBreak;
-    @Getter private final String soundHit;
-    @Getter private final String soundStep;
-    @Getter private final String soundFall;
+    @Getter private final Sound placeSound;
+    @Getter private final Sound breakSound;
+    @Getter private final Sound hitSound;
+    @Getter private final Sound stepSound;
     private final float digSpeed;
     @Getter private final ToolType toolType;
     @Getter private final boolean forceTool;
@@ -59,11 +60,10 @@ public enum CustomBlockMaterial {
             @Nonnull Instrument instrument,
             @Nonnull Note note,
             boolean powered,
-            @Nonnull String soundPlace,
-            @Nonnull String soundBreak,
-            @Nonnull String soundHit,
-            @Nonnull String soundStep,
-            @Nonnull String soundFall,
+            @Nullable Sound placeSound,
+            @Nullable Sound breakSound,
+            @Nullable Sound hitSound,
+            @Nullable Sound stepSound,
             float digSpeed,
             ToolType toolType,
             boolean forceTool,
@@ -77,11 +77,10 @@ public enum CustomBlockMaterial {
         this.itemName = itemName;
         this.itemCustomModelData = itemCustomModelData;
         this.expToDrop = expToDrop;
-        this.soundPlace = soundPlace;
-        this.soundBreak = soundBreak;
-        this.soundStep = soundStep;
-        this.soundFall = soundFall;
-        this.soundHit = soundHit;
+        this.placeSound = placeSound;
+        this.breakSound = breakSound;
+        this.stepSound = stepSound;
+        this.hitSound = hitSound;
         this.digSpeed = digSpeed;
         this.toolType = toolType;
         this.forceTool = forceTool;
@@ -90,26 +89,23 @@ public enum CustomBlockMaterial {
     /**
      * @param player              player who breaks the custom block
      * @param customBlockMaterial CustomBlockMaterial of custom block
-     * @param itemInMainHand      item in main hand
      * @return dig speed float
      */
-    public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial, @Nonnull ItemStack itemInMainHand) {
+    public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         float base = 1.0f;
 
         if (customBlockMaterial.getToolType() == ToolType.getToolType(itemInMainHand)) {
             base = ToolTier.getToolTier(itemInMainHand).getSpeed();
-
-            if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
+            if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED))
                 base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
-            }
         } else {
             base /= 5.0f;
         }
 
         PotionEffect potionEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
-        if (potionEffect != null) {
+        if (potionEffect != null)
             base *= (potionEffect.getAmplifier() + 1) * 0.32f;
-        }
 
         return base / customBlockMaterial.digSpeed;
     }
@@ -161,6 +157,12 @@ public enum CustomBlockMaterial {
         return null;
     }
 
+    /**
+     * Places a custom block
+     *
+     * @param block block on which the custom block will be placed
+     * @param player player who placed the block
+     */
     public void setCustomBlock(@Nonnull Block block, @Nonnull Player player) {
         Bukkit.getScheduler().runTask(Main.plugin, () -> {
             block.setType(Material.NOTE_BLOCK);
@@ -171,7 +173,7 @@ public enum CustomBlockMaterial {
             noteBlock.setPowered(powered);
             block.setBlockData(noteBlock);
 
-            block.getWorld().playSound(block.getLocation(), soundPlace, 1.0f, 0.9f);
+            this.playPlaceSound(block);
             Main.coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
             BlockUtils.removeBlock(block.getLocation());
             player.swingMainHand();
@@ -180,5 +182,103 @@ public enum CustomBlockMaterial {
             ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
             itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
         });
+    }
+
+    /**
+     * Breaks custom block
+     *
+     * @param block custom block
+     * @param player player who broke the block
+     */
+    public void breakCustomBlock(@Nonnull Block block, @Nonnull Player player){
+        Location blockLocation = block.getLocation();
+        World world = block.getWorld();
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+
+        if (BlockUtils.getObjectByBlock(block) == null) return;
+        BlockUtils.cancelAllTasksWithThisBlock(block);
+        this.playBreakSound(block);
+        world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
+        Main.coreProtectAPI.logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, block.getBlockData());
+        block.setType(Material.AIR);
+
+        if (
+                (!this.isForceTool() || this.getToolType() == ToolType.getToolType(itemInMainHand))
+                        && this != CustomBlockMaterial.DEFAULT
+        ) {
+            world.dropItemNaturally(blockLocation, this.getItemStack());
+            if (this.getExpToDrop() != 0)
+                world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.getExpToDrop());
+        } else if (this == CustomBlockMaterial.DEFAULT) {
+            world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
+        }
+
+        if (
+                ToolType.getToolType(itemInMainHand) != ToolType.HAND
+                        && itemInMainHand.getItemMeta() instanceof Damageable handItemDamageable
+        ) {
+            handItemDamageable.setDamage(handItemDamageable.getDamage() + 1);
+            itemInMainHand.setItemMeta(handItemDamageable);
+            if (handItemDamageable.getDamage() > itemInMainHand.getType().getMaxDurability()) {
+                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+                world.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+            }
+        }
+    }
+
+    /**
+     * Plays custom block place sound
+     *
+     * @param block block in which the sound will be played
+     */
+    public void playPlaceSound(@Nonnull Block block) {
+        if (this.placeSound == null) return;
+        if (this.placeSound == Sound.BLOCK_WOOD_PLACE) {
+            block.getWorld().playSound(block.getLocation(), "custom." + this.placeSound.getKey().getKey(), 1.0f, 1.0f);
+        } else {
+            block.getWorld().playSound(block.getLocation(), this.placeSound, 1.0f, 0.9f);
+        }
+    }
+
+    /**
+     * Plays custom block break sound
+     *
+     * @param block block in which the sound will be played
+     */
+    public void playBreakSound(@Nonnull Block block) {
+        if (this.breakSound == null) return;
+        if (this.breakSound == Sound.BLOCK_WOOD_BREAK) {
+            block.getWorld().playSound(block.getLocation(), "custom." + this.breakSound.getKey().getKey(), 1.0f, 1.0f);
+        } else {
+            block.getWorld().playSound(block.getLocation(), this.breakSound, 1.0f, 0.9f);
+        }
+    }
+
+    /**
+     * Plays custom block hit sound
+     *
+     * @param block block in which the sound will be played
+     */
+    public void playHitSound(@Nonnull Block block) {
+        if (this.hitSound == null) return;
+        if (this.hitSound == Sound.BLOCK_WOOD_HIT) {
+            block.getWorld().playSound(block.getLocation(), "custom." + this.hitSound.getKey().getKey(), 0.6f, 0.9f);
+        } else {
+            block.getWorld().playSound(block.getLocation(), this.hitSound, 0.6f, 0.9f);
+        }
+    }
+
+    /**
+     * Plays custom block step sound
+     *
+     * @param block block in which the sound will be played
+     */
+    public void playStepSound(@Nonnull Block block) {
+        if (this.stepSound == null) return;
+        if (this.stepSound == Sound.BLOCK_WOOD_STEP) {
+            block.getWorld().playSound(block.getLocation(), "custom." + this.stepSound.getKey().getKey(), 0.6f, 0.9f);
+        } else {
+            block.getWorld().playSound(block.getLocation(), this.stepSound, 0.6f, 0.9f);
+        }
     }
 }

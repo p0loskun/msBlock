@@ -20,6 +20,7 @@ public class VerticalPlanks {
         Bukkit.addRecipe(craftVerticalOakPlanks());
         Bukkit.addRecipe(craftVerticalSprucePlanks());
         Bukkit.addRecipe(craftVerticalWarpedPlanks());
+        Bukkit.addRecipe(craftVerticalMangrovePlanks());
     }
 
     @Nonnull
@@ -131,6 +132,20 @@ public class VerticalPlanks {
                 " P "
         );
         shapedRecipe.setIngredient('P', Material.WARPED_PLANKS);
+        return shapedRecipe;
+    }
+
+    @Nonnull
+    public static ShapedRecipe craftVerticalMangrovePlanks() {
+        ItemStack itemStack = CustomBlockMaterial.VERTICAL_MANGROVE_PLANKS.getItemStack();
+        itemStack.setAmount(3);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(NamespacedKey.minecraft("vertical_mangrove_planks"), itemStack);
+        shapedRecipe.shape(
+                " P ",
+                " P ",
+                " P "
+        );
+        shapedRecipe.setIngredient('P', Material.MANGROVE_PLANKS);
         return shapedRecipe;
     }
 }
