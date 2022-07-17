@@ -4,6 +4,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import github.minersStudios.msBlock.crafts.RegCrafts;
 import github.minersStudios.msBlock.listeners.RegEvents;
+import github.minersStudios.msBlock.utils.BlockUtils;
+import github.minersStudios.msBlock.utils.PlayerUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.plugin.Plugin;
@@ -24,6 +26,14 @@ public final class Main extends JavaPlugin {
         if (coreProtectAPI != null) coreProtectAPI.testAPI();
         RegEvents.init();
         RegCrafts.init();
+    }
+
+    @Override
+    public void onDisable() {
+        if (!PlayerUtils.steps.isEmpty())
+            PlayerUtils.steps.clear();
+        if (!BlockUtils.blocks.isEmpty())
+            BlockUtils.blocks.clear();
     }
 
     @Nullable

@@ -92,8 +92,8 @@ public enum CustomBlockMaterial {
      * @return dig speed float
      */
     public static float getDigSpeed(@Nonnull Player player, @Nonnull CustomBlockMaterial customBlockMaterial) {
-        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         float base = 1.0f;
+        ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
         if (customBlockMaterial.getToolType() == ToolType.getToolType(itemInMainHand)) {
             base = ToolTier.getToolTier(itemInMainHand).getSpeed();
@@ -133,15 +133,12 @@ public enum CustomBlockMaterial {
     @Nullable
     @SuppressWarnings("deprecation")
     public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
-        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
+        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
             if (
-                    customBlockMaterial.isPowered() == powered &&
-                            customBlockMaterial.getInstrument() == instrument &&
-                            customBlockMaterial.getNote().getId() == note.getId()
-            ) {
-                return customBlockMaterial;
-            }
-        }
+                    customBlockMaterial.isPowered() == powered
+                    && customBlockMaterial.getInstrument() == instrument
+                    && customBlockMaterial.getNote().getId() == note.getId()
+            ) return customBlockMaterial;
         return null;
     }
 
@@ -151,9 +148,9 @@ public enum CustomBlockMaterial {
      */
     @Nullable
     public static CustomBlockMaterial getCustomBlockMaterial(int itemCustomModelData) {
-        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
-            if (customBlockMaterial.itemCustomModelData == itemCustomModelData) return customBlockMaterial;
-        }
+        for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
+            if (customBlockMaterial.itemCustomModelData == itemCustomModelData)
+                return customBlockMaterial;
         return null;
     }
 
@@ -204,7 +201,7 @@ public enum CustomBlockMaterial {
 
         if (
                 (!this.isForceTool() || this.getToolType() == ToolType.getToolType(itemInMainHand))
-                        && this != CustomBlockMaterial.DEFAULT
+                && this != CustomBlockMaterial.DEFAULT
         ) {
             world.dropItemNaturally(blockLocation, this.getItemStack());
             if (this.getExpToDrop() != 0)
@@ -215,7 +212,7 @@ public enum CustomBlockMaterial {
 
         if (
                 ToolType.getToolType(itemInMainHand) != ToolType.HAND
-                        && itemInMainHand.getItemMeta() instanceof Damageable handItemDamageable
+                && itemInMainHand.getItemMeta() instanceof Damageable handItemDamageable
         ) {
             handItemDamageable.setDamage(handItemDamageable.getDamage() + 1);
             itemInMainHand.setItemMeta(handItemDamageable);
@@ -234,9 +231,9 @@ public enum CustomBlockMaterial {
     public void playPlaceSound(@Nonnull Block block) {
         if (this.placeSound == null) return;
         if (this.placeSound == Sound.BLOCK_WOOD_PLACE) {
-            block.getWorld().playSound(block.getLocation(), "custom." + this.placeSound.getKey().getKey(), 1.0f, 1.0f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.place", 1.0f, 1.0f);
         } else {
-            block.getWorld().playSound(block.getLocation(), this.placeSound, 1.0f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), this.placeSound, 1.0f, 0.9f);
         }
     }
 
@@ -248,9 +245,9 @@ public enum CustomBlockMaterial {
     public void playBreakSound(@Nonnull Block block) {
         if (this.breakSound == null) return;
         if (this.breakSound == Sound.BLOCK_WOOD_BREAK) {
-            block.getWorld().playSound(block.getLocation(), "custom." + this.breakSound.getKey().getKey(), 1.0f, 1.0f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.break", 1.0f, 1.0f);
         } else {
-            block.getWorld().playSound(block.getLocation(), this.breakSound, 1.0f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), this.breakSound, 1.0f, 0.9f);
         }
     }
 
@@ -262,9 +259,9 @@ public enum CustomBlockMaterial {
     public void playHitSound(@Nonnull Block block) {
         if (this.hitSound == null) return;
         if (this.hitSound == Sound.BLOCK_WOOD_HIT) {
-            block.getWorld().playSound(block.getLocation(), "custom." + this.hitSound.getKey().getKey(), 0.6f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
         } else {
-            block.getWorld().playSound(block.getLocation(), this.hitSound, 0.6f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), this.hitSound, 0.6f, 0.9f);
         }
     }
 
@@ -276,9 +273,9 @@ public enum CustomBlockMaterial {
     public void playStepSound(@Nonnull Block block) {
         if (this.stepSound == null) return;
         if (this.stepSound == Sound.BLOCK_WOOD_STEP) {
-            block.getWorld().playSound(block.getLocation(), "custom." + this.stepSound.getKey().getKey(), 0.6f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.step", 0.3f, 0.9f);
         } else {
-            block.getWorld().playSound(block.getLocation(), this.stepSound, 0.6f, 0.9f);
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), this.stepSound, 0.6f, 0.9f);
         }
     }
 }

@@ -47,7 +47,7 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                 });
             } else if (block.getBlockData() instanceof NoteBlock noteBlock && BlockUtils.notHasPlayer(player)){
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-                if (customBlockMaterial == null) return;
+                assert customBlockMaterial != null;
                 float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
                 blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                     float ticks, progress = 0.0f;
@@ -90,7 +90,7 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                 blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
                     if (block.getLocation().getBlock().getType().isAir() && getObjectByBlock(block) != null)
                         BlockUtils.cancelAllTasksWithThisBlock(block);
-                    block.getWorld().playSound(block.getLocation(), "custom.block.wood.hit", 0.6f, 0.9f);
+                    block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
                 }, 0L, 4L));
             }
         } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && getObjectByBlock(block) != null) {

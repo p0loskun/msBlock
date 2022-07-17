@@ -4,7 +4,6 @@ import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -23,8 +22,7 @@ public class BlockBreakListener implements Listener {
         Block block = event.getBlock();
         event.setCancelled(block.getType() == Material.NOTE_BLOCK && player.getGameMode() == GameMode.SURVIVAL);
         if (BlockUtils.isWoodenSound(block.getType())) {
-            SoundGroup soundGroup = block.getBlockData().getSoundGroup();
-            block.getWorld().playSound(block.getLocation(), "custom.block.wood.break", soundGroup.getVolume(), soundGroup.getPitch());
+            block.getWorld().playSound(block.getLocation(), "custom.block.wood.break", 1.0f, 1.0f);
         } else if (block.getBlockData() instanceof NoteBlock noteBlock && player.getGameMode() == GameMode.CREATIVE) {
             CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
             if (customBlockMaterial != null)

@@ -93,10 +93,11 @@ public class PlayerInteractListener implements Listener {
         } else if (Tag.STAIRS.isTagged(itemInMainHand.getType()) && !blockAtFace.getType().isSolid()) {
             useOn();
             if (blockAtFace.getBlockData() instanceof Stairs stairs) {
-                stairs.setHalf(event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
+                stairs.setHalf(
+                        event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
                         : event.getBlockFace() == BlockFace.DOWN ? Bisected.Half.TOP
-                        : (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
-                        : Bisected.Half.TOP)
+                        : interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
+                        : Bisected.Half.TOP
                 );
                 blockAtFace.setBlockData(stairs);
             }
@@ -107,29 +108,24 @@ public class PlayerInteractListener implements Listener {
                 useOn();
                 placeDouble = false;
             }
-            if (blockAtFace.getBlockData() instanceof Slab slab) {
-                if (placeDouble && blockAtFace.getType() == itemMaterial) {
-                    slab.setType(Slab.Type.DOUBLE);
-                    blockAtFace.getWorld().playSound(
-                            blockAtFace.getLocation(),
-                            slab.getSoundGroup().getPlaceSound(),
-                            SoundCategory.BLOCKS,
-                            slab.getSoundGroup().getVolume(),
-                            slab.getSoundGroup().getPitch()
-                    );
-                    if (player.getGameMode() == GameMode.SURVIVAL)
-                        itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-                } else if (event.getBlockFace() == BlockFace.UP) {
-                    slab.setType(Slab.Type.BOTTOM);
-                } else if (event.getBlockFace() == BlockFace.DOWN) {
-                    slab.setType(Slab.Type.TOP);
-                } else if (interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d && blockAtFace.getType() == itemMaterial) {
-                    slab.setType(Slab.Type.BOTTOM);
-                } else if (interactionPoint.getY() > 0.5d && interactionPoint.getY() <= 1.0d && blockAtFace.getType() == itemMaterial) {
-                    slab.setType(Slab.Type.TOP);
-                }
-                blockAtFace.setBlockData(slab);
+            if (!(blockAtFace.getBlockData() instanceof Slab slab)) return;
+            if (placeDouble && blockAtFace.getType() == itemMaterial) {
+                slab.setType(Slab.Type.DOUBLE);
+                blockAtFace.getWorld().playSound(
+                        blockAtFace.getLocation(),
+                        slab.getSoundGroup().getPlaceSound(),
+                        SoundCategory.BLOCKS,
+                        slab.getSoundGroup().getVolume(),
+                        slab.getSoundGroup().getPitch()
+                );
+                if (player.getGameMode() == GameMode.SURVIVAL)
+                    itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+            } else if (event.getBlockFace() == BlockFace.DOWN || interactionPoint.getY() > 0.5d && interactionPoint.getY() < 1.0d && blockAtFace.getType() == itemMaterial) {
+                slab.setType(Slab.Type.TOP);
+            } else if (event.getBlockFace() == BlockFace.UP || interactionPoint.getY() < 0.5d && interactionPoint.getY() > 0.0d && blockAtFace.getType() == itemMaterial) {
+                slab.setType(Slab.Type.BOTTOM);
             }
+            blockAtFace.setBlockData(slab);
         } else if (Tag.SHULKER_BOXES.isTagged(itemInMainHand.getType()) && !blockAtFace.getType().isSolid()) {
             useOn();
             if (blockAtFace.getBlockData() instanceof Directional directional) {

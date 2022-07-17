@@ -3,7 +3,6 @@ package github.minersStudios.msBlock.listeners.block;
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
 import org.bukkit.Material;
-import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,8 +16,7 @@ public class BlockPlaceListener implements Listener {
     public void onBlockPlace(@Nonnull BlockPlaceEvent event) {
         Block block = event.getBlockPlaced();
         if (BlockUtils.isWoodenSound(block.getType())) {
-            SoundGroup soundGroup = block.getBlockData().getSoundGroup();
-            block.getWorld().playSound(block.getLocation(), "custom.block.wood.place", soundGroup.getVolume(), soundGroup.getPitch());
+            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.place", 1.0f, 0.9f);
         }
         if (block.getType() != Material.NOTE_BLOCK) return;
         event.setCancelled(true);
