@@ -135,9 +135,9 @@ public enum CustomBlockMaterial {
     public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
         for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
             if (
-                    customBlockMaterial.isPowered() == powered
-                    && customBlockMaterial.getInstrument() == instrument
+                    customBlockMaterial.getInstrument() == instrument
                     && customBlockMaterial.getNote().getId() == note.getId()
+                    //&& customBlockMaterial.isPowered() == powered       removed to BlockPhysicsEvent NoteBlock powered state bug fix
             ) return customBlockMaterial;
         return null;
     }
