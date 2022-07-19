@@ -10,152 +10,161 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 
-public class VerticalPlanks {
+public class CarvedPlanks {
 
     public static void addRecipes() {
-        Bukkit.addRecipe(craftVerticalAcaciaPlanks());
-        Bukkit.addRecipe(craftVerticalBirchPlanks());
-        Bukkit.addRecipe(craftVerticalCrimsonPlanks());
-        Bukkit.addRecipe(craftVerticalDarkOakPlanks());
-        Bukkit.addRecipe(craftVerticalJunglePlanks());
-        Bukkit.addRecipe(craftVerticalOakPlanks());
-        Bukkit.addRecipe(craftVerticalSprucePlanks());
-        Bukkit.addRecipe(craftVerticalWarpedPlanks());
-        Bukkit.addRecipe(craftVerticalMangrovePlanks());
+        Bukkit.addRecipe(craftCarvedAcaciaPlanks());
+        Bukkit.addRecipe(craftCarvedBirchPlanks());
+        Bukkit.addRecipe(craftCarvedCrimsonPlanks());
+        Bukkit.addRecipe(craftCarvedDarkOakPlanks());
+        Bukkit.addRecipe(craftCarvedJunglePlanks());
+        Bukkit.addRecipe(craftCarvedOakPlanks());
+        Bukkit.addRecipe(craftCarvedSprucePlanks());
+        Bukkit.addRecipe(craftCarvedWarpedPlanks());
+        Bukkit.addRecipe(craftCarvedMangrovePlanks());
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalAcaciaPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_ACACIA_PLANKS;
+    public static ShapedRecipe craftCarvedAcaciaPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_ACACIA_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.ACACIA_PLANKS);
+        shapedRecipe.setIngredient('S', Material.ACACIA_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalBirchPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_BIRCH_PLANKS;
+    public static ShapedRecipe craftCarvedBirchPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_BIRCH_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.BIRCH_PLANKS);
+        shapedRecipe.setIngredient('S', Material.BIRCH_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalCrimsonPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_CRIMSON_PLANKS;
+    public static ShapedRecipe craftCarvedCrimsonPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_CRIMSON_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.CRIMSON_PLANKS);
+        shapedRecipe.setIngredient('S', Material.CRIMSON_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalDarkOakPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_DARK_OAK_PLANKS;
+    public static ShapedRecipe craftCarvedDarkOakPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_DARK_OAK_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.DARK_OAK_PLANKS);
+        shapedRecipe.setIngredient('S', Material.DARK_OAK_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalJunglePlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_JUNGLE_PLANKS;
+    public static ShapedRecipe craftCarvedJunglePlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_JUNGLE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.JUNGLE_PLANKS);
+        shapedRecipe.setIngredient('S', Material.JUNGLE_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalOakPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_OAK_PLANKS;
+    public static ShapedRecipe craftCarvedOakPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_OAK_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.OAK_PLANKS);
+        shapedRecipe.setIngredient('S', Material.OAK_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalSprucePlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_SPRUCE_PLANKS;
+    public static ShapedRecipe craftCarvedSprucePlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_SPRUCE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.SPRUCE_PLANKS);
+        shapedRecipe.setIngredient('S', Material.SPRUCE_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalWarpedPlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_WARPED_PLANKS;
+    public static ShapedRecipe craftCarvedWarpedPlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_WARPED_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.WARPED_PLANKS);
+        shapedRecipe.setIngredient('S', Material.WARPED_SLAB);
         return shapedRecipe;
     }
 
     @Nonnull
-    public static ShapedRecipe craftVerticalMangrovePlanks() {
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_MANGROVE_PLANKS;
+    public static ShapedRecipe craftCarvedMangrovePlanks() {
+        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.CARVED_MANGROVE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
         shapedRecipe.shape(
+                " S ",
                 " P ",
-                " P ",
-                " P "
+                " S "
         );
         shapedRecipe.setIngredient('P', Material.MANGROVE_PLANKS);
+        shapedRecipe.setIngredient('S', Material.MANGROVE_SLAB);
         return shapedRecipe;
     }
 }
