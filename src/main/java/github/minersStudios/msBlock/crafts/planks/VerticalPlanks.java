@@ -29,13 +29,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_ACACIA_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.ACACIA_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.ACACIA_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -44,13 +41,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_BIRCH_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.BIRCH_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.BIRCH_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -59,13 +53,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_CRIMSON_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.CRIMSON_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.CRIMSON_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -74,13 +65,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_DARK_OAK_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.DARK_OAK_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.DARK_OAK_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -89,13 +77,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_JUNGLE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.JUNGLE_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.JUNGLE_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -104,13 +89,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_OAK_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.OAK_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.OAK_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -119,13 +101,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_SPRUCE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.SPRUCE_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.SPRUCE_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -134,13 +113,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_WARPED_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.WARPED_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.WARPED_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 
@@ -149,13 +125,10 @@ public class VerticalPlanks {
         CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.VERTICAL_MANGROVE_PLANKS;
         ItemStack itemStack = customBlockMaterial.getItemStack();
         itemStack.setAmount(3);
-        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack);
-        shapedRecipe.shape(
-                " P ",
-                " P ",
-                " P "
-        );
-        shapedRecipe.setIngredient('P', Material.MANGROVE_PLANKS);
+        ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
+                .shape("P", "P", "P")
+                .setIngredient('P', Material.MANGROVE_PLANKS);
+        shapedRecipe.setGroup("VerticalPlanks");
         return shapedRecipe;
     }
 }
