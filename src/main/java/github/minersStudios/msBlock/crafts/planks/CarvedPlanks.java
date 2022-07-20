@@ -9,6 +9,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 
+import static github.minersStudios.msBlock.Main.pluginNameInLowerCase;
+
 public class CarvedPlanks {
 
     public static void addRecipes() {
@@ -29,7 +31,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.ACACIA_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -39,7 +41,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.BIRCH_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -49,7 +51,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.CRIMSON_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -59,7 +61,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.DARK_OAK_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -69,7 +71,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.JUNGLE_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -79,7 +81,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.OAK_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -89,7 +91,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.SPRUCE_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -99,7 +101,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.WARPED_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 
@@ -109,7 +111,7 @@ public class CarvedPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), customBlockMaterial.getItemStack())
                 .shape("S", "S")
                 .setIngredient('S', Material.MANGROVE_SLAB);
-        shapedRecipe.setGroup("CarvedPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":carved_planks");
         return shapedRecipe;
     }
 }

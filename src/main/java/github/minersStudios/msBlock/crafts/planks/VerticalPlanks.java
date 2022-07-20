@@ -10,6 +10,8 @@ import org.bukkit.inventory.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 
+import static github.minersStudios.msBlock.Main.pluginNameInLowerCase;
+
 public class VerticalPlanks {
 
     public static void addRecipes() {
@@ -32,7 +34,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.ACACIA_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -44,7 +46,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.BIRCH_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -56,7 +58,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.CRIMSON_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -68,7 +70,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.DARK_OAK_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -80,7 +82,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.JUNGLE_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -92,7 +94,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.OAK_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -104,7 +106,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.SPRUCE_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -116,7 +118,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.WARPED_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 
@@ -128,7 +130,7 @@ public class VerticalPlanks {
         ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.plugin, customBlockMaterial.name()), itemStack)
                 .shape("P", "P", "P")
                 .setIngredient('P', Material.MANGROVE_PLANKS);
-        shapedRecipe.setGroup("VerticalPlanks");
+        shapedRecipe.setGroup(pluginNameInLowerCase + ":vertical_planks");
         return shapedRecipe;
     }
 }
