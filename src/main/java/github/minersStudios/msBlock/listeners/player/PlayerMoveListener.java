@@ -44,9 +44,7 @@ public class PlayerMoveListener implements Listener {
             steps.put(player, fullDistance > 1.25d ? 0.0d : fullDistance);
             if (fullDistance > 1.25d) {
                 if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
-                    CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-                    assert customBlockMaterial != null;
-                    customBlockMaterial.playStepSound(bottomBlock);
+                    CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).playStepSound(bottomBlock);
                 } else {
                     bottomBlock.getWorld().playSound(bottomBlock.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.step", 0.3f, 0.9f);
                 }

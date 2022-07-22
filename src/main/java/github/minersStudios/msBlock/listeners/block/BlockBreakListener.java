@@ -24,9 +24,7 @@ public class BlockBreakListener implements Listener {
         if (BlockUtils.isWoodenSound(block.getType())) {
             block.getWorld().playSound(block.getLocation(), "custom.block.wood.break", 1.0f, 1.0f);
         } else if (block.getBlockData() instanceof NoteBlock noteBlock && player.getGameMode() == GameMode.CREATIVE) {
-            CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-            if (customBlockMaterial != null)
-                customBlockMaterial.playBreakSound(block);
+            CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).playBreakSound(block);
         }
     }
 }

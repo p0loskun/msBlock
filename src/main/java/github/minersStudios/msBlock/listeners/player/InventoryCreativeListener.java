@@ -20,9 +20,10 @@ public class InventoryCreativeListener implements Listener {
         HumanEntity player = event.getWhoClicked();
         Block clickedBlock = player.getTargetBlockExact(5);
         if (clickedBlock == null || event.getCursor().getType() != Material.NOTE_BLOCK || !(clickedBlock.getBlockData() instanceof NoteBlock noteBlock)) return;
-        CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-        assert customBlockMaterial != null;
         event.setCancelled(true);
-        player.getInventory().setItem(event.getSlot(), customBlockMaterial.getItemStack());
+        player.getInventory().setItem(
+                event.getSlot(),
+                CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
+        );
     }
 }

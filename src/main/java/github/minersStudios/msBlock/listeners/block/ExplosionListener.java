@@ -17,10 +17,11 @@ public class ExplosionListener implements Listener {
     public void onEntityExplode(@Nonnull EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
             if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 block.setType(Material.AIR);
-                if (customBlockMaterial != null)
-                    block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.getItemStack());
+                block.getWorld().dropItemNaturally(
+                        block.getLocation(),
+                        CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
+                );
             }
         }
     }
@@ -29,10 +30,11 @@ public class ExplosionListener implements Listener {
     public void onBlockExplode(@Nonnull BlockExplodeEvent event) {
         for (Block block : event.blockList()) {
             if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 block.setType(Material.AIR);
-                if (customBlockMaterial != null)
-                    block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.getItemStack());
+                block.getWorld().dropItemNaturally(
+                        block.getLocation(),
+                        CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
+                );
             }
         }
     }

@@ -17,9 +17,7 @@ public class BlockDamageListener implements Listener {
     public void onBlockDamage(@Nonnull BlockDamageEvent event) {
         Block block = event.getBlock();
         if (block.getBlockData() instanceof NoteBlock noteBlock) {
-            CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-            if (customBlockMaterial != null)
-                customBlockMaterial.playHitSound(block);
+            CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).playHitSound(block);
             event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
         }
     }

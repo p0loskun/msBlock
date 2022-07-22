@@ -2,6 +2,7 @@ package github.minersStudios.msBlock.enums;
 
 import github.minersStudios.msBlock.Main;
 import github.minersStudios.msBlock.utils.BlockUtils;
+import github.minersStudios.msBlock.utils.PlayerUtils;
 import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -9,6 +10,7 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -140,28 +142,27 @@ public enum CustomBlockMaterial {
      * @param powered    noteblock powered
      * @return CustomBlockMaterial by noteblock
      */
-    @Nullable
-    @SuppressWarnings("deprecation")
+    @Nonnull
     public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
         for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
             if (
-                    customBlockMaterial.getInstrument() == instrument
-                    && customBlockMaterial.getNote().getId() == note.getId()
+                    customBlockMaterial.instrument == instrument
+                    && customBlockMaterial.note.equals(note)
                     //&& customBlockMaterial.isPowered() == powered       removed to BlockPhysicsEvent NoteBlock powered state bug fix
             ) return customBlockMaterial;
-        return null;
+        return DEFAULT;
     }
 
     /**
      * @param itemCustomModelData CustomModelData of item in main hand
      * @return Custom block material by item in main hand
      */
-    @Nullable
+    @Nonnull
     public static CustomBlockMaterial getCustomBlockMaterial(int itemCustomModelData) {
         for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
             if (customBlockMaterial.itemCustomModelData == itemCustomModelData)
                 return customBlockMaterial;
-        return null;
+        return DEFAULT;
     }
 
     /**
@@ -170,7 +171,7 @@ public enum CustomBlockMaterial {
      * @param block block on which the custom block will be placed
      * @param player player who placed the block
      */
-    public void setCustomBlock(@Nonnull Block block, @Nonnull Player player) {
+    public void setCustomBlock(@Nonnull Block block, @Nonnull Player player, @Nonnull EquipmentSlot hand) {
         Bukkit.getScheduler().runTask(Main.plugin, () -> {
             block.setType(Material.NOTE_BLOCK);
 
@@ -183,11 +184,12 @@ public enum CustomBlockMaterial {
             this.playPlaceSound(block);
             Main.coreProtectAPI.logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
             BlockUtils.removeBlock(block.getLocation());
-            player.swingMainHand();
+            PlayerUtils.swingHand(player, hand);
 
             if (player.getGameMode() != GameMode.SURVIVAL) return;
-            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-            itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+            ItemStack itemInHand = player.getInventory().getItem(hand);
+            if (itemInHand != null)
+                itemInHand.setAmount(itemInHand.getAmount() - 1);
         });
     }
 

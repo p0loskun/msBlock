@@ -8,6 +8,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
@@ -54,5 +55,19 @@ public class PlayerUtils {
     public static MovingObjectPositionBlock getMovingObjectPositionBlock(@Nonnull Player player, @Nonnull Location blockLoc) {
         Location playerEyeLoc = player.getEyeLocation();
         return new MovingObjectPositionBlock(new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ()), convertPlayer(player).cw(), new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ()), false);
+    }
+
+    /**
+     * Swings hand/offhand
+     *
+     * @param player player
+     * @param equipmentSlot hand
+     */
+    public static void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot){
+        if (equipmentSlot == EquipmentSlot.HAND) {
+            player.swingMainHand();
+        } else {
+            player.swingOffHand();
+        }
     }
 }
