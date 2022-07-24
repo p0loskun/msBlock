@@ -265,11 +265,11 @@ public class BlockUtils {
      * @param player player
      * @return True if no tasks with player
      */
-    public static boolean notHasPlayer(@Nonnull Player player) {
+    public static boolean hasPlayer(@Nonnull Player player) {
         for (Object[] objects : blocks.keySet())
             if (objects[1] == player)
-                return false;
-        return true;
+                return true;
+        return false;
     }
 
     /**
@@ -310,7 +310,7 @@ public class BlockUtils {
      * @param material block material
      * @return True if material has wood sound
      */
-    public static boolean isWoodenSound(@Nonnull Material material){
+    public static boolean isWoodenSound(@Nonnull Material material) {
         return WOOD.contains(material);
     }
 }

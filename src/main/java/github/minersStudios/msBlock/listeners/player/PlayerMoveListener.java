@@ -23,7 +23,7 @@ public class PlayerMoveListener implements Listener {
     public void onPlayerMove(@Nonnull PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Block block = player.getTargetBlockExact(5),
-                bottomBlock = player.getLocation().subtract(0.0d, 1.0d, 0.0d).getBlock();
+                bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
         if (!player.hasPotionEffect(PotionEffectType.SLOW_DIGGING) && block != null && block.getType() == Material.NOTE_BLOCK)
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
 

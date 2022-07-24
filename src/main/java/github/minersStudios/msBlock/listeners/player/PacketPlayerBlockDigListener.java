@@ -9,13 +9,13 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import github.minersStudios.msBlock.Main;
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
+import github.minersStudios.msBlock.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
@@ -41,27 +41,54 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
 
         if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
             if (block.getType() != Material.NOTE_BLOCK) {
+                if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType()))
+                    BlockUtils.cancelAllTasksWithThisPlayer(player);
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING))
                         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                 });
-            } else if (block.getBlockData() instanceof NoteBlock noteBlock && BlockUtils.notHasPlayer(player)){
+            } else if (block.getBlockData() instanceof NoteBlock noteBlock && !BlockUtils.hasPlayer(player)){
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
                 blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                     float ticks, progress = 0.0f;
                     int currentStage = 0;
+                    static boolean swing = true;
 
                     @Override
                     public void run() {
                         if (block.getLocation().getBlock().getType() != Material.NOTE_BLOCK && blocks.get(getObjectByBlock(block)) != null)
                             BlockUtils.cancelAllTasksWithThisBlock(block);
+                        Block targetBlock = PlayerUtils.getTargetBlock(player);
+                        if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
+                            PlayerUtils.farAway.add(player);
+                            return;
+                        } else {
+                            PlayerUtils.farAway.remove(player);
+                        }
+                        if (!targetBlock.equals(block)) return;
+
+                        Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+                            @Override
+                            public void onPacketReceiving(PacketEvent event) {
+                                swing = true;
+                            }
+                        }));
+
+                        if (!swing) {
+                            playZeroBreakStage(player, blockPosition);
+                            BlockUtils.cancelAllTasksWithThisPlayer(player);
+                        }
+
                         this.ticks++;
                         this.progress += digSpeed;
                         float nextStage = this.currentStage++ * 0.1f;
 
-                        if (this.ticks % 4.0f == 0.0f)
-                            customBlockMaterial.playHitSound(block);
+                        if (this.ticks % 4.0f == 0.0f) {
+                            if (!PlayerUtils.farAway.contains(player))
+                                customBlockMaterial.playHitSound(block);
+                            swing = false;
+                        }
 
                         if (this.progress > nextStage) {
                             this.currentStage = (int) Math.floor(this.progress * 10.0f);
@@ -74,37 +101,65 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                         }
 
                         if (this.progress > 1.0f) {
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> {
-                                PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-                                packetContainer.getIntegers().write(0, 0).write(1, -1);
-                                packetContainer.getBlockPositionModifier().write(0, blockPosition);
-                                protocolManager.broadcastServerPacket(packetContainer);
-                            }, 1L);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(Main.plugin, () -> playZeroBreakStage(player, blockPosition), 1L);
                             customBlockMaterial.breakCustomBlock(block, player);
                         }
                     }
                 }, 0L, 1L));
             }
-            if (BlockUtils.isWoodenSound(block.getType()) && BlockUtils.notHasPlayer(player)) {
-                blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, () -> {
-                    if (block.getLocation().getBlock().getType().isAir() && getObjectByBlock(block) != null)
-                        BlockUtils.cancelAllTasksWithThisBlock(block);
-                    block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
-                }, 0L, 4L));
+            if (BlockUtils.isWoodenSound(block.getType()) && !BlockUtils.hasPlayer(player)) {
+                blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+                    static boolean swing = true;
+                    float ticks = 0.0f;
+
+                    @Override
+                    public void run() {
+                        if (block.getLocation().getBlock().getType().isAir() && getObjectByBlock(block) != null)
+                            BlockUtils.cancelAllTasksWithThisBlock(block);
+                        Block targetBlock = PlayerUtils.getTargetBlock(player);
+                        if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
+                            PlayerUtils.farAway.add(player);
+                            return;
+                        } else {
+                            PlayerUtils.farAway.remove(player);
+                        }
+                        if (!targetBlock.equals(block)) return;
+
+                        Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+                            @Override
+                            public void onPacketReceiving(PacketEvent event) {
+                                swing = true;
+                            }
+                        }));
+
+                        if (!swing) {
+                            playZeroBreakStage(player, blockPosition);
+                            BlockUtils.cancelAllTasksWithThisPlayer(player);
+                        }
+                        this.ticks++;
+
+                        if (this.ticks % 4.0f == 0.0f) {
+                            if (!PlayerUtils.farAway.contains(player))
+                                block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
+                            swing = false;
+                        }
+                    }
+                }, 0L, 1L));
             }
         } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && getObjectByBlock(block) != null) {
-            PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-            packetContainer.getIntegers().write(0, 0).write(1, -1);
-            packetContainer.getBlockPositionModifier().write(0, blockPosition);
-            protocolManager.broadcastServerPacket(packetContainer);
+            playZeroBreakStage(player, blockPosition);
             BlockUtils.cancelAllTasksWithThisBlock(block);
-        } else if (digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK) {
-            PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
-            packetContainer.getIntegers().write(0, 0).write(1, -1);
-            packetContainer.getBlockPositionModifier().write(0, blockPosition);
-            protocolManager.broadcastServerPacket(packetContainer);
-            Bukkit.getScheduler().runTask(Main.plugin, () -> player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false)));
+        } else if (digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK && getObjectByBlock(block) != null && !PlayerUtils.farAway.contains(player)) {
+            playZeroBreakStage(player, blockPosition);
             BlockUtils.cancelAllTasksWithThisPlayer(player);
         }
+    }
+
+    private static void playZeroBreakStage(@Nonnull Player player, @Nonnull BlockPosition blockPosition) {
+        PacketContainer packetContainer = protocolManager.createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
+        packetContainer.getIntegers().write(0, 0).write(1, -1);
+        packetContainer.getBlockPositionModifier().write(0, blockPosition);
+        protocolManager.broadcastServerPacket(packetContainer);
+        PlayerUtils.farAway.remove(player);
     }
 }

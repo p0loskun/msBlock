@@ -6,7 +6,9 @@ import net.minecraft.world.phys.MovingObjectPositionBlock;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
@@ -14,10 +16,14 @@ import org.bukkit.util.RayTraceResult;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class PlayerUtils {
     public static final Map<Player, Double> steps = new HashMap<>();
+    public static final Set<Player> farAway = new HashSet<>();
 
     /**
      * Gets interaction location
@@ -69,5 +75,28 @@ public class PlayerUtils {
         } else {
             player.swingOffHand();
         }
+    }
+
+    /**
+     * @param player player
+     * @return target block
+     */
+    @Nullable
+    public static Block getTargetBlock(@Nonnull Player player) {
+        Location eyeLocation = player.getEyeLocation();
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d, FluidCollisionMode.NEVER, false);
+        return rayTraceResult != null ? rayTraceResult.getHitBlock() : null;
+    }
+
+    /**
+     * @param player player
+     * @return target entity
+     */
+    @Nullable
+    public static Entity getTargetEntity(@Nonnull Player player) {
+        Location eyeLocation = player.getEyeLocation();
+        Predicate<Entity> filter = entity -> !entity.equals(player);
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
+        return rayTraceResult != null ? rayTraceResult.getHitEntity() : null;
     }
 }
