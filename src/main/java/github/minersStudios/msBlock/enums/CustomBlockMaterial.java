@@ -199,7 +199,7 @@ public enum CustomBlockMaterial {
      * @param block custom block
      * @param player player who broke the block
      */
-    public void breakCustomBlock(@Nonnull Block block, @Nonnull Player player){
+    public void breakCustomBlock(@Nonnull Block block, @Nonnull Player player) {
         Location blockLocation = block.getLocation();
         World world = block.getWorld();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();

@@ -6,11 +6,13 @@ import net.minecraft.world.phys.MovingObjectPositionBlock;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
@@ -69,7 +71,7 @@ public class PlayerUtils {
      * @param player player
      * @param equipmentSlot hand
      */
-    public static void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot){
+    public static void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
         if (equipmentSlot == EquipmentSlot.HAND) {
             player.swingMainHand();
         } else {
@@ -95,8 +97,24 @@ public class PlayerUtils {
     @Nullable
     public static Entity getTargetEntity(@Nonnull Player player) {
         Location eyeLocation = player.getEyeLocation();
-        Predicate<Entity> filter = entity -> !entity.equals(player);
+        Predicate<Entity> filter = entity -> entity != player;
         RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
         return rayTraceResult != null ? rayTraceResult.getHitEntity() : null;
+    }
+
+    /**
+     * @param itemStack item
+     * @return True if item is custom block
+     */
+    public static boolean isItemCustomBlock(@Nonnull ItemStack itemStack) {
+        return itemStack.getType() == Material.PAPER && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData();
+    }
+
+    /**
+     * @param itemStack item
+     * @return True if item is custom block
+     */
+    public static boolean isItemCustomDecor(@Nonnull ItemStack itemStack) {
+        return itemStack.getType() == Material.LEATHER_HORSE_ARMOR && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData();
     }
 }

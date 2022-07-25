@@ -47,7 +47,10 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                     if (player.hasPotionEffect(PotionEffectType.SLOW_DIGGING))
                         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                 });
-            } else if (block.getBlockData() instanceof NoteBlock noteBlock && !BlockUtils.hasPlayer(player)){
+            } else if (block.getBlockData() instanceof NoteBlock noteBlock) {
+                if (BlockUtils.hasPlayer(player)) {
+                    BlockUtils.cancelAllTasksWithThisPlayer(player);
+                }
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
                 blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {

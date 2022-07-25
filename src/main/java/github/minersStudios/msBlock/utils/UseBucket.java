@@ -3,10 +3,7 @@ package github.minersStudios.msBlock.utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
-import org.bukkit.entity.Axolotl;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TropicalFish;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
@@ -38,6 +35,9 @@ public class UseBucket {
 
         Material itemMaterial = itemInMainHand.getType();
         switch (itemMaterial) {
+            case TADPOLE_BUCKET:
+                summonPrimitiveEntities(EntityType.TADPOLE);
+                break;
             case PUFFERFISH_BUCKET:
                 summonPrimitiveEntities(EntityType.PUFFERFISH);
                 break;
