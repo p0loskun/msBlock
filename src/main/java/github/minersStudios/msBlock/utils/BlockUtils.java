@@ -305,9 +305,12 @@ public class BlockUtils {
      * @param block block
      */
     public static void cancelAllTasksWithThisBlock(@Nonnull Block block) {
-        for (Map.Entry<Block, Player> entry : blocks.keySet())
-            if (entry.getKey().equals(block))
+        for (Map.Entry<Block, Player> entry : blocks.keySet()) {
+            if (entry.getKey().equals(block)) {
                 Bukkit.getScheduler().cancelTask(blocks.remove(entry));
+                PlayerUtils.farAway.remove(entry.getValue());
+            }
+        }
     }
 
     /**
@@ -316,9 +319,12 @@ public class BlockUtils {
      * @param player player
      */
     public static void cancelAllTasksWithThisPlayer(@Nonnull Player player) {
-        for (Map.Entry<Block, Player> entry : blocks.keySet())
-            if (entry.getValue() == player)
+        for (Map.Entry<Block, Player> entry : blocks.keySet()) {
+            if (entry.getValue() == player) {
                 Bukkit.getScheduler().cancelTask(blocks.remove(entry));
+                PlayerUtils.farAway.remove(entry.getValue());
+            }
+        }
     }
 
     /**

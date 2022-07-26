@@ -98,11 +98,14 @@ public class PlayerUtils {
      */
     @Nullable
     public static Entity getTargetEntity(@Nonnull Player player, @Nullable Block targetBlock) {
-        if (targetBlock != null) return null;
         Location eyeLocation = player.getEyeLocation();
         Predicate<Entity> filter = entity -> entity != player && entity.getType() != EntityType.DROPPED_ITEM;
         RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
-        return rayTraceResult != null ? rayTraceResult.getHitEntity() : null;
+        if (rayTraceResult == null) return null;
+        Entity targetEntity = rayTraceResult.getHitEntity();
+        if (targetBlock != null && targetEntity != null && eyeLocation.distance(targetBlock.getLocation()) < eyeLocation.distance(targetEntity.getLocation()))
+            return null;
+        return targetEntity;
     }
 
     /**
