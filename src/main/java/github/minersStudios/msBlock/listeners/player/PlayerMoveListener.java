@@ -2,6 +2,7 @@ package github.minersStudios.msBlock.listeners.player;
 
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,10 +23,10 @@ public class PlayerMoveListener implements Listener {
         Player player = event.getPlayer();
         Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
 
-        boolean isRequiredMaterial = bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType());
         if (
-                isRequiredMaterial
+                (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
                 && event.getTo() != null
+                && player.getGameMode() != GameMode.SPECTATOR
                 && !player.isSneaking()
                 && bottomBlock.getType().isSolid()
         ) {
@@ -44,7 +45,7 @@ public class PlayerMoveListener implements Listener {
                     bottomBlock.getWorld().playSound(bottomBlock.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.step", 0.3f, 0.9f);
                 }
             }
-        } else if (!isRequiredMaterial) {
+        } else {
             steps.remove(player);
         }
     }

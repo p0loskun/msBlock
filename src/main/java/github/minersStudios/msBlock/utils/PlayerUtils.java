@@ -93,10 +93,12 @@ public class PlayerUtils {
 
     /**
      * @param player player
+     * @param targetBlock target block
      * @return target entity
      */
     @Nullable
-    public static Entity getTargetEntity(@Nonnull Player player) {
+    public static Entity getTargetEntity(@Nonnull Player player, @Nullable Block targetBlock) {
+        if (targetBlock != null) return null;
         Location eyeLocation = player.getEyeLocation();
         Predicate<Entity> filter = entity -> entity != player && entity.getType() != EntityType.DROPPED_ITEM;
         RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);

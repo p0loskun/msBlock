@@ -49,35 +49,37 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                         player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
                 });
             } else if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                if (BlockUtils.hasPlayer(player)) {
+                if (BlockUtils.hasPlayer(player))
                     BlockUtils.cancelAllTasksWithThisPlayer(player);
-                }
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
                 blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                     float ticks, progress = 0.0f;
                     int currentStage = 0;
-                    static boolean swing = true;
+                    static boolean swing = true, wasFar = false;
 
                     @Override
                     public void run() {
                         if (block.getLocation().getBlock().getType() != Material.NOTE_BLOCK && blocks.get(getEntryByBlock(block)) != null)
                             BlockUtils.cancelAllTasksWithThisBlock(block);
                         Block targetBlock = PlayerUtils.getTargetBlock(player);
-                        if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
+                        if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
                             PlayerUtils.farAway.add(player);
+                            wasFar = true;
                             return;
                         } else {
                             PlayerUtils.farAway.remove(player);
                         }
                         if (!targetBlock.equals(block)) return;
 
-                        Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
-                            @Override
-                            public void onPacketReceiving(PacketEvent event) {
-                                swing = true;
-                            }
-                        }));
+                        if (wasFar) {
+                            Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+                                @Override
+                                public void onPacketReceiving(PacketEvent event) {
+                                    swing = true;
+                                }
+                            }));
+                        }
 
                         if (!swing) {
                             playZeroBreakStage(player, blockPosition);
@@ -91,7 +93,7 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                         if (this.ticks % 4.0f == 0.0f) {
                             if (!PlayerUtils.farAway.contains(player))
                                 customBlockMaterial.playHitSound(block);
-                            swing = false;
+                            swing = !wasFar;
                         }
 
                         if (this.progress > nextStage) {
@@ -113,7 +115,7 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
             }
             if (BlockUtils.isWoodenSound(block.getType()) && !BlockUtils.hasPlayer(player)) {
                 blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
-                    static boolean swing = true;
+                    static boolean swing = true, wasFar = false;
                     float ticks = 0.0f;
 
                     @Override
@@ -121,20 +123,23 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                         if (block.getLocation().getBlock().getType().isAir() && getEntryByBlock(block) != null)
                             BlockUtils.cancelAllTasksWithThisBlock(block);
                         Block targetBlock = PlayerUtils.getTargetBlock(player);
-                        if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
+                        if (PlayerUtils.getTargetEntity(player, targetBlock) != null || targetBlock == null) {
                             PlayerUtils.farAway.add(player);
+                            wasFar = true;
                             return;
                         } else {
                             PlayerUtils.farAway.remove(player);
                         }
                         if (!targetBlock.equals(block)) return;
 
-                        Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
-                            @Override
-                            public void onPacketReceiving(PacketEvent event) {
-                                swing = true;
-                            }
-                        }));
+                        if (wasFar) {
+                            Bukkit.getScheduler().runTask(plugin, () -> protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+                                @Override
+                                public void onPacketReceiving(PacketEvent event) {
+                                    swing = true;
+                                }
+                            }));
+                        }
 
                         if (!swing) {
                             playZeroBreakStage(player, blockPosition);
@@ -143,9 +148,8 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                         this.ticks++;
 
                         if (this.ticks % 4.0f == 0.0f) {
-                            if (!PlayerUtils.farAway.contains(player))
-                                block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
-                            swing = false;
+                            block.getWorld().playSound(block.getLocation().clone().add(0.5d, 0.5d, 0.5d), "custom.block.wood.hit", 0.5f, 0.5f);
+                            swing = !wasFar;
                         }
                     }
                 }, 0L, 1L));
@@ -153,9 +157,18 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
         } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && getEntryByBlock(block) != null) {
             playZeroBreakStage(player, blockPosition);
             BlockUtils.cancelAllTasksWithThisBlock(block);
-        } else if (digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK && getEntryByBlock(block) != null && !PlayerUtils.farAway.contains(player)) {
-            playZeroBreakStage(player, blockPosition);
-            BlockUtils.cancelAllTasksWithThisPlayer(player);
+        } else if (
+                digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
+                && getEntryByBlock(block) != null
+                && !PlayerUtils.farAway.contains(player)
+        ) {
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                Block targetBlock = PlayerUtils.getTargetBlock(player);
+                if (PlayerUtils.getTargetEntity(player, targetBlock) == null && targetBlock != null) {
+                    playZeroBreakStage(player, blockPosition);
+                    BlockUtils.cancelAllTasksWithThisPlayer(player);
+                }
+            });
         }
     }
 
