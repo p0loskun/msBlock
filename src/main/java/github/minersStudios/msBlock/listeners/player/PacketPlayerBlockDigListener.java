@@ -19,10 +19,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import javax.annotation.Nonnull;
+import java.util.AbstractMap;
 
 import static github.minersStudios.msBlock.Main.protocolManager;
 import static github.minersStudios.msBlock.utils.BlockUtils.blocks;
-import static github.minersStudios.msBlock.utils.BlockUtils.getObjectByBlock;
+import static github.minersStudios.msBlock.utils.BlockUtils.getEntryByBlock;
 
 public class PacketPlayerBlockDigListener extends PacketAdapter {
 
@@ -53,14 +54,14 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                 }
                 CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
                 float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
-                blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+                blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                     float ticks, progress = 0.0f;
                     int currentStage = 0;
                     static boolean swing = true;
 
                     @Override
                     public void run() {
-                        if (block.getLocation().getBlock().getType() != Material.NOTE_BLOCK && blocks.get(getObjectByBlock(block)) != null)
+                        if (block.getLocation().getBlock().getType() != Material.NOTE_BLOCK && blocks.get(getEntryByBlock(block)) != null)
                             BlockUtils.cancelAllTasksWithThisBlock(block);
                         Block targetBlock = PlayerUtils.getTargetBlock(player);
                         if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
@@ -111,13 +112,13 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                 }, 0L, 1L));
             }
             if (BlockUtils.isWoodenSound(block.getType()) && !BlockUtils.hasPlayer(player)) {
-                blocks.put(new Object[]{block, player}, Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+                blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
                     static boolean swing = true;
                     float ticks = 0.0f;
 
                     @Override
                     public void run() {
-                        if (block.getLocation().getBlock().getType().isAir() && getObjectByBlock(block) != null)
+                        if (block.getLocation().getBlock().getType().isAir() && getEntryByBlock(block) != null)
                             BlockUtils.cancelAllTasksWithThisBlock(block);
                         Block targetBlock = PlayerUtils.getTargetBlock(player);
                         if (targetBlock == null || PlayerUtils.getTargetEntity(player) != null) {
@@ -149,10 +150,10 @@ public class PacketPlayerBlockDigListener extends PacketAdapter {
                     }
                 }, 0L, 1L));
             }
-        } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && getObjectByBlock(block) != null) {
+        } else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && getEntryByBlock(block) != null) {
             playZeroBreakStage(player, blockPosition);
             BlockUtils.cancelAllTasksWithThisBlock(block);
-        } else if (digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK && getObjectByBlock(block) != null && !PlayerUtils.farAway.contains(player)) {
+        } else if (digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK && getEntryByBlock(block) != null && !PlayerUtils.farAway.contains(player)) {
             playZeroBreakStage(player, blockPosition);
             BlockUtils.cancelAllTasksWithThisPlayer(player);
         }

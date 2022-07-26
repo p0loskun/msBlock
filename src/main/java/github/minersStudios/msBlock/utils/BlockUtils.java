@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BlockUtils {
-    public static final Map<Object[], Integer> blocks = new HashMap<>();
+    public static final Map<Map.Entry<Block, Player>, Integer> blocks = new HashMap<>();
 
     public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
             Material.AIR,
@@ -266,33 +266,33 @@ public class BlockUtils {
      * @return True if no tasks with player
      */
     public static boolean hasPlayer(@Nonnull Player player) {
-        for (Object[] objects : blocks.keySet())
-            if (objects[1] == player)
+        for (Map.Entry<Block, Player> entry : blocks.keySet())
+            if (entry.getValue() == player)
                 return true;
         return false;
     }
 
     /**
      * @param block block
-     * @return Object[] (Block[0] Player[1])
+     * @return map entry with block & player
      */
     @Nullable
-    public static Object[] getObjectByBlock(@Nonnull Block block) {
-        for (Object[] objects : blocks.keySet())
-            if (objects[0].equals(block))
-                return objects;
+    public static Map.Entry<Block, Player> getEntryByBlock(@Nonnull Block block) {
+        for (Map.Entry<Block, Player> entry : blocks.keySet())
+            if (entry.getKey().equals(block))
+                return entry;
         return null;
     }
 
     /**
-     * Cancels all block break tasks with block at certain location
+     * Cancels all block break tasks with block
      *
      * @param block block
      */
     public static void cancelAllTasksWithThisBlock(@Nonnull Block block) {
-        for (Object[] objects : blocks.keySet())
-            if (objects[0].equals(block))
-                Bukkit.getScheduler().cancelTask(blocks.remove(objects));
+        for (Map.Entry<Block, Player> entry : blocks.keySet())
+            if (entry.getKey().equals(block))
+                Bukkit.getScheduler().cancelTask(blocks.remove(entry));
     }
 
     /**
@@ -301,9 +301,9 @@ public class BlockUtils {
      * @param player player
      */
     public static void cancelAllTasksWithThisPlayer(@Nonnull Player player) {
-        for (Object[] objects : blocks.keySet())
-            if (objects[1] == player)
-                Bukkit.getScheduler().cancelTask(blocks.remove(objects));
+        for (Map.Entry<Block, Player> entry : blocks.keySet())
+            if (entry.getValue() == player)
+                Bukkit.getScheduler().cancelTask(blocks.remove(entry));
     }
 
     /**

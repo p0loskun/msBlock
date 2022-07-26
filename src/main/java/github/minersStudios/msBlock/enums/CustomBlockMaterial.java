@@ -204,7 +204,7 @@ public enum CustomBlockMaterial {
         World world = block.getWorld();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-        if (BlockUtils.getObjectByBlock(block) == null) return;
+        if (BlockUtils.getEntryByBlock(block) == null) return;
         BlockUtils.cancelAllTasksWithThisBlock(block);
         this.playBreakSound(block);
         world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
