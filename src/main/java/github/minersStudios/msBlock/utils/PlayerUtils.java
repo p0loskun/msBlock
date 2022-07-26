@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -97,7 +98,7 @@ public class PlayerUtils {
     @Nullable
     public static Entity getTargetEntity(@Nonnull Player player) {
         Location eyeLocation = player.getEyeLocation();
-        Predicate<Entity> filter = entity -> entity != player;
+        Predicate<Entity> filter = entity -> entity != player && entity.getType() != EntityType.DROPPED_ITEM;
         RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
         return rayTraceResult != null ? rayTraceResult.getHitEntity() : null;
     }

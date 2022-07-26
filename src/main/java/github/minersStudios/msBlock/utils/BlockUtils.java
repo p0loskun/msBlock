@@ -36,6 +36,21 @@ public class BlockUtils {
             Material.TALL_SEAGRASS
     );
 
+    public static final ImmutableSet<Material> BUCKETS_AND_SPAWNABLE_ITEMS = Sets.immutableEnumSet(
+            Material.BUCKET,
+            Material.LAVA_BUCKET,
+            Material.WATER_BUCKET,
+            Material.AXOLOTL_BUCKET,
+            Material.TROPICAL_FISH_BUCKET,
+            Material.COD_BUCKET,
+            Material.SALMON_BUCKET,
+            Material.PUFFERFISH_BUCKET,
+            Material.TADPOLE_BUCKET,
+            Material.PAINTING,
+            Material.ITEM_FRAME,
+            Material.GLOW_ITEM_FRAME
+    );
+
     private static final ImmutableSet<Material> WOOD = Sets.immutableEnumSet(
             Material.BOOKSHELF,
             Material.PUMPKIN,

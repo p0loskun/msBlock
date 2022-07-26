@@ -4,7 +4,7 @@ import github.minersStudios.msBlock.Main;
 import github.minersStudios.msBlock.enums.CustomBlockMaterial;
 import github.minersStudios.msBlock.utils.BlockUtils;
 import github.minersStudios.msBlock.utils.PlayerUtils;
-import github.minersStudios.msBlock.utils.UseBucket;
+import github.minersStudios.msBlock.utils.UseBucketsAndSpawnableItems;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.item.context.ItemActionContext;
 import org.bukkit.*;
@@ -16,10 +16,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,13 +38,14 @@ public class PlayerInteractListener implements Listener {
     private static ItemStack itemInHand;
     private static Player player;
     private static GameMode gameMode;
+    private static EquipmentSlot hand;
     private static net.minecraft.world.item.ItemStack nmsItem;
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
         if (event.getClickedBlock() == null || event.getHand() == null) return;
         Block clickedBlock = event.getClickedBlock();
-        EquipmentSlot hand = event.getHand();
+        hand = event.getHand();
         player = event.getPlayer();
         gameMode = player.getGameMode();
         ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
@@ -66,7 +64,7 @@ public class PlayerInteractListener implements Listener {
         ) {
             blockAtFace = clickedBlock.getRelative(event.getBlockFace());
             for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
-                if (!(nearbyEntity instanceof Item) && itemInHand.getType().isSolid()) return;
+                if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && itemInHand.getType().isSolid()) return;
             nmsItem = CraftItemStack.asNMSCopy(itemInHand);
             enumHand = hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
             interactionPoint = getInteractionPoint(player.getEyeLocation(), 8);
@@ -87,7 +85,7 @@ public class PlayerInteractListener implements Listener {
                     BlockUtils.REPLACE.contains(clickedBlock.getType()) ? clickedBlock
                     : clickedBlock.getRelative(event.getBlockFace());
             for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().add(0.5d, 0.5d, 0.5d), 0.5d, 0.5d, 0.5d))
-                if (!(nearbyEntity instanceof Item) && !(nearbyEntity instanceof ItemFrame)) return;
+                if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && nearbyEntity.getType() != EntityType.ITEM_FRAME) return;
             ItemMeta itemMeta = itemInHand.getItemMeta();
             if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
             CustomBlockMaterial.getCustomBlockMaterial(itemMeta.getCustomModelData()).setCustomBlock(replaceableBlock, player, hand);
@@ -95,8 +93,8 @@ public class PlayerInteractListener implements Listener {
     }
 
     private static void useItemInHand(@Nonnull PlayerInteractEvent event) {
-        if (itemInHand.getType().toString().contains("BUCKET") && itemInHand.getType() != Material.POWDER_SNOW_BUCKET) {
-            new UseBucket(player, blockAtFace);
+        if (BlockUtils.BUCKETS_AND_SPAWNABLE_ITEMS.contains(itemInHand.getType())) {
+            new UseBucketsAndSpawnableItems(player, blockAtFace, event.getBlockFace(), hand);
         } else if (Tag.STAIRS.isTagged(itemInHand.getType()) && !blockAtFace.getType().isSolid()) {
             useOn();
             if (blockAtFace.getBlockData() instanceof Stairs stairs) {
