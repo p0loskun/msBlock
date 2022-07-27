@@ -13,29 +13,29 @@ import javax.annotation.Nonnull;
 
 public class ExplosionListener implements Listener {
 
-    @EventHandler
-    public void onEntityExplode(@Nonnull EntityExplodeEvent event) {
-        for (Block block : event.blockList()) {
-            if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                block.setType(Material.AIR);
-                block.getWorld().dropItemNaturally(
-                        block.getLocation(),
-                        CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
-                );
-            }
-        }
-    }
+	@EventHandler
+	public void onEntityExplode(@Nonnull EntityExplodeEvent event) {
+		for (Block block : event.blockList()) {
+			if (block.getBlockData() instanceof NoteBlock noteBlock) {
+				block.setType(Material.AIR);
+				block.getWorld().dropItemNaturally(
+						block.getLocation(),
+						CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
+				);
+			}
+		}
+	}
 
-    @EventHandler
-    public void onBlockExplode(@Nonnull BlockExplodeEvent event) {
-        for (Block block : event.blockList()) {
-            if (block.getBlockData() instanceof NoteBlock noteBlock) {
-                block.setType(Material.AIR);
-                block.getWorld().dropItemNaturally(
-                        block.getLocation(),
-                        CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
-                );
-            }
-        }
-    }
+	@EventHandler
+	public void onBlockExplode(@Nonnull BlockExplodeEvent event) {
+		for (Block block : event.blockList()) {
+			if (block.getBlockData() instanceof NoteBlock noteBlock) {
+				block.setType(Material.AIR);
+				block.getWorld().dropItemNaturally(
+						block.getLocation(),
+						CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).getItemStack()
+				);
+			}
+		}
+	}
 }

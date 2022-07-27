@@ -6,9 +6,9 @@ import github.minersStudios.msBlock.crafts.planks.VerticalPlanks;
 
 public class RegCrafts {
 
-    public static void init() {
-        VerticalPlanks.addRecipes();
-        FramedPlanks.addRecipes();
-        CarvedPlanks.addRecipes();
-    }
+	public static void init() {
+		VerticalPlanks.addRecipes();
+		FramedPlanks.addRecipes();
+		CarvedPlanks.addRecipes();
+	}
 }
