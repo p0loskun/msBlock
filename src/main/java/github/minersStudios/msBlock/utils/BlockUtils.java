@@ -247,7 +247,6 @@ public class BlockUtils {
 			//</editor-fold>
 	);
 
-
 	/**
 	 * Updates the note block and checks if there is a notes block above it
 	 *

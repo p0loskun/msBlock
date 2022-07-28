@@ -1,5 +1,7 @@
 package github.minersStudios.msBlock.utils;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPosition;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
 import net.minecraft.world.phys.Vec3D;
@@ -27,6 +29,29 @@ import java.util.function.Predicate;
 public class PlayerUtils {
 	public static final Map<Player, Double> steps = new HashMap<>();
 	public static final Set<Player> farAway = new HashSet<>();
+
+	private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
+			//<editor-fold desc="Ignorable mob types">
+			EntityType.DROPPED_ITEM,
+			EntityType.ARROW,
+			EntityType.SPECTRAL_ARROW,
+			EntityType.AREA_EFFECT_CLOUD,
+			EntityType.DRAGON_FIREBALL,
+			EntityType.EGG,
+			EntityType.FISHING_HOOK,
+			EntityType.WITHER_SKULL,
+			EntityType.TRIDENT,
+			EntityType.SNOWBALL,
+			EntityType.SMALL_FIREBALL,
+			EntityType.FIREBALL,
+			EntityType.FIREWORK,
+			EntityType.SPLASH_POTION,
+			EntityType.THROWN_EXP_BOTTLE,
+			EntityType.EXPERIENCE_ORB,
+			EntityType.LLAMA_SPIT,
+			EntityType.LIGHTNING
+			//</editor-fold>
+	);
 
 	/**
 	 * Gets interaction location
@@ -88,7 +113,7 @@ public class PlayerUtils {
 	@Nullable
 	public static Entity getTargetEntity(@Nonnull Player player, @Nullable Block targetBlock) {
 		Location eyeLocation = player.getEyeLocation();
-		Predicate<Entity> filter = entity -> entity != player && entity.getType() != EntityType.DROPPED_ITEM;
+		Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
 		RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
 		if (rayTraceResult == null) return null;
 		Entity targetEntity = rayTraceResult.getHitEntity();
