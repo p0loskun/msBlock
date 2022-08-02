@@ -1,10 +1,9 @@
-name: msBlock
-version: ${project.version}
-description: A Minecraft plugin with custom blocks for WhoMine
-authors: [ MinersStudios, p0loskun ]
-website: minersstudios.github.io
+name: ${name}
+version: ${version}
+description: ${description}
+authors: [${authors}]
+website: ${url}
 
-main: github.minersStudios.msBlock.Main
-api-version: 1.19
-database: false
-softdepend: [ CoreProtect, ProtocolLib ]
+main: ${mainClass}
+api-version: ${apiVersion}
+softdepend: [CoreProtect, ProtocolLib]
