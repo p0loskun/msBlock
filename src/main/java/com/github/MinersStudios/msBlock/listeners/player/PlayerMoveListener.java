@@ -25,6 +25,7 @@ public class PlayerMoveListener implements Listener {
 		if (
 				(bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
 				&& player.getGameMode() != GameMode.SPECTATOR
+				&& !player.isFlying()
 				&& !player.isSneaking()
 				&& bottomBlock.getType().isSolid()
 		) {
