@@ -1,6 +1,7 @@
 package com.github.MinersStudios.msBlock.enums;
 
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,9 @@ public enum ToolTier {
 	@Nonnull
 	public static ToolTier getToolTier(@Nonnull ItemStack itemInMainHand) {
 		for (ToolTier toolTier : ToolTier.values()) {
+			if (itemInMainHand.getType() == Material.SHEARS) {
+				return ToolTier.NETHERITE;
+			}
 			if (itemInMainHand.getType().name().contains(toolTier.itemTierName)) {
 				return toolTier;
 			}

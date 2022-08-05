@@ -5,6 +5,9 @@ import com.github.MinersStudios.msBlock.utils.BlockUtils;
 import com.github.MinersStudios.msBlock.utils.PlayerUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
@@ -54,6 +57,9 @@ public enum CustomBlockMaterial {
 	CARVED_SPRUCE_PLANKS(Instrument.BANJO, new Note(24), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 11.0f, ToolType.AXE, false, 0, "Резные еловые доски", 13024),
 	CARVED_WARPED_PLANKS(Instrument.BIT, new Note(1), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 11.0f, ToolType.AXE, false, 0, "Резные искажённые доски", 13025),
 	CARVED_MANGROVE_PLANKS(Instrument.BIT, new Note(2), false, Sound.BLOCK_WOOD_PLACE, Sound.BLOCK_WOOD_BREAK, Sound.BLOCK_WOOD_HIT, Sound.BLOCK_WOOD_STEP, 11.0f, ToolType.AXE, false, 0, "Резные мангровые доски", 13026),
+
+	HACPAL_BLOCK(Instrument.BIT, new Note(3), false, Sound.ENTITY_PUFFER_FISH_HURT, Sound.ENTITY_PUFFER_FISH_DEATH, Sound.ENTITY_LLAMA_SPIT, Sound.ENTITY_LLAMA_SPIT, 10.0f, ToolType.SHEARS, false, 0, "Насрал-блок", 13027),
+	SVINSTER_BLOCK(Instrument.BIT, new Note(4), false, Sound.ENTITY_PIG_AMBIENT, Sound.ENTITY_PIG_DEATH, Sound.ENTITY_PIG_HURT, Sound.ENTITY_PIG_AMBIENT, 10.0f, ToolType.SWORD, false, 0, "Свинстер-блок", 13028),
 	//</editor-fold>
 	;
 
@@ -133,7 +139,19 @@ public enum CustomBlockMaterial {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		assert itemMeta != null;
 		itemMeta.setCustomModelData(this.itemCustomModelData);
-		itemMeta.displayName(Component.text(ChatColor.WHITE + this.itemName));
+		itemMeta.displayName(
+				Component.text()
+						.append(Component.text(this.itemName)
+						.style(Style.style(
+								NamedTextColor.WHITE,
+								TextDecoration.OBFUSCATED.withState(false),
+								TextDecoration.BOLD.withState(false),
+								TextDecoration.ITALIC.withState(false),
+								TextDecoration.STRIKETHROUGH.withState(false),
+								TextDecoration.UNDERLINED.withState(false)
+						)))
+						.build()
+		);
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
 	}
@@ -208,7 +226,7 @@ public enum CustomBlockMaterial {
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
 		if (BlockUtils.getEntryByBlock(block) == null) return;
-		BlockUtils.cancelAllTasksWithThisBlock(block);
+		Bukkit.getScheduler().runTask(Main.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(block));
 		this.playBreakSound(block);
 		world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
 		Main.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, block.getBlockData());
