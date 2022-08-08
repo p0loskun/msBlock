@@ -63,6 +63,7 @@ public enum CustomBlockMaterial {
 	//</editor-fold>
 	;
 
+	private static final CustomBlockMaterial[] customBlockMaterials = values();
 	@Getter private final Instrument instrument;
 	@Getter private final Note note;
 	@Getter private final boolean powered;
@@ -164,7 +165,7 @@ public enum CustomBlockMaterial {
 	 */
 	@Nonnull
 	public static CustomBlockMaterial getCustomBlockMaterial(@Nonnull Note note, @Nonnull Instrument instrument, boolean powered) {
-		for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values())
+		for (CustomBlockMaterial customBlockMaterial : customBlockMaterials)
 			if (
 					customBlockMaterial.instrument == instrument
 					&& customBlockMaterial.note.equals(note)
@@ -179,7 +180,7 @@ public enum CustomBlockMaterial {
 	 */
 	@Nonnull
 	public static CustomBlockMaterial getCustomBlockMaterial(int itemCustomModelData) {
-		for (CustomBlockMaterial customBlockMaterial : CustomBlockMaterial.values()) {
+		for (CustomBlockMaterial customBlockMaterial : customBlockMaterials) {
 			if (customBlockMaterial.itemCustomModelData == itemCustomModelData) {
 				return customBlockMaterial;
 			}

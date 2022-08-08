@@ -40,7 +40,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 		Block block = blockPosition.toLocation(player.getWorld()).getBlock();
 		boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
-		Bukkit.getScheduler().runTask(this.getPlugin(), () -> {
+		Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 			if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
 				if (block.getType() != Material.NOTE_BLOCK) {
 					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
@@ -55,7 +55,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					}
 					CustomBlockMaterial customBlockMaterial = CustomBlockMaterial.getCustomBlockMaterial(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
 					float digSpeed = CustomBlockMaterial.getDigSpeed(player, customBlockMaterial);
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(this.plugin, new Runnable() {
+					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
 						float ticks, progress = 0.0f;
 						int currentStage = 0;
 						static boolean swing = true;
@@ -77,7 +77,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							if (!targetBlock.equals(block)) return;
 
 							if (!farAway.contains(player)) {
-								Main.getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+								Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
 									@Override
 									public void onPacketReceiving(PacketEvent event) {
 										swing = true;
@@ -119,7 +119,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
 						static boolean swing = true;
 						float ticks = 0.0f;
 
@@ -136,7 +136,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							if (!targetBlock.equals(block)) return;
 
 							if (!farAway.contains(player)) {
-								getProtocolManager().addPacketListener(new PacketAdapter(plugin, PacketType.Play.Client.ARM_ANIMATION) {
+								getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
 									@Override
 									public void onPacketReceiving(PacketEvent event) {
 										swing = true;

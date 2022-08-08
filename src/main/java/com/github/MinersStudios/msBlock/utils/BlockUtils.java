@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.MinersStudios.msBlock.utils.PlayerUtils.farAway;
 
 public class BlockUtils {
-	public static final Map<Map.Entry<Block, Player>, Integer> blocks = new HashMap<>();
+	public static final Map<Map.Entry<Block, Player>, Integer> blocks = new ConcurrentHashMap<>();
 
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
 			//<editor-fold desc="Replace materials">
@@ -321,12 +321,10 @@ public class BlockUtils {
 	 * @param block block
 	 */
 	public static void cancelAllTasksWithThisBlock(@Nonnull Block block) {
-		for (Map.Entry<Map.Entry<Block, Player>, Integer> entry : blocks.entrySet()) {
-			Map.Entry<Block, Player> blockPlayerEntry = entry.getKey();
-			if (blockPlayerEntry.getKey().equals(block)) {
-				Bukkit.getScheduler().cancelTask(entry.getValue());
-				blocks.remove(blockPlayerEntry);
-				farAway.remove(blockPlayerEntry.getValue());
+		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
+			if (entry.getKey().equals(block)) {
+				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
+				farAway.remove(entry.getValue());
 			}
 		}
 	}
@@ -337,12 +335,10 @@ public class BlockUtils {
 	 * @param player player
 	 */
 	public static void cancelAllTasksWithThisPlayer(@Nonnull Player player) {
-		for (Map.Entry<Map.Entry<Block, Player>, Integer> entry : blocks.entrySet()) {
-			Map.Entry<Block, Player> blockPlayerEntry = entry.getKey();
-			if (blockPlayerEntry.getValue().equals(player)) {
-				Bukkit.getScheduler().cancelTask(entry.getValue());
-				blocks.remove(blockPlayerEntry);
-				farAway.remove(blockPlayerEntry.getValue());
+		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
+			if (entry.getValue().equals(player)) {
+				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
+				farAway.remove(entry.getValue());
 			}
 		}
 	}
