@@ -3,7 +3,6 @@ package com.github.MinersStudios.msBlock.enums;
 import com.github.MinersStudios.msBlock.Main;
 import com.github.MinersStudios.msBlock.utils.BlockUtils;
 import com.github.MinersStudios.msBlock.utils.PlayerUtils;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -64,14 +63,14 @@ public enum CustomBlockMaterial {
 	;
 
 	private static final CustomBlockMaterial[] customBlockMaterials = values();
-	@Getter private final Instrument instrument;
-	@Getter private final Note note;
-	@Getter private final boolean powered;
-	@Getter private final Sound placeSound, breakSound, hitSound, stepSound;
+	private final Instrument instrument;
+	private final Note note;
+	private final boolean powered;
+	private final Sound placeSound, breakSound, hitSound, stepSound;
 	private final float digSpeed;
-	@Getter private final ToolType toolType;
-	@Getter private final boolean forceTool;
-	@Getter private final int expToDrop;
+	private final ToolType toolType;
+	private final boolean forceTool;
+	private final int expToDrop;
 	private final String itemName;
 	private final int itemCustomModelData;
 
@@ -114,7 +113,7 @@ public enum CustomBlockMaterial {
 		float base = 1.0f;
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-		if (customBlockMaterial.getToolType() == ToolType.getToolType(itemInMainHand)) {
+		if (customBlockMaterial.toolType == ToolType.getToolType(itemInMainHand)) {
 			base = ToolTier.getToolTier(itemInMainHand).getSpeed();
 			if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
 				base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
@@ -234,7 +233,7 @@ public enum CustomBlockMaterial {
 		block.setType(Material.AIR);
 
 		if (
-				(!this.isForceTool() || this.getToolType() == ToolType.getToolType(itemInMainHand))
+				(!this.isForceTool() || this.toolType == ToolType.getToolType(itemInMainHand))
 				&& this != CustomBlockMaterial.DEFAULT
 		) {
 			world.dropItemNaturally(blockLocation, this.getItemStack());
@@ -316,5 +315,13 @@ public enum CustomBlockMaterial {
 
 	public boolean isWooden() {
 		return this.toolType == ToolType.AXE;
+	}
+
+	public boolean isForceTool() {
+		return forceTool;
+	}
+
+	public int getExpToDrop() {
+		return expToDrop;
 	}
 }

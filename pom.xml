@@ -6,7 +6,7 @@
 
 	<groupId>com.github.MinersStudios</groupId>
 	<artifactId>msBlock</artifactId>
-	<version>0.1.0</version>
+	<version>0.5.0</version>
 	<packaging>jar</packaging>
 
 	<name>msBlock</name>
@@ -83,12 +83,6 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
 			<version>1.19-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

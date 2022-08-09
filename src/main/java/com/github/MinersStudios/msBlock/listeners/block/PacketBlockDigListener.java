@@ -11,7 +11,6 @@ import com.github.MinersStudios.msBlock.enums.CustomBlockMaterial;
 import com.github.MinersStudios.msBlock.utils.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -42,14 +41,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 		Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
 			if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
-				if (block.getType() != Material.NOTE_BLOCK) {
-					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
-						BlockUtils.cancelAllTasksWithThisPlayer(player);
-					}
-					if (hasSlowDigging) {
-						player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
-					}
-				} else if (block.getBlockData() instanceof NoteBlock noteBlock) {
+				if (block.getBlockData() instanceof NoteBlock noteBlock) {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
@@ -114,6 +106,13 @@ public class PacketBlockDigListener extends PacketAdapter {
 							}
 						}
 					}, 0L, 1L));
+				} else {
+					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
+						BlockUtils.cancelAllTasksWithThisPlayer(player);
+					}
+					if (hasSlowDigging) {
+						player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
+					}
 				}
 				if (BlockUtils.isWoodenSound(block.getType())) {
 					if (BlockUtils.hasPlayer(player)) {

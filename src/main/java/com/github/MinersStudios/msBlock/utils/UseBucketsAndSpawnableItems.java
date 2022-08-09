@@ -99,12 +99,12 @@ public class UseBucketsAndSpawnableItems {
 		Location eyeLocation = this.player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
 		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
-		if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) {
-			if (
-					rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
-					|| rayTraceResult.getHitEntity().getType() == EntityType.PAINTING
-			) return;
-		}
+		if (
+				rayTraceResult != null
+				&& rayTraceResult.getHitEntity() != null
+				&& (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
+				|| rayTraceResult.getHitEntity().getType() == EntityType.PAINTING)
+		) return;
 		this.block.getWorld().spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
@@ -118,11 +118,12 @@ public class UseBucketsAndSpawnableItems {
 		Location eyeLocation = this.player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
 		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
-		if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) {
-			if (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME || rayTraceResult.getHitEntity().getType() == EntityType.PAINTING) {
-				return;
-			}
-		}
+		if (
+				rayTraceResult != null
+				&& rayTraceResult.getHitEntity() != null
+				&& (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
+				|| rayTraceResult.getHitEntity().getType() == EntityType.PAINTING)
+		) return;
 		this.block.getWorld().spawn(this.blockLocation, Painting.class, painting -> painting.setFacingDirection(this.blockFace, true));
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);

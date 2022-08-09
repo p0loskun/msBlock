@@ -1,6 +1,5 @@
 package com.github.MinersStudios.msBlock.enums;
 
-import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +14,7 @@ public enum ToolTier {
 	DIAMOND("DIAMOND_", 0.65f),
 	NETHERITE("NETHERITE_", 0.8f);
 
-	@Getter private final float speed;
+	private final float speed;
 	private final String itemTierName;
 
 	ToolTier(String itemTierName, float speed) {
@@ -38,5 +37,9 @@ public enum ToolTier {
 			}
 		}
 		return HAND;
+	}
+
+	public float getSpeed() {
+		return speed;
 	}
 }
