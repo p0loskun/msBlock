@@ -13,8 +13,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.FaceAttachable;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.Stairs;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -67,7 +67,7 @@ public class PlayerInteractListener implements Listener {
 		) {
 			blockAtFace = clickedBlock.getRelative(event.getBlockFace());
 			for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(blockAtFace.getLocation().clone().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-				if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && itemInHand.getType().isSolid()) return;
+				if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && itemInHand.getType().isSolid() && !Tag.DOORS.isTagged(itemInHand.getType())) return;
 			}
 			nmsItem = CraftItemStack.asNMSCopy(itemInHand);
 			enumHand = hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
@@ -108,20 +108,12 @@ public class PlayerInteractListener implements Listener {
 	}
 
 	private static void useItemInHand(@Nonnull PlayerInteractEvent event) {
+		BlockFace blockFace = event.getBlockFace();
+		BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(itemInHand.getType());
 		if (BlockUtils.BUCKETS_AND_SPAWNABLE_ITEMS.contains(itemInHand.getType())) {
-			new UseBucketsAndSpawnableItems(player, blockAtFace, event.getBlockFace(), hand);
-		} else if (Tag.STAIRS.isTagged(itemInHand.getType()) && !blockAtFace.getType().isSolid()) {
-			useOn();
-			if (blockAtFace.getBlockData() instanceof Stairs stairs) {
-				stairs.setHalf(
-						event.getBlockFace() == BlockFace.UP ? Bisected.Half.BOTTOM
-						: event.getBlockFace() == BlockFace.DOWN ? Bisected.Half.TOP
-						: interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
-						: Bisected.Half.TOP
-				);
-				blockAtFace.setBlockData(stairs);
-			}
-		} else if (Tag.SLABS.isTagged(itemInHand.getType())) {
+			new UseBucketsAndSpawnableItems(player, blockAtFace, blockFace, hand);
+		}
+		if (Tag.SLABS.isTagged(itemInHand.getType())) {
 			boolean placeDouble = true;
 			Material itemMaterial = itemInHand.getType();
 			if (blockAtFace.getType() != itemMaterial) {
@@ -142,27 +134,57 @@ public class PlayerInteractListener implements Listener {
 					itemInHand.setAmount(itemInHand.getAmount() - 1);
 				}
 			} else if (
-					event.getBlockFace() == BlockFace.DOWN
-					|| interactionPoint.getY() > 0.5d
-					&& interactionPoint.getY() < 1.0d
-					&& blockAtFace.getType() == itemMaterial
+					blockFace == BlockFace.DOWN
+							|| interactionPoint.getY() > 0.5d
+							&& interactionPoint.getY() < 1.0d
+							&& blockAtFace.getType() == itemMaterial
 			) {
 				slab.setType(Slab.Type.TOP);
 			} else if (
-					event.getBlockFace() == BlockFace.UP
-					|| interactionPoint.getY() < 0.5d
-					&& interactionPoint.getY() > 0.0d
-					&& blockAtFace.getType() == itemMaterial
+					blockFace == BlockFace.UP
+							|| interactionPoint.getY() < 0.5d
+							&& interactionPoint.getY() > 0.0d
+							&& blockAtFace.getType() == itemMaterial
 			) {
 				slab.setType(Slab.Type.BOTTOM);
 			}
 			blockAtFace.setBlockData(slab);
-		} else if (Tag.SHULKER_BOXES.isTagged(itemInHand.getType()) && !blockAtFace.getType().isSolid()) {
+		}
+		if (!BlockUtils.REPLACE.contains(blockAtFace.getType())) return;
+		if (materialBlockData instanceof FaceAttachable) {
 			useOn();
-			if (blockAtFace.getBlockData() instanceof Directional directional) {
-				directional.setFacing(event.getBlockFace());
-				blockAtFace.setBlockData(directional);
+			FaceAttachable faceAttachable = (FaceAttachable) blockAtFace.getBlockData();
+			switch (blockFace) {
+				case UP -> faceAttachable.setAttachedFace(FaceAttachable.AttachedFace.FLOOR);
+				case DOWN -> faceAttachable.setAttachedFace(FaceAttachable.AttachedFace.CEILING);
+				default -> faceAttachable.setAttachedFace(FaceAttachable.AttachedFace.WALL);
 			}
+			if (faceAttachable instanceof Directional directional && faceAttachable.getAttachedFace() == FaceAttachable.AttachedFace.WALL) {
+				directional.setFacing(blockFace);
+				blockAtFace.setBlockData(directional);
+				return;
+			}
+			blockAtFace.setBlockData(faceAttachable);
+		} else if (
+				materialBlockData instanceof Directional directionalMaterial
+				&& (directionalMaterial.getFaces().contains(blockFace) || Tag.STAIRS.isTagged(itemInHand.getType()) || Tag.TRAPDOORS.isTagged(itemInHand.getType()))
+				&& !BlockUtils.IGNORABLE_MATERIALS.contains(itemInHand.getType())
+		) {
+			useOn();
+			if (!(blockAtFace.getBlockData() instanceof Directional directional)) return;
+			if (!(directional instanceof Bisected bisected)) {
+				directional.setFacing(blockFace);
+			} else {
+				bisected.setHalf(
+						blockFace == BlockFace.UP ? Bisected.Half.BOTTOM
+						: blockFace == BlockFace.DOWN ? Bisected.Half.TOP
+						: interactionPoint.getY() < 0.5d && interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
+						: Bisected.Half.TOP
+				);
+				blockAtFace.setBlockData(bisected);
+				return;
+			}
+			blockAtFace.setBlockData(directional);
 		} else if (!blockAtFace.getType().isSolid() && blockAtFace.getType() != itemInHand.getType()) {
 			useOn();
 		}

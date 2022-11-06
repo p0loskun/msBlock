@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,58 @@ public class BlockUtils {
 			Material.VINE,
 			Material.SNOW,
 			Material.FIRE
+			//</editor-fold>
+	);
+
+	public static final ImmutableSet<Material> IGNORABLE_MATERIALS = Sets.immutableEnumSet(
+			//<editor-fold desc="Ignorable materials">
+			Material.ANVIL,
+			Material.LECTERN,
+			Material.HOPPER,
+			Material.DISPENSER,
+			Material.DROPPER,
+			Material.OBSERVER,
+			Material.PISTON,
+			Material.STICKY_PISTON,
+			Material.COMPARATOR,
+			Material.REPEATER,
+			Material.WHITE_GLAZED_TERRACOTTA,
+			Material.ORANGE_GLAZED_TERRACOTTA,
+			Material.MAGENTA_GLAZED_TERRACOTTA,
+			Material.LIGHT_BLUE_GLAZED_TERRACOTTA,
+			Material.YELLOW_GLAZED_TERRACOTTA,
+			Material.LIME_GLAZED_TERRACOTTA,
+			Material.PINK_GLAZED_TERRACOTTA,
+			Material.GRAY_GLAZED_TERRACOTTA,
+			Material.LIGHT_GRAY_GLAZED_TERRACOTTA,
+			Material.CYAN_GLAZED_TERRACOTTA,
+			Material.PURPLE_GLAZED_TERRACOTTA,
+			Material.BLUE_GLAZED_TERRACOTTA,
+			Material.BROWN_GLAZED_TERRACOTTA,
+			Material.GREEN_GLAZED_TERRACOTTA,
+			Material.RED_GLAZED_TERRACOTTA,
+			Material.BLACK_GLAZED_TERRACOTTA,
+			Material.BELL,
+			Material.WHITE_BED,
+			Material.ORANGE_BED,
+			Material.MAGENTA_BED,
+			Material.LIGHT_BLUE_BED,
+			Material.YELLOW_BED,
+			Material.LIME_BED,
+			Material.PINK_BED,
+			Material.GRAY_BED,
+			Material.LIGHT_GRAY_BED,
+			Material.CYAN_BED,
+			Material.PURPLE_BED,
+			Material.BLUE_BED,
+			Material.BROWN_BED,
+			Material.GREEN_BED,
+			Material.RED_BED,
+			Material.BLACK_BED,
+			Material.STONECUTTER,
+			Material.CHEST,
+			Material.TRAPPED_CHEST,
+			Material.ENDER_CHEST
 			//</editor-fold>
 	);
 
@@ -339,6 +392,15 @@ public class BlockUtils {
 				PlayerUtils.farAway.remove(entry.getValue());
 			}
 		}
+	}
+
+	@Nullable
+	public static BlockData getBlockDataByMaterial(@Nonnull Material material) {
+		return switch (material) {
+			case REDSTONE -> Material.REDSTONE_WIRE.createBlockData();
+			case STRING -> Material.TRIPWIRE.createBlockData();
+			default -> material.isBlock() ? material.createBlockData() : null;
+		};
 	}
 
 	/**

@@ -6,6 +6,7 @@ import com.github.minersstudios.msblock.enums.ToolType;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 
 import javax.annotation.Nonnull;
@@ -55,15 +56,15 @@ public class ConfigCache {
 								Objects.requireNonNull(blockConfig.getString("namespaced-key"), "namespaced-key in " + fileName + " is null"),
 								(float) blockConfig.getDouble("block-settings.dig-speed"),
 								blockConfig.getInt("block-settings.drop.experience"),
-								blockConfig.getBoolean("block-settings.drop.drops-default-item"),
-								ToolType.valueOf(blockConfig.getString("block-settings.tool.type")),
-								blockConfig.getBoolean("block-settings.tool.force"),
+								blockConfig.getBoolean("block-settings.drop.drops-default-item", true),
+								ToolType.valueOf(blockConfig.getString("block-settings.tool.type", "HAND")),
+								blockConfig.getBoolean("block-settings.tool.force", false),
 								Material.valueOf(blockConfig.getString("item.material")),
 								blockConfig.getString("item.name"),
 								blockConfig.getInt("item.custom-model-data"),
 								Instrument.valueOf(blockConfig.getString("noteblock.instrument")),
 								new Note(blockConfig.getInt("noteblock.note")),
-								blockConfig.getBoolean("noteblock.is-powered"),
+								blockConfig.getBoolean("noteblock.is-powered", false),
 								blockConfig.getString("sounds.place.sound-name"),
 								(float) blockConfig.getDouble("sounds.place.pitch"),
 								(float) blockConfig.getDouble("sounds.place.volume"),
@@ -76,14 +77,16 @@ public class ConfigCache {
 								blockConfig.getString("sounds.step.sound-name"),
 								(float) blockConfig.getDouble("sounds.step.pitch"),
 								(float) blockConfig.getDouble("sounds.step.volume"),
-								blockConfig.getBoolean("craft.show-in-crafts-menu"),
+								blockConfig.getBoolean("craft.show-in-crafts-menu", false),
 								null
 						);
 						if (ingredientMap != null) {
 							List<String> customBlockShapedRecipe = blockConfig.getStringList("craft.shaped-recipe");
-							ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.getInstance(), customBlock.getNamespacedKey()), customBlock.getItemStack());
+							ItemStack craftedItem = customBlock.getItemStack().clone();
+							craftedItem.setAmount(blockConfig.getInt("craft.item-amount", 1));
+							ShapedRecipe shapedRecipe = new ShapedRecipe(new NamespacedKey(Main.getInstance(), customBlock.getNamespacedKey()), craftedItem);
 							shapedRecipe.setGroup(Main.getInstance().getName().toLowerCase(Locale.ROOT) + blockConfig.getString("craft.group"));
-							shapedRecipe.shape(customBlockShapedRecipe.get(0), customBlockShapedRecipe.get(1), customBlockShapedRecipe.get(2));
+							shapedRecipe.shape(customBlockShapedRecipe.toArray(String[]::new));
 							for (Character character : ingredientMap.keySet()) {
 								shapedRecipe.setIngredient(character, ingredientMap.get(character));
 							}

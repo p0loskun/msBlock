@@ -20,6 +20,7 @@ craft:
     - " P "
   material-list:
     P: PAPER
+  item-amount: 1
 noteblock:
   instrument: BANJO
   note: 0
