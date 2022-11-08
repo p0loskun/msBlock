@@ -7,7 +7,7 @@ on:
   push:
     branches: 
     - release
-    - branch-*
+    - dev
   pull_request:
     branches: [ "release" ]
 
