@@ -53,6 +53,10 @@ public class PlayerUtils {
 			//</editor-fold>
 	);
 
+	private PlayerUtils() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	/**
 	 * Gets interaction location
 	 *

@@ -48,7 +48,8 @@ public class PacketBlockDigListener extends PacketAdapter {
 					CustomBlock customBlock = CustomBlock.getCustomBlock(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
 					float digSpeed = CustomBlock.getDigSpeed(player, customBlock);
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-						float ticks, progress = 0.0f;
+						float ticks = 0.0f;
+						float progress = 0.0f;
 						int currentStage = 0;
 						static boolean swing = true;
 
@@ -119,8 +120,8 @@ public class PacketBlockDigListener extends PacketAdapter {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
-						static boolean swing = true;
 						float ticks = 0.0f;
+						static boolean swing = true;
 
 						@Override
 						public void run() {

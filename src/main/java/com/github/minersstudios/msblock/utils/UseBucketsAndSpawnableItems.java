@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.function.Predicate;
 
 public class UseBucketsAndSpawnableItems {
@@ -22,6 +22,7 @@ public class UseBucketsAndSpawnableItems {
 	private final ItemStack itemInHand;
 	private final Location blockLocation;
 	private final BlockFace blockFace;
+	private final SecureRandom random = new SecureRandom();
 
 	/**
 	 * Uses a bucket vanillish
@@ -32,13 +33,12 @@ public class UseBucketsAndSpawnableItems {
 	 * @param hand      hand
 	 */
 	public UseBucketsAndSpawnableItems(@Nonnull Player player, @Nonnull Block block, @Nonnull BlockFace blockFace, @Nonnull EquipmentSlot hand) {
-		ItemStack itemInHand = player.getInventory().getItem(hand);
 		this.player = player;
 		this.block = block;
-		this.itemInHand = itemInHand;
+		this.itemInHand = player.getInventory().getItem(hand);
 		this.blockLocation = block.getLocation().add(0.5d, 0.5d, 0.5d);
 		this.blockFace = blockFace;
-		Material itemMaterial = itemInHand.getType();
+		Material itemMaterial = this.itemInHand.getType();
 		switch (itemMaterial) {
 			case ITEM_FRAME, GLOW_ITEM_FRAME -> setItemFrame();
 			case PAINTING -> setPainting();
@@ -49,15 +49,12 @@ public class UseBucketsAndSpawnableItems {
 			case TROPICAL_FISH_BUCKET -> setTropicalFish();
 			case AXOLOTL_BUCKET -> setAxolotl();
 			case BUCKET -> useEmptyBucket();
+			case LAVA_BUCKET -> setLava();
+			case WATER_BUCKET -> setWater();
 			default -> {
-				if (itemMaterial == Material.LAVA_BUCKET && !block.getType().isSolid()) {
-					block.setType(Material.LAVA);
-					block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-					Main.getCoreProtectAPI().logPlacement(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
-					setBucketIfSurvival();
-				} else if (itemMaterial == Material.WATER_BUCKET) {
-					setWater();
-				}
+				 if (Tag.ITEMS_BOATS.isTagged(itemMaterial)) {
+					 setBoat();
+				 }
 			}
 		}
 	}
@@ -66,21 +63,21 @@ public class UseBucketsAndSpawnableItems {
 	 * @return random axolotl color variant
 	 */
 	private Axolotl.Variant randomVariant() {
-		return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
+		return Axolotl.Variant.values()[random.nextInt(Axolotl.Variant.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body pattern variant
 	 */
 	private TropicalFish.Pattern randomPattern() {
-		return TropicalFish.Pattern.values()[new Random().nextInt(TropicalFish.Pattern.values().length)];
+		return TropicalFish.Pattern.values()[random.nextInt(TropicalFish.Pattern.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body color variant
 	 */
 	private DyeColor randomBodyColor() {
-		return DyeColor.values()[new Random().nextInt(DyeColor.values().length)];
+		return DyeColor.values()[random.nextInt(DyeColor.values().length)];
 	}
 
 	/**
@@ -89,6 +86,27 @@ public class UseBucketsAndSpawnableItems {
 	private void setBucketIfSurvival() {
 		if (this.player.getGameMode() == GameMode.SURVIVAL) {
 			this.player.getInventory().getItemInMainHand().setType(Material.BUCKET);
+		}
+	}
+
+	/**
+	 * Uses boat
+	 */
+	private void setBoat() {
+		Location eyeLocation = this.player.getEyeLocation();
+		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+		if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) return;
+		Boat.Type boatType = Boat.Type.valueOf(itemInHand.getType().name().split("_")[0]);
+		Location summonLocation = this.blockLocation.toCenterLocation().subtract(0.0d, 0.5d, 0.0d);
+		summonLocation.setYaw(eyeLocation.getYaw());
+		if (Tag.ITEMS_CHEST_BOATS.isTagged(itemInHand.getType())) {
+			this.block.getWorld().spawn(summonLocation, ChestBoat.class, chestBoat -> chestBoat.setBoatType(boatType));
+		} else {
+			this.block.getWorld().spawn(summonLocation, Boat.class, chestBoat -> chestBoat.setBoatType(boatType));
+		}
+		if (this.player.getGameMode() != GameMode.CREATIVE) {
+			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 		}
 	}
 
@@ -136,7 +154,7 @@ public class UseBucketsAndSpawnableItems {
 	private void setTropicalFish() {
 		setWater();
 		this.block.getWorld().spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
-			if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta)
+			if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
 				if (tropicalFishBucketMeta.hasVariant()) {
 					tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
 					tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
@@ -146,6 +164,7 @@ public class UseBucketsAndSpawnableItems {
 					tropicalFish.setPattern(randomPattern());
 					tropicalFish.setPatternColor(randomBodyColor());
 				}
+			}
 		});
 	}
 
@@ -189,6 +208,14 @@ public class UseBucketsAndSpawnableItems {
 			}
 			this.itemInHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.WATER_BUCKET : this.itemInHand.getType());
 		}
+	}
+
+	private void setLava() {
+		if (this.block.getType().isSolid()) return;
+		this.block.setType(Material.LAVA);
+		this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
+		setBucketIfSurvival();
 	}
 
 	private void setWater() {

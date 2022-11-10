@@ -33,8 +33,8 @@ public final class Main extends JavaPlugin {
 	private CoreProtectAPI getCoreProtect() {
 		Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
 		if (coreProtect == null) return null;
-		CoreProtectAPI coreProtectAPI = ((CoreProtect)coreProtect).getAPI();
-		return !coreProtectAPI.isEnabled() || coreProtectAPI.APIVersion() < 9 ? null : coreProtectAPI;
+		CoreProtectAPI api = ((CoreProtect)coreProtect).getAPI();
+		return !api.isEnabled() || api.APIVersion() < 9 ? null : api;
 	}
 
 	public static void reloadConfigs() {

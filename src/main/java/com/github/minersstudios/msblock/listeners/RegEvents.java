@@ -7,6 +7,10 @@ import org.bukkit.plugin.PluginManager;
 
 public final class RegEvents {
 
+	private RegEvents() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static void init() {
 		PluginManager pluginManager = Main.getInstance().getServer().getPluginManager();
 

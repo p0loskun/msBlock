@@ -3,6 +3,7 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.enums.CustomBlock;
 import com.github.minersstudios.msblock.enums.ToolType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,7 +19,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ConfigCache {
-	public final YamlConfiguration yamlConfiguration;
 	public final Map<String, CustomBlock> customBlocks = new HashMap<>();
 	@Nonnull public final String
 			wood_sound_place,
@@ -28,7 +28,7 @@ public class ConfigCache {
 
 	public ConfigCache() {
 		File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
-		yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
+		YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
 		this.wood_sound_place = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.place"));
 		this.wood_sound_break = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.break"));
@@ -93,10 +93,10 @@ public class ConfigCache {
 							Bukkit.addRecipe(shapedRecipe);
 							customBlock.setShapedRecipe(shapedRecipe);
 						}
-						customBlocks.put(customBlock.getNamespacedKey(), customBlock);
+						this.customBlocks.put(customBlock.getNamespacedKey(), customBlock);
 					});
 		} catch (IOException e) {
-			e.printStackTrace();
+			Main.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
 }
