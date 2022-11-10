@@ -38,7 +38,7 @@ public final class Main extends JavaPlugin {
 	}
 
 	public static void reloadConfigs() {
-		Main.getInstance().saveResource("blocks/example.yml", true);
+		instance.saveResource("blocks/example.yml", true);
 		instance.saveDefaultConfig();
 		instance.reloadConfig();
 		configCache = new ConfigCache();
