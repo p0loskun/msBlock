@@ -3,6 +3,7 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.enums.CustomBlock;
 import com.github.minersstudios.msblock.enums.ToolType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -96,7 +97,7 @@ public class ConfigCache {
 						customBlocks.put(customBlock.getNamespacedKey(), customBlock);
 					});
 		} catch (IOException e) {
-			e.printStackTrace();
+			Main.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
 }

@@ -300,6 +300,10 @@ public class BlockUtils {
 			//</editor-fold>
 	);
 
+	private BlockUtils() {
+		throw new IllegalStateException("Utility class");
+	}
+
 
 	/**
 	 * Updates the note block and checks if there is a notes block above it
@@ -322,15 +326,15 @@ public class BlockUtils {
 	 * @param location location around which the blocks break
 	 */
 	public static void removeBlock(@Nonnull Location location) {
-		Block topBlock = location.clone().add(0.0d, 1.0d, 0.0d).getBlock(),
-				bottomBlock = location.clone().subtract(0.0d, 1.0d, 0.0d).getBlock();
-		World world = topBlock.getWorld();
+		World world = location.getWorld();
+		Block topBlock = location.clone().add(0.0d, 1.0d, 0.0d).getBlock();
 		if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
 			SoundGroup tobBlockSoundGroup = topBlock.getBlockData().getSoundGroup();
 			world.spawnParticle(Particle.BLOCK_CRACK, topBlock.getLocation().clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, topBlock.getBlockData());
 			world.playSound(topBlock.getLocation(), tobBlockSoundGroup.getBreakSound(), tobBlockSoundGroup.getVolume(), tobBlockSoundGroup.getPitch());
 			topBlock.breakNaturally();
 		}
+		Block bottomBlock = location.clone().subtract(0.0d, 1.0d, 0.0d).getBlock();
 		if (BREAK_ON_BLOCK_PLACE.contains(bottomBlock.getType())) {
 			SoundGroup bottomBlockSoundGroup = bottomBlock.getBlockData().getSoundGroup();
 			world.spawnParticle(Particle.BLOCK_CRACK, bottomBlock.getLocation().clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, bottomBlock.getBlockData());

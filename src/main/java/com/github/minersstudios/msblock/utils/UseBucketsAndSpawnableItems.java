@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.util.RayTraceResult;
 
 import javax.annotation.Nonnull;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.function.Predicate;
 
 public class UseBucketsAndSpawnableItems {
@@ -22,6 +22,7 @@ public class UseBucketsAndSpawnableItems {
 	private final ItemStack itemInHand;
 	private final Location blockLocation;
 	private final BlockFace blockFace;
+	private final SecureRandom random = new SecureRandom();
 
 	/**
 	 * Uses a bucket vanillish
@@ -32,13 +33,12 @@ public class UseBucketsAndSpawnableItems {
 	 * @param hand      hand
 	 */
 	public UseBucketsAndSpawnableItems(@Nonnull Player player, @Nonnull Block block, @Nonnull BlockFace blockFace, @Nonnull EquipmentSlot hand) {
-		ItemStack itemInHand = player.getInventory().getItem(hand);
 		this.player = player;
 		this.block = block;
-		this.itemInHand = itemInHand;
+		this.itemInHand = player.getInventory().getItem(hand);
 		this.blockLocation = block.getLocation().add(0.5d, 0.5d, 0.5d);
 		this.blockFace = blockFace;
-		Material itemMaterial = itemInHand.getType();
+		Material itemMaterial = this.itemInHand.getType();
 		switch (itemMaterial) {
 			case ITEM_FRAME, GLOW_ITEM_FRAME -> setItemFrame();
 			case PAINTING -> setPainting();
@@ -66,21 +66,21 @@ public class UseBucketsAndSpawnableItems {
 	 * @return random axolotl color variant
 	 */
 	private Axolotl.Variant randomVariant() {
-		return Axolotl.Variant.values()[new Random().nextInt(Axolotl.Variant.values().length)];
+		return Axolotl.Variant.values()[random.nextInt(Axolotl.Variant.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body pattern variant
 	 */
 	private TropicalFish.Pattern randomPattern() {
-		return TropicalFish.Pattern.values()[new Random().nextInt(TropicalFish.Pattern.values().length)];
+		return TropicalFish.Pattern.values()[random.nextInt(TropicalFish.Pattern.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body color variant
 	 */
 	private DyeColor randomBodyColor() {
-		return DyeColor.values()[new Random().nextInt(DyeColor.values().length)];
+		return DyeColor.values()[random.nextInt(DyeColor.values().length)];
 	}
 
 	/**
