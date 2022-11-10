@@ -19,22 +19,21 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ConfigCache {
-	public final YamlConfiguration yamlConfiguration;
 	public final Map<String, CustomBlock> customBlocks = new HashMap<>();
 	@Nonnull public final String
-			WOOD_SOUND_PLACE,
-			WOOD_SOUND_BREAK,
-			WOOD_SOUND_STEP,
-			WOOD_SOUND_HIT;
+			wood_sound_place,
+			wood_sound_break,
+			wood_sound_step,
+			wood_sound_hit;
 
 	public ConfigCache() {
 		File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
-		yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
+		YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
-		this.WOOD_SOUND_PLACE = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.place"));
-		this.WOOD_SOUND_BREAK = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.break"));
-		this.WOOD_SOUND_STEP = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.step"));
-		this.WOOD_SOUND_HIT = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.hit"));
+		this.wood_sound_place = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.place"));
+		this.wood_sound_break = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.break"));
+		this.wood_sound_step = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.step"));
+		this.wood_sound_hit = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.hit"));
 
 		try {
 			Files.walk(Paths.get(Main.getInstance().getDataFolder() + "/blocks"))
@@ -94,7 +93,7 @@ public class ConfigCache {
 							Bukkit.addRecipe(shapedRecipe);
 							customBlock.setShapedRecipe(shapedRecipe);
 						}
-						customBlocks.put(customBlock.getNamespacedKey(), customBlock);
+						this.customBlocks.put(customBlock.getNamespacedKey(), customBlock);
 					});
 		} catch (IOException e) {
 			Main.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));

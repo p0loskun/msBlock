@@ -93,7 +93,7 @@ public class BlockUtils {
 			//</editor-fold>
 	);
 
-	public static final ImmutableSet<Material> BUCKETS_AND_SPAWNABLE_ITEMS = Sets.immutableEnumSet(
+	public static final ImmutableSet<Material> SPAWNABLE_ITEMS = Sets.immutableEnumSet(
 			//<editor-fold desc="Non-block buckets and spawnable items">
 			Material.BUCKET,
 			Material.LAVA_BUCKET,
@@ -106,7 +106,21 @@ public class BlockUtils {
 			Material.TADPOLE_BUCKET,
 			Material.PAINTING,
 			Material.ITEM_FRAME,
-			Material.GLOW_ITEM_FRAME
+			Material.GLOW_ITEM_FRAME,
+			Material.OAK_BOAT,
+			Material.SPRUCE_BOAT,
+			Material.BIRCH_BOAT,
+			Material.JUNGLE_BOAT,
+			Material.ACACIA_BOAT,
+			Material.DARK_OAK_BOAT,
+			Material.MANGROVE_BOAT,
+			Material.OAK_CHEST_BOAT,
+			Material.SPRUCE_CHEST_BOAT,
+			Material.BIRCH_CHEST_BOAT,
+			Material.JUNGLE_CHEST_BOAT,
+			Material.ACACIA_CHEST_BOAT,
+			Material.DARK_OAK_CHEST_BOAT,
+			Material.MANGROVE_CHEST_BOAT
 			//</editor-fold>
 	);
 

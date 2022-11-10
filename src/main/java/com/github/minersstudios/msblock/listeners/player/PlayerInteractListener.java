@@ -110,7 +110,7 @@ public class PlayerInteractListener implements Listener {
 	private void useItemInHand(@Nonnull PlayerInteractEvent event) {
 		BlockFace blockFace = event.getBlockFace();
 		BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(this.itemInHand.getType());
-		if (BlockUtils.BUCKETS_AND_SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
+		if (BlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
 			new UseBucketsAndSpawnableItems(this.player, this.blockAtFace, blockFace, this.hand);
 		}
 		if (Tag.SLABS.isTagged(this.itemInHand.getType())) {

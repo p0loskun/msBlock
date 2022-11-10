@@ -49,15 +49,12 @@ public class UseBucketsAndSpawnableItems {
 			case TROPICAL_FISH_BUCKET -> setTropicalFish();
 			case AXOLOTL_BUCKET -> setAxolotl();
 			case BUCKET -> useEmptyBucket();
+			case LAVA_BUCKET -> setLava();
+			case WATER_BUCKET -> setWater();
 			default -> {
-				if (itemMaterial == Material.LAVA_BUCKET && !block.getType().isSolid()) {
-					block.setType(Material.LAVA);
-					block.getWorld().playSound(block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-					Main.getCoreProtectAPI().logPlacement(player.getName(), block.getLocation(), Material.LAVA, block.getBlockData());
-					setBucketIfSurvival();
-				} else if (itemMaterial == Material.WATER_BUCKET) {
-					setWater();
-				}
+				 if (Tag.ITEMS_BOATS.isTagged(itemMaterial)) {
+					 setBoat();
+				 }
 			}
 		}
 	}
@@ -89,6 +86,27 @@ public class UseBucketsAndSpawnableItems {
 	private void setBucketIfSurvival() {
 		if (this.player.getGameMode() == GameMode.SURVIVAL) {
 			this.player.getInventory().getItemInMainHand().setType(Material.BUCKET);
+		}
+	}
+
+	/**
+	 * Uses boat
+	 */
+	private void setBoat() {
+		Location eyeLocation = this.player.getEyeLocation();
+		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
+		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+		if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) return;
+		Boat.Type boatType = Boat.Type.valueOf(itemInHand.getType().name().split("_")[0]);
+		Location summonLocation = this.blockLocation.toCenterLocation().subtract(0.0d, 0.5d, 0.0d);
+		summonLocation.setYaw(eyeLocation.getYaw());
+		if (Tag.ITEMS_CHEST_BOATS.isTagged(itemInHand.getType())) {
+			this.block.getWorld().spawn(summonLocation, ChestBoat.class, chestBoat -> chestBoat.setBoatType(boatType));
+		} else {
+			this.block.getWorld().spawn(summonLocation, Boat.class, chestBoat -> chestBoat.setBoatType(boatType));
+		}
+		if (this.player.getGameMode() != GameMode.CREATIVE) {
+			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 		}
 	}
 
@@ -190,6 +208,14 @@ public class UseBucketsAndSpawnableItems {
 			}
 			this.itemInHand.setType(player.getGameMode() == GameMode.SURVIVAL ? Material.WATER_BUCKET : this.itemInHand.getType());
 		}
+	}
+
+	private void setLava() {
+		if (this.block.getType().isSolid()) return;
+		this.block.setType(Material.LAVA);
+		this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
+		setBucketIfSurvival();
 	}
 
 	private void setWater() {

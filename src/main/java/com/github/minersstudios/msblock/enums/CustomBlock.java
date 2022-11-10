@@ -318,7 +318,7 @@ public class CustomBlock {
 	public void playPlaceSound(@Nonnull Block block) {
 		if (this.placeSound == null) return;
 		if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
-			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().WOOD_SOUND_PLACE, this.placeSoundVolume, this.placeSoundPitch);
+			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().wood_sound_place, this.placeSoundVolume, this.placeSoundPitch);
 		} else {
 			block.getWorld().playSound(block.getLocation().toCenterLocation(), this.placeSound, this.placeSoundVolume, this.placeSoundPitch);
 		}
@@ -327,7 +327,7 @@ public class CustomBlock {
 	public void playBreakSound(@Nonnull Block block) {
 		if (this.breakSound == null) return;
 		if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
-			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().WOOD_SOUND_BREAK, this.breakSoundVolume, this.breakSoundPitch);
+			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().wood_sound_break, this.breakSoundVolume, this.breakSoundPitch);
 		} else {
 			block.getWorld().playSound(block.getLocation().toCenterLocation(), this.breakSound, this.breakSoundVolume, this.breakSoundPitch);
 		}
@@ -336,7 +336,7 @@ public class CustomBlock {
 	public void playHitSound(@Nonnull Block block) {
 		if (this.hitSound == null) return;
 		if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
-			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().WOOD_SOUND_HIT, this.hitSoundVolume, this.hitSoundPitch);
+			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().wood_sound_hit, this.hitSoundVolume, this.hitSoundPitch);
 		} else {
 			block.getWorld().playSound(block.getLocation().toCenterLocation(), this.hitSound, this.hitSoundVolume, this.hitSoundPitch);
 		}
@@ -345,7 +345,7 @@ public class CustomBlock {
 	public void playStepSound(@Nonnull Block block) {
 		if (this.stepSound == null) return;
 		if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
-			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().WOOD_SOUND_STEP, this.stepSoundVolume, this.stepSoundPitch);
+			block.getWorld().playSound(block.getLocation().toCenterLocation(), Main.getConfigCache().wood_sound_step, this.stepSoundVolume, this.stepSoundPitch);
 		} else {
 			block.getWorld().playSound(block.getLocation().toCenterLocation(), this.stepSound, this.stepSoundVolume, this.stepSoundPitch);
 		}
