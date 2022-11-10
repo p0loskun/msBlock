@@ -136,7 +136,7 @@ public class UseBucketsAndSpawnableItems {
 	private void setTropicalFish() {
 		setWater();
 		this.block.getWorld().spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
-			if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta)
+			if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
 				if (tropicalFishBucketMeta.hasVariant()) {
 					tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
 					tropicalFish.setPattern(tropicalFishBucketMeta.getPattern());
@@ -146,6 +146,7 @@ public class UseBucketsAndSpawnableItems {
 					tropicalFish.setPattern(randomPattern());
 					tropicalFish.setPatternColor(randomBodyColor());
 				}
+			}
 		});
 	}
 
