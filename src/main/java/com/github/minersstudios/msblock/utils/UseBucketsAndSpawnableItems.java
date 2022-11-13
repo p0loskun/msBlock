@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 
 public class UseBucketsAndSpawnableItems {
 	private final Player player;
+	private final World world;
 	private final Block block;
 	private final ItemStack itemInHand;
 	private final Location blockLocation;
@@ -34,9 +35,10 @@ public class UseBucketsAndSpawnableItems {
 	 */
 	public UseBucketsAndSpawnableItems(@Nonnull Player player, @Nonnull Block block, @Nonnull BlockFace blockFace, @Nonnull EquipmentSlot hand) {
 		this.player = player;
+		this.world = player.getWorld();
 		this.block = block;
 		this.itemInHand = player.getInventory().getItem(hand);
-		this.blockLocation = block.getLocation().add(0.5d, 0.5d, 0.5d);
+		this.blockLocation = block.getLocation().toCenterLocation();
 		this.blockFace = blockFace;
 		Material itemMaterial = this.itemInHand.getType();
 		switch (itemMaterial) {
@@ -95,15 +97,21 @@ public class UseBucketsAndSpawnableItems {
 	private void setBoat() {
 		Location eyeLocation = this.player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
-		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
-		if (rayTraceResult != null && rayTraceResult.getHitEntity() != null) return;
+		RayTraceResult rayTraceEntities = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+		RayTraceResult rayTraceBlocks = this.world.rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d);
+		assert rayTraceBlocks != null;
+		Location summonLocation = rayTraceBlocks.getHitPosition().toLocation(this.world);
+		for (Entity nearbyEntity : this.world.getNearbyEntities(summonLocation, 0.5d, 0.5d, 0.5d)) {
+			if (nearbyEntity.getType() != EntityType.DROPPED_ITEM) return;
+		}
+		if (!BlockUtils.REPLACE.contains(summonLocation.getBlock().getType())) return;
+		if (rayTraceEntities != null && rayTraceEntities.getHitEntity() != null) return;
 		Boat.Type boatType = Boat.Type.valueOf(itemInHand.getType().name().split("_")[0]);
-		Location summonLocation = this.blockLocation.toCenterLocation().subtract(0.0d, 0.5d, 0.0d);
 		summonLocation.setYaw(eyeLocation.getYaw());
 		if (Tag.ITEMS_CHEST_BOATS.isTagged(itemInHand.getType())) {
-			this.block.getWorld().spawn(summonLocation, ChestBoat.class, chestBoat -> chestBoat.setBoatType(boatType));
+			this.world.spawn(summonLocation, ChestBoat.class, chestBoat -> chestBoat.setBoatType(boatType));
 		} else {
-			this.block.getWorld().spawn(summonLocation, Boat.class, chestBoat -> chestBoat.setBoatType(boatType));
+			this.world.spawn(summonLocation, Boat.class, chestBoat -> chestBoat.setBoatType(boatType));
 		}
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
@@ -116,14 +124,14 @@ public class UseBucketsAndSpawnableItems {
 	private void setItemFrame() {
 		Location eyeLocation = this.player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
-		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+		RayTraceResult rayTraceResult = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
 		if (
 				rayTraceResult != null
 				&& rayTraceResult.getHitEntity() != null
 				&& (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
 				|| rayTraceResult.getHitEntity().getType() == EntityType.PAINTING)
 		) return;
-		this.block.getWorld().spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
+		this.world.spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 		}
@@ -135,14 +143,14 @@ public class UseBucketsAndSpawnableItems {
 	private void setPainting() {
 		Location eyeLocation = this.player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != this.player && entity.getType() != EntityType.DROPPED_ITEM;
-		RayTraceResult rayTraceResult = this.player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
+		RayTraceResult rayTraceResult = this.world.rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, 0.1d, filter);
 		if (
 				rayTraceResult != null
 				&& rayTraceResult.getHitEntity() != null
 				&& (rayTraceResult.getHitEntity().getType() == EntityType.ITEM_FRAME
 				|| rayTraceResult.getHitEntity().getType() == EntityType.PAINTING)
 		) return;
-		this.block.getWorld().spawn(this.blockLocation, Painting.class, painting -> painting.setFacingDirection(this.blockFace, true));
+		this.world.spawn(this.blockLocation, Painting.class, painting -> painting.setFacingDirection(this.blockFace, true));
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 		}
@@ -153,7 +161,7 @@ public class UseBucketsAndSpawnableItems {
 	 */
 	private void setTropicalFish() {
 		setWater();
-		this.block.getWorld().spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
+		this.world.spawn(this.blockLocation, TropicalFish.class, tropicalFish -> {
 			if (this.itemInHand.getItemMeta() instanceof TropicalFishBucketMeta tropicalFishBucketMeta) {
 				if (tropicalFishBucketMeta.hasVariant()) {
 					tropicalFish.setBodyColor(tropicalFishBucketMeta.getBodyColor());
@@ -173,7 +181,7 @@ public class UseBucketsAndSpawnableItems {
 	 */
 	private void setAxolotl() {
 		setWater();
-		this.block.getWorld().spawn(this.blockLocation, Axolotl.class, axolotl -> {
+		this.world.spawn(this.blockLocation, Axolotl.class, axolotl -> {
 			if (this.itemInHand.getItemMeta() instanceof AxolotlBucketMeta axolotlBucketMeta) {
 				axolotl.setVariant(axolotlBucketMeta.hasVariant() ? axolotlBucketMeta.getVariant() : randomVariant());
 			}
@@ -185,7 +193,7 @@ public class UseBucketsAndSpawnableItems {
 	 */
 	private void summonPrimitiveEntities(EntityType entityType) {
 		setWater();
-		this.block.getWorld().spawnEntity(this.block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
+		this.world.spawnEntity(this.block.getLocation().add(0.5d, 0.5d, 0.5d), entityType);
 	}
 
 	/**
@@ -194,12 +202,12 @@ public class UseBucketsAndSpawnableItems {
 	private void useEmptyBucket() {
 		if (this.block.getType() == Material.LAVA) {
 			Main.getCoreProtectAPI().logRemoval(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
-			this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+			this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
 			this.itemInHand.setType(this.player.getGameMode() == GameMode.SURVIVAL ? Material.LAVA_BUCKET : this.itemInHand.getType());
 			this.block.setType(Material.AIR);
 		} else {
 			Main.getCoreProtectAPI().logRemoval(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
-			this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
+			this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
 			if (this.block.getBlockData() instanceof Waterlogged waterlogged) {
 				waterlogged.setWaterlogged(false);
 				this.block.setBlockData(waterlogged);
@@ -213,7 +221,7 @@ public class UseBucketsAndSpawnableItems {
 	private void setLava() {
 		if (this.block.getType().isSolid()) return;
 		this.block.setType(Material.LAVA);
-		this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
+		this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
 		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
 		setBucketIfSurvival();
 	}
@@ -225,7 +233,7 @@ public class UseBucketsAndSpawnableItems {
 		} else {
 			this.block.setType(Material.WATER);
 		}
-		this.block.getWorld().playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
+		this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
 		Main.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
 		setBucketIfSurvival();
 	}

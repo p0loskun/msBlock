@@ -19,6 +19,8 @@ public class BlockUtils {
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
 			//<editor-fold desc="Replace materials">
 			Material.AIR,
+			Material.CAVE_AIR,
+			Material.VOID_AIR,
 			Material.WATER,
 			Material.LAVA,
 			Material.GRASS,
@@ -61,7 +63,6 @@ public class BlockUtils {
 			Material.GREEN_GLAZED_TERRACOTTA,
 			Material.RED_GLAZED_TERRACOTTA,
 			Material.BLACK_GLAZED_TERRACOTTA,
-			Material.BELL,
 			Material.WHITE_BED,
 			Material.ORANGE_BED,
 			Material.MAGENTA_BED,
@@ -81,7 +82,14 @@ public class BlockUtils {
 			Material.STONECUTTER,
 			Material.CHEST,
 			Material.TRAPPED_CHEST,
-			Material.ENDER_CHEST
+			Material.ENDER_CHEST,
+			Material.BARREL,
+			Material.BLAST_FURNACE,
+			Material.SMOKER,
+			Material.LOOM,
+			Material.BEEHIVE,
+			Material.BEE_NEST,
+			Material.END_PORTAL_FRAME
 			//</editor-fold>
 	);
 
