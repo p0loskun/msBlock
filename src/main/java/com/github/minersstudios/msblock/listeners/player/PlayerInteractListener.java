@@ -6,14 +6,12 @@ import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
 import net.minecraft.world.EnumHand;
+import net.minecraft.world.EnumInteractionResult;
 import net.minecraft.world.item.context.ItemActionContext;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.FaceAttachable;
+import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
@@ -66,9 +64,6 @@ public class PlayerInteractListener implements Listener {
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
 			this.blockAtFace = clickedBlock.getRelative(event.getBlockFace());
-			for (Entity nearbyEntity : clickedBlock.getWorld().getNearbyEntities(this.blockAtFace.getLocation().clone().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-				if (nearbyEntity.getType() != EntityType.DROPPED_ITEM && this.itemInHand.getType().isSolid() && !Tag.DOORS.isTagged(this.itemInHand.getType())) return;
-			}
 			this.nmsItem = CraftItemStack.asNMSCopy(this.itemInHand);
 			this.enumHand = this.hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
 			this.interactionPoint = PlayerUtils.getInteractionPoint(this.player.getEyeLocation(), 8);
@@ -123,28 +118,29 @@ public class PlayerInteractListener implements Listener {
 			if (!(this.blockAtFace.getBlockData() instanceof Slab slab)) return;
 			if (placeDouble && this.blockAtFace.getType() == itemMaterial) {
 				slab.setType(Slab.Type.DOUBLE);
+				SoundGroup soundGroup = slab.getSoundGroup();
 				this.blockAtFace.getWorld().playSound(
 						this.blockAtFace.getLocation(),
-						slab.getSoundGroup().getPlaceSound(),
+						soundGroup.getPlaceSound(),
 						SoundCategory.BLOCKS,
-						slab.getSoundGroup().getVolume(),
-						slab.getSoundGroup().getPitch()
+						soundGroup.getVolume(),
+						soundGroup.getPitch()
 				);
 				if (this.gameMode == GameMode.SURVIVAL) {
 					this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 				}
 			} else if (
 					blockFace == BlockFace.DOWN
-							|| this.interactionPoint.getY() > 0.5d
-							&& this.interactionPoint.getY() < 1.0d
-							&& this.blockAtFace.getType() == itemMaterial
+					|| this.interactionPoint.getY() > 0.5d
+					&& this.interactionPoint.getY() < 1.0d
+					&& this.blockAtFace.getType() == itemMaterial
 			) {
 				slab.setType(Slab.Type.TOP);
 			} else if (
 					blockFace == BlockFace.UP
-							|| this.interactionPoint.getY() < 0.5d
-							&& this.interactionPoint.getY() > 0.0d
-							&& this.blockAtFace.getType() == itemMaterial
+					|| this.interactionPoint.getY() < 0.5d
+					&& this.interactionPoint.getY() > 0.0d
+					&& this.blockAtFace.getType() == itemMaterial
 			) {
 				slab.setType(Slab.Type.BOTTOM);
 			}
@@ -165,6 +161,11 @@ public class PlayerInteractListener implements Listener {
 				return;
 			}
 			this.blockAtFace.setBlockData(faceAttachable);
+		} else if (materialBlockData instanceof Orientable) {
+			useOn();
+			if (!(this.blockAtFace.getBlockData() instanceof Orientable orientable)) return;
+			orientable.setAxis(this.getAxis());
+			this.blockAtFace.setBlockData(orientable);
 		} else if (
 				materialBlockData instanceof Directional directionalMaterial
 				&& (directionalMaterial.getFaces().contains(blockFace) || Tag.STAIRS.isTagged(itemInHand.getType()) || Tag.TRAPDOORS.isTagged(itemInHand.getType()))
@@ -176,9 +177,10 @@ public class PlayerInteractListener implements Listener {
 				directional.setFacing(blockFace);
 			} else {
 				bisected.setHalf(
-						blockFace == BlockFace.UP ? Bisected.Half.BOTTOM
-						: blockFace == BlockFace.DOWN ? Bisected.Half.TOP
-						: this.interactionPoint.getY() < 0.5d && this.interactionPoint.getY() >= 0.0d ? Bisected.Half.BOTTOM
+						this.interactionPoint.getY() == 1.0d
+						|| this.interactionPoint.getY() < 0.5d
+						&& this.interactionPoint.getY() > 0.0d
+						? Bisected.Half.BOTTOM
 						: Bisected.Half.TOP
 				);
 				this.blockAtFace.setBlockData(bisected);
@@ -191,9 +193,11 @@ public class PlayerInteractListener implements Listener {
 	}
 
 	private void useOn() {
-		this.nmsItem.useOn(this.itemActionContext, this.enumHand);
-		if (!itemInHand.getType().isBlock()) return;
-		BlockData blockData = this.blockAtFace.getBlockData();
+		if (
+				this.nmsItem.useOn(this.itemActionContext, this.enumHand) == EnumInteractionResult.e
+				|| !this.itemInHand.getType().isBlock()
+		) return;
+		BlockData blockData = this.itemInHand.getType().createBlockData();
 		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), this.itemInHand.getType(), blockData);
 		SoundGroup soundGroup = blockData.getSoundGroup();
 		this.blockAtFace.getWorld().playSound(
@@ -203,5 +207,15 @@ public class PlayerInteractListener implements Listener {
 				soundGroup.getVolume(),
 				soundGroup.getPitch()
 		);
+	}
+
+	@Nonnull
+	private Axis getAxis(){
+		if (this.interactionPoint.getX() == 0.0 || this.interactionPoint.getX() == 1.0) {
+			return Axis.X;
+		} else if (this.interactionPoint.getY() == 0.0 || this.interactionPoint.getY() == 1.0) {
+			return Axis.Y;
+		}
+		return Axis.Z;
 	}
 }
