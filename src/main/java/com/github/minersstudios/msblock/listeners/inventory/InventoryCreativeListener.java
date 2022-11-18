@@ -1,4 +1,4 @@
-package com.github.minersstudios.msblock.listeners.player;
+package com.github.minersstudios.msblock.listeners.inventory;
 
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.enums.CustomBlock;

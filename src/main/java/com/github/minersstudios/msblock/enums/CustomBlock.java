@@ -189,14 +189,6 @@ public class CustomBlock {
 		return base / customBlockMaterial.digSpeed;
 	}
 
-	public int getExpToDrop() {
-		return expToDrop;
-	}
-
-	public boolean isForceTool() {
-		return forceTool;
-	}
-
 	public boolean isShowInCraftsMenu() {
 		return showInCraftsMenu;
 	}
@@ -290,14 +282,14 @@ public class CustomBlock {
 		block.setType(Material.AIR);
 
 		if (
-				(!this.isForceTool() || this.toolType == ToolType.getToolType(itemInMainHand))
+				(!this.forceTool || this.toolType == ToolType.getToolType(itemInMainHand))
 				&& this != CustomBlock.DEFAULT
 		) {
 			if (this.dropsDefaultItem) {
 				world.dropItemNaturally(blockLocation, this.getItemStack());
 			}
-			if (this.getExpToDrop() != 0) {
-				world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.getExpToDrop());
+			if (this.expToDrop != 0) {
+				world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.expToDrop);
 			}
 		} else if (this == CustomBlock.DEFAULT) {
 			world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));

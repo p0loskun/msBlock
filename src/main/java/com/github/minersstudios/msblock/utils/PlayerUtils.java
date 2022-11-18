@@ -1,8 +1,12 @@
 package com.github.minersstudios.msblock.utils;
 
+import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.enums.CustomBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPosition;
+import net.minecraft.world.EnumHand;
+import net.minecraft.world.item.context.ItemActionContext;
 import net.minecraft.world.phys.MovingObjectPositionBlock;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.FluidCollisionMode;
@@ -73,30 +77,13 @@ public class PlayerUtils {
 				: rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
 	}
 
-	/**
-	 * Gets moving object position block by player and block at face location
-	 *
-	 * @param player   used to get Vec3D & MovingObjectPositionBlock(EnumDirection var3)
-	 * @param blockLoc used to get BlockPosition
-	 * @return moving object position block
-	 */
 	@Nonnull
-	public static MovingObjectPositionBlock getMovingObjectPositionBlock(@Nonnull Player player, @Nonnull Location blockLoc) {
+	public static ItemActionContext getItemActionContext(@Nonnull Player player, @Nonnull Location blockLoc, @Nonnull EnumHand enumHand) {
 		Location playerEyeLoc = player.getEyeLocation();
-		return new MovingObjectPositionBlock(
-				new Vec3D(
-						playerEyeLoc.getX(),
-						playerEyeLoc.getY(),
-						playerEyeLoc.getZ()
-				),
-				((CraftPlayer) player).getHandle().cw(),
-				new BlockPosition(
-						blockLoc.getBlockX(),
-						blockLoc.getBlockY(),
-						blockLoc.getBlockZ()
-				),
-				false
-		);
+		Vec3D vec3D = new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ());
+		BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
+		MovingObjectPositionBlock movingObjectPositionBlock = new MovingObjectPositionBlock(vec3D, ((CraftPlayer) player).getHandle().cw(), blockPosition, false);
+		return new ItemActionContext(((CraftPlayer) player).getHandle(), enumHand, movingObjectPositionBlock);
 	}
 
 	/**
@@ -150,9 +137,18 @@ public class PlayerUtils {
 	 */
 	public static boolean isItemCustomBlock(@Nonnull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
-		return itemStack.getType() == Material.PAPER
-				&& itemMeta != null
-				&& itemMeta.hasCustomModelData();
+		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
+		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
+			ItemStack customBlockItemStack = customBlock.getItemStack();
+			ItemMeta customBlockItemMeta = customBlockItemStack.getItemMeta();
+			if (
+					customBlockItemStack.getType() == itemStack.getType()
+					&& customBlockItemMeta.getCustomModelData() == itemMeta.getCustomModelData()
+			) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

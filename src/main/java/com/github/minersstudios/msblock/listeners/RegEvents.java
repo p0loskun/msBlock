@@ -2,6 +2,7 @@ package com.github.minersstudios.msblock.listeners;
 
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.listeners.block.*;
+import com.github.minersstudios.msblock.listeners.inventory.*;
 import com.github.minersstudios.msblock.listeners.player.*;
 import org.bukkit.plugin.PluginManager;
 
@@ -22,9 +23,12 @@ public final class RegEvents {
 		pluginManager.registerEvents(new NotePlayListener(), Main.getInstance());
 		Main.getProtocolManager().addPacketListener(new PacketBlockDigListener());
 
+		pluginManager.registerEvents(new PrepareItemCraftListener(), Main.getInstance());
+		pluginManager.registerEvents(new InventoryCreativeListener(), Main.getInstance());
+		pluginManager.registerEvents(new InventoryClickListener(), Main.getInstance());
+
 		pluginManager.registerEvents(new PlayerInteractListener(), Main.getInstance());
 		pluginManager.registerEvents(new PlayerMoveListener(), Main.getInstance());
-		pluginManager.registerEvents(new InventoryCreativeListener(), Main.getInstance());
 		pluginManager.registerEvents(new PlayerQuitListener(), Main.getInstance());
 		pluginManager.registerEvents(new PlayerGameModeChangeListener(), Main.getInstance());
 		pluginManager.registerEvents(new PlayerTeleportListener(), Main.getInstance());

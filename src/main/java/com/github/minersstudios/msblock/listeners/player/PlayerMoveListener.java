@@ -23,15 +23,15 @@ public class PlayerMoveListener implements Listener {
 		Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
 		if (
 				(bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
+				&& bottomBlock.getType().isSolid()
 				&& player.getGameMode() != GameMode.SPECTATOR
 				&& !player.isFlying()
 				&& !player.isSneaking()
-				&& bottomBlock.getType().isSolid()
 		) {
 			Location from = event.getFrom().clone(),
 					to = event.getTo().clone();
-			from.setY(0);
-			to.setY(0);
+			from.setY(0.0d);
+			to.setY(0.0d);
 			double distance = from.distance(to);
 			if (distance == 0.0d) return;
 			double fullDistance = PlayerUtils.steps.containsKey(player) ? PlayerUtils.steps.get(player) + distance : 1.0d;
