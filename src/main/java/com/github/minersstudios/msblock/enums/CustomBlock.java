@@ -201,7 +201,8 @@ public class CustomBlock {
 		return showInCraftsMenu;
 	}
 
-	@Nullable public ShapedRecipe getShapedRecipe() {
+	@Nullable
+	public ShapedRecipe getShapedRecipe() {
 		return shapedRecipe;
 	}
 
@@ -240,7 +241,7 @@ public class CustomBlock {
 			if (
 					customBlock.instrument == instrument
 					&& customBlock.note.equals(note)
-					//&& customBlock.isPowered() == powered       removed to BlockPhysicsEvent NoteBlock powered state bug fix
+					&& customBlock.powered == powered
 			) return customBlock;
 		return DEFAULT;
 	}
