@@ -150,13 +150,13 @@ public class ConfigCache {
 
 	@Nullable
 	private NoteBlockData craftNoteBlockData(@Nonnull YamlConfiguration blockConfig) {
-		String instrument = blockConfig.getString("noteblock.instrument");
+		String instrument = blockConfig.getString("placing.normal.instrument");
 		return
 				instrument == null ? null :
 				new NoteBlockData(
 						Instrument.valueOf(instrument),
-						new Note(blockConfig.getInt("noteblock.note")),
-						blockConfig.getBoolean("noteblock.is-powered", false)
+						new Note(blockConfig.getInt("placing.normal.note")),
+						blockConfig.getBoolean("placing.normal.is-powered", false)
 				);
 	}
 }
