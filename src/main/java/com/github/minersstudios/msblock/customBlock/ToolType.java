@@ -1,4 +1,4 @@
-package com.github.minersstudios.msblock.enums;
+package com.github.minersstudios.msblock.customBlock;
 
 import org.bukkit.inventory.ItemStack;
 

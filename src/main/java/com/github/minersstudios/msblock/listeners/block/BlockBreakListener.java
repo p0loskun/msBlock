@@ -1,8 +1,9 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
@@ -20,14 +21,15 @@ public class BlockBreakListener implements Listener {
 	public void onBlockBreak(@Nonnull BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
+		Location blockLocation = block.getLocation().toCenterLocation();
 		if (BlockUtils.isWoodenSound(block.getType())) {
-			CustomBlock.DEFAULT.playBreakSound(block);
+			CustomBlock.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
 		}
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlock customBlockMaterial = CustomBlock.getCustomBlock(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
+			CustomBlock customBlockMaterial = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 			GameMode gameMode = player.getGameMode();
 			if (gameMode == GameMode.CREATIVE) {
-				customBlockMaterial.playBreakSound(block);
+				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
 			}
 			if (customBlockMaterial.isWooden() && gameMode != GameMode.CREATIVE) {
 				event.setDropItems(false);

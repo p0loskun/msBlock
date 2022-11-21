@@ -7,3 +7,15 @@ website: ${url}
 main: ${mainClass}
 api-version: ${apiVersion}
 softdepend: [ CoreProtect, ProtocolLib ]
+commands:
+  msblock:
+    usage: " ꀑ §cИспользуй: /<command> [параметры]"
+    permission: msBlock.msblock
+    description: Прочья хуйня
+permissions:
+  msBlock.*:
+    default: op
+    children:
+      msBlock.msblock: true
+  msBlock.msblock:
+    default: op

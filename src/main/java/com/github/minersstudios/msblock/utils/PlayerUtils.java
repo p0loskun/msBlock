@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPosition;

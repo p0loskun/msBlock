@@ -373,7 +373,6 @@ public class BlockUtils {
 		throw new IllegalStateException("Utility class");
 	}
 
-
 	/**
 	 * Updates the note block and checks if there is a notes block above it
 	 *

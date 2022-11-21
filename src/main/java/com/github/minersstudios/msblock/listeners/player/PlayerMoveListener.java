@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import org.bukkit.GameMode;
@@ -21,6 +21,7 @@ public class PlayerMoveListener implements Listener {
 	public void onPlayerMove(@Nonnull PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
+		Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();
 		if (
 				(bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
 				&& bottomBlock.getType().isSolid()
@@ -38,9 +39,9 @@ public class PlayerMoveListener implements Listener {
 			PlayerUtils.steps.put(player, fullDistance > 1.25d ? 0.0d : fullDistance);
 			if (fullDistance > 1.25d) {
 				if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
-					CustomBlock.getCustomBlock(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered()).playStepSound(bottomBlock);
+					CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playStepSound(bottomBlockLocation);
 				} else {
-					CustomBlock.DEFAULT.playStepSound(bottomBlock);
+					CustomBlock.DEFAULT.getSoundGroup().playStepSound(bottomBlockLocation);
 				}
 			}
 		} else {

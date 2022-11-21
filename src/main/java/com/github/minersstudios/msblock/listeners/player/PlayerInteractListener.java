@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.player;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
@@ -12,6 +12,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
@@ -26,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
+import java.util.Set;
 
 public class PlayerInteractListener implements Listener {
 	private Block blockAtFace;
@@ -37,6 +39,7 @@ public class PlayerInteractListener implements Listener {
 	private GameMode gameMode;
 	private EquipmentSlot hand;
 	private net.minecraft.world.item.ItemStack nmsItem;
+	private CustomBlock clickedCustomBlock;
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
@@ -58,19 +61,21 @@ public class PlayerInteractListener implements Listener {
 			this.hand = EquipmentSlot.HAND;
 		}
 		this.itemInHand = this.player.getInventory().getItem(hand);
+		this.interactionPoint = PlayerUtils.getInteractionPoint(this.player.getEyeLocation(), 8);
 
 		if (
-				clickedBlock.getType() == Material.NOTE_BLOCK
+				clickedBlock.getBlockData() instanceof NoteBlock noteBlock
 				&& !this.itemInHand.getType().isAir()
 				&& (hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
 				&& !PlayerUtils.isItemCustomBlock(this.itemInHand)
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
+
+			this.clickedCustomBlock = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 			this.blockAtFace = clickedBlock.getRelative(event.getBlockFace());
 			this.nmsItem = CraftItemStack.asNMSCopy(this.itemInHand);
 			this.enumHand = this.hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
-			this.interactionPoint = PlayerUtils.getInteractionPoint(this.player.getEyeLocation(), 8);
 			this.itemActionContext = PlayerUtils.getItemActionContext(this.player, this.blockAtFace.getLocation(), this.enumHand);
 			if (this.interactionPoint != null) {
 				useItemInHand(event);
@@ -82,6 +87,7 @@ public class PlayerInteractListener implements Listener {
 				&& BlockUtils.REPLACE.contains(clickedBlock.getRelative(event.getBlockFace()).getType())
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
+				&& this.interactionPoint != null
 		) {
 			if (
 					((clickedBlock.getType().isInteractable()
@@ -97,9 +103,24 @@ public class PlayerInteractListener implements Listener {
 			}
 			ItemMeta itemMeta = this.itemInHand.getItemMeta();
 			if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-			CustomBlock
-					.getCustomBlock(itemMeta.getCustomModelData())
-					.setCustomBlock(replaceableBlock, this.player, this.hand);
+			CustomBlock customBlock = CustomBlock.getCustomBlock(itemMeta.getCustomModelData());
+			Set<BlockFace> blockFaces = customBlock.getFaces();
+			Set<Axis> blockAxes = customBlock.getAxes();
+			if (blockFaces != null) {
+				if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_BLOCK_FACE) {
+					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, event.getBlockFace(), null);
+				} else if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_EYE_POSITION) {
+					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, this.getBlockFaceByEyes(blockFaces), null);
+				}
+			} else if (blockAxes != null) {
+				if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_BLOCK_FACE) {
+					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, null, this.getAxis());
+				} else if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_EYE_POSITION) {
+					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, null, this.getAxisByEyes(blockAxes));
+				}
+			} else {
+				customBlock.setCustomBlock(replaceableBlock, this.player, this.hand);
+			}
 		}
 	}
 
@@ -194,6 +215,10 @@ public class PlayerInteractListener implements Listener {
 		} else if (!this.blockAtFace.getType().isSolid() && this.blockAtFace.getType() != this.itemInHand.getType()) {
 			useOn();
 		}
+		Set<Material> placeableMaterials = this.clickedCustomBlock.getPlaceableMaterials();
+		if (placeableMaterials != null && placeableMaterials.contains(this.itemInHand.getType())) {
+			blockAtFace.setType(this.itemInHand.getType());
+		}
 	}
 
 	private void useOn() {
@@ -221,5 +246,31 @@ public class PlayerInteractListener implements Listener {
 			return Axis.Y;
 		}
 		return Axis.Z;
+	}
+
+	private BlockFace getBlockFaceByEyes(@Nonnull Set<BlockFace> blockFaces) {
+		float pitch = this.player.getLocation().getPitch();
+		if (!(pitch >= -45.0f) && blockFaces.contains(BlockFace.DOWN)) {
+			return BlockFace.DOWN;
+		} else if (!(pitch <= 45.0f) && blockFaces.contains(BlockFace.UP)) {
+			return BlockFace.UP;
+		}
+		return getBlockFaceByYaw();
+	}
+
+	private BlockFace getBlockFaceByYaw() {
+		BlockFace[] faces = { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST };
+		return faces[Math.round(this.player.getLocation().getYaw() / 90f) & 0x3];
+	}
+
+	private Axis getAxisByEyes(@Nonnull Set<Axis> axes) {
+		float pitch = this.player.getLocation().getPitch();
+		if (!(pitch >= -45.0f && pitch <= 45.0f) && axes.contains(Axis.Y)) {
+			return Axis.Y;
+		}
+		return switch (this.getBlockFaceByYaw()) {
+			case NORTH, SOUTH -> Axis.X;
+			default -> Axis.Z;
+		};
 	}
 }
