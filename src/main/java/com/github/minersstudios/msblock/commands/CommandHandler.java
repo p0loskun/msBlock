@@ -16,6 +16,9 @@ public class CommandHandler implements CommandExecutor {
 			if ("reload".equals(utilsCommand)) {
 				return ReloadCommand.runCommand(sender);
 			}
+			if ("give".equals(utilsCommand)) {
+				return GiveCommand.runCommand(sender, args);
+			}
 		}
 		return false;
 	}
