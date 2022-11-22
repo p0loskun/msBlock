@@ -6,7 +6,9 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,6 +34,51 @@ public class BlockUtils {
 			Material.VINE,
 			Material.SNOW,
 			Material.FIRE
+			//</editor-fold>
+	);
+
+	public static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
+			//<editor-fold desc="Ignorable inventory types">
+			InventoryType.CARTOGRAPHY,
+			InventoryType.BREWING,
+			InventoryType.BEACON,
+			InventoryType.BLAST_FURNACE,
+			InventoryType.FURNACE,
+			InventoryType.SMOKER,
+			InventoryType.GRINDSTONE,
+			InventoryType.STONECUTTER,
+			InventoryType.SMITHING,
+			InventoryType.LOOM,
+			InventoryType.MERCHANT,
+			InventoryType.ENCHANTING
+			//</editor-fold>
+	);
+
+	public static final ImmutableSet<EntityType> IGNORABLE_ENTITIES = Sets.immutableEnumSet(
+			//<editor-fold desc="Entities to be ignored when placing a block on their location">
+			EntityType.DROPPED_ITEM,
+			EntityType.ITEM_FRAME,
+			EntityType.GLOW_ITEM_FRAME,
+			EntityType.LIGHTNING,
+			EntityType.LLAMA_SPIT,
+			EntityType.EXPERIENCE_ORB,
+			EntityType.THROWN_EXP_BOTTLE,
+			EntityType.EGG,
+			EntityType.SPLASH_POTION,
+			EntityType.FIREWORK,
+			EntityType.FIREBALL,
+			EntityType.FISHING_HOOK,
+			EntityType.SMALL_FIREBALL,
+			EntityType.SNOWBALL,
+			EntityType.TRIDENT,
+			EntityType.WITHER_SKULL,
+			EntityType.DRAGON_FIREBALL,
+			EntityType.AREA_EFFECT_CLOUD,
+			EntityType.ARROW,
+			EntityType.SPECTRAL_ARROW,
+			EntityType.ENDER_PEARL,
+			EntityType.EVOKER_FANGS,
+			EntityType.LEASH_HITCH
 			//</editor-fold>
 	);
 
@@ -325,7 +372,6 @@ public class BlockUtils {
 	private BlockUtils() {
 		throw new IllegalStateException("Utility class");
 	}
-
 
 	/**
 	 * Updates the note block and checks if there is a notes block above it

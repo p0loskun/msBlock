@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -45,8 +45,8 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlock customBlock = CustomBlock.getCustomBlock(noteBlock.getNote(), noteBlock.getInstrument(), noteBlock.isPowered());
-					float digSpeed = CustomBlock.getDigSpeed(player, customBlock);
+					CustomBlock customBlock = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+					float digSpeed = customBlock.getCalculatedDigSpeed(player);
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
@@ -87,7 +87,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							this.progress += digSpeed;
 
 							if (this.ticks % 4.0f == 0.0f && !farAway.contains(player)) {
-								customBlock.playHitSound(block);
+								customBlock.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
 								swing = false;
 							}
 
@@ -152,7 +152,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							this.ticks++;
 
 							if (this.ticks % 4.0f == 0.0f) {
-								CustomBlock.DEFAULT.playHitSound(block);
+								CustomBlock.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
 								swing = false;
 							}
 						}

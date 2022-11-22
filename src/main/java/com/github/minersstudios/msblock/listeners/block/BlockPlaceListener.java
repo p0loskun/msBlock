@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.enums.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,7 +17,7 @@ public class BlockPlaceListener implements Listener {
 		Block block = event.getBlockPlaced();
 		event.setCancelled(block.getType() == Material.NOTE_BLOCK);
 		if (BlockUtils.isWoodenSound(block.getType())) {
-			CustomBlock.DEFAULT.playPlaceSound(block);
+			CustomBlock.DEFAULT.getSoundGroup().playPlaceSound(block.getLocation().toCenterLocation());
 		}
 		if (block.getType() == Material.NOTE_BLOCK) {
 			CustomBlock.DEFAULT.setCustomBlock(block, event.getPlayer(), event.getHand());
