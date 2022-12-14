@@ -7,13 +7,12 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPlaceListener implements Listener {
 
 	@EventHandler
-	public void onBlockPlace(@Nonnull BlockPlaceEvent event) {
+	public void onBlockPlace(@NotNull BlockPlaceEvent event) {
 		Block block = event.getBlockPlaced();
 		event.setCancelled(block.getType() == Material.NOTE_BLOCK);
 		if (BlockUtils.isWoodenSound(block.getType())) {

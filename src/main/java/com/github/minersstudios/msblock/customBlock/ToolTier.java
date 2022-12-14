@@ -2,8 +2,7 @@ package com.github.minersstudios.msblock.customBlock;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public enum ToolTier {
 	HAND("HAND", 0.1f),
@@ -14,10 +13,13 @@ public enum ToolTier {
 	DIAMOND("DIAMOND_", 0.65f),
 	NETHERITE("NETHERITE_", 0.8f);
 
+	private final @NotNull String itemTierName;
 	private final float speed;
-	private final String itemTierName;
 
-	ToolTier(String itemTierName, float speed) {
+	ToolTier(
+			@NotNull String itemTierName,
+			float speed
+	) {
 		this.itemTierName = itemTierName;
 		this.speed = speed;
 	}
@@ -26,8 +28,7 @@ public enum ToolTier {
 	 * @param itemInMainHand item in main hand
 	 * @return ToolTier from item in main hand
 	 */
-	@Nonnull
-	public static ToolTier getToolTier(@Nonnull ItemStack itemInMainHand) {
+	public static @NotNull ToolTier getToolTier(@NotNull ItemStack itemInMainHand) {
 		for (ToolTier toolTier : ToolTier.values()) {
 			if (itemInMainHand.getType() == Material.SHEARS) {
 				return ToolTier.NETHERITE;

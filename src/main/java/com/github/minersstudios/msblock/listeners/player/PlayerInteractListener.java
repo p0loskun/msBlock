@@ -14,7 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 
 public class PlayerInteractListener implements Listener {
@@ -42,7 +42,7 @@ public class PlayerInteractListener implements Listener {
 	private CustomBlock clickedCustomBlock;
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
+	public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
 		if (
 				event.getClickedBlock() == null
 				|| event.getHand() == null
@@ -124,7 +124,7 @@ public class PlayerInteractListener implements Listener {
 		}
 	}
 
-	private void useItemInHand(@Nonnull PlayerInteractEvent event) {
+	private void useItemInHand(@NotNull PlayerInteractEvent event) {
 		BlockFace blockFace = event.getBlockFace();
 		BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(this.itemInHand.getType());
 		if (BlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
@@ -238,8 +238,7 @@ public class PlayerInteractListener implements Listener {
 		);
 	}
 
-	@Nonnull
-	private Axis getAxis() {
+	private @NotNull Axis getAxis() {
 		if (this.interactionPoint.getX() == 0.0 || this.interactionPoint.getX() == 1.0) {
 			return Axis.X;
 		} else if (this.interactionPoint.getY() == 0.0 || this.interactionPoint.getY() == 1.0) {
@@ -248,7 +247,7 @@ public class PlayerInteractListener implements Listener {
 		return Axis.Z;
 	}
 
-	private BlockFace getBlockFaceByEyes(@Nonnull Set<BlockFace> blockFaces) {
+	private BlockFace getBlockFaceByEyes(@NotNull Set<BlockFace> blockFaces) {
 		float pitch = this.player.getLocation().getPitch();
 		if (!(pitch >= -45.0f) && blockFaces.contains(BlockFace.DOWN)) {
 			return BlockFace.DOWN;
@@ -263,7 +262,7 @@ public class PlayerInteractListener implements Listener {
 		return faces[Math.round(this.player.getLocation().getYaw() / 90f) & 0x3];
 	}
 
-	private Axis getAxisByEyes(@Nonnull Set<Axis> axes) {
+	private Axis getAxisByEyes(@NotNull Set<Axis> axes) {
 		float pitch = this.player.getLocation().getPitch();
 		if (!(pitch >= -45.0f && pitch <= 45.0f) && axes.contains(Axis.Y)) {
 			return Axis.Y;

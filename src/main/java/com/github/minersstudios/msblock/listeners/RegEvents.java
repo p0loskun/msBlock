@@ -2,20 +2,21 @@ package com.github.minersstudios.msblock.listeners;
 
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.listeners.block.*;
-import com.github.minersstudios.msblock.listeners.inventory.*;
+import com.github.minersstudios.msblock.listeners.inventory.InventoryClickListener;
+import com.github.minersstudios.msblock.listeners.inventory.InventoryCreativeListener;
+import com.github.minersstudios.msblock.listeners.inventory.PrepareItemCraftListener;
 import com.github.minersstudios.msblock.listeners.player.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public final class RegEvents {
 
 	private RegEvents() {
-		throw new IllegalStateException("Utility class");
+		throw new IllegalStateException();
 	}
 
-	public static void init(@Nonnull Main plugin) {
+	public static void init(@NotNull Main plugin) {
 		PluginManager pluginManager = Bukkit.getPluginManager();
 
 		pluginManager.registerEvents(new BlockBreakListener(), plugin);

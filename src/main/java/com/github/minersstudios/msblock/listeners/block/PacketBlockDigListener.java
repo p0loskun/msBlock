@@ -16,8 +16,8 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.AbstractMap;
 
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
@@ -30,7 +30,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 	}
 
 	@Override
-	public void onPacketReceiving(@Nonnull PacketEvent event) {
+	public void onPacketReceiving(@NotNull PacketEvent event) {
 		Player player = event.getPlayer();
 		if (player == null || !player.isOnline() || player.getGameMode() != GameMode.SURVIVAL) return;
 		PacketContainer packet = event.getPacket();
@@ -175,7 +175,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 		});
 	}
 
-	private static void playZeroBreakStage(@Nonnull BlockPosition blockPosition) {
+	private static void playZeroBreakStage(@NotNull BlockPosition blockPosition) {
 		PacketContainer packetContainer = getProtocolManager().createPacket(PacketType.Play.Server.BLOCK_BREAK_ANIMATION);
 		packetContainer.getIntegers().write(0, 0).write(1, -1);
 		packetContainer.getBlockPositionModifier().write(0, blockPosition);

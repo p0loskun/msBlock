@@ -12,13 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class PlayerMoveListener implements Listener {
 
 	@EventHandler
-	public void onPlayerMove(@Nonnull PlayerMoveEvent event) {
+	public void onPlayerMove(@NotNull PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
 		Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();

@@ -11,13 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class InventoryClickListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onInventoryClick(@Nonnull InventoryClickEvent event) {
+	public void onInventoryClick(@NotNull InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Inventory clickedInventory = event.getClickedInventory();
 		ItemStack itemInCursor = event.getCursor();

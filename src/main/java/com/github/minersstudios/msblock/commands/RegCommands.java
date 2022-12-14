@@ -2,13 +2,17 @@ package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.tabCompleters.TabCommandHandler;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
 
-public class RegCommands {
+public final class RegCommands {
 
-	public static void init(@Nonnull Main plugin) {
+	private RegCommands() {
+		throw new IllegalStateException();
+	}
+
+	public static void init(@NotNull Main plugin) {
 		Objects.requireNonNull(plugin.getCommand("msblock")).setExecutor(new CommandHandler());
 		Objects.requireNonNull(plugin.getCommand("msblock")).setTabCompleter(new TabCommandHandler());
 	}

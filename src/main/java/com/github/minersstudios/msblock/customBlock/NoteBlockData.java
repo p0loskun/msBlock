@@ -4,18 +4,17 @@ import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class NoteBlockData {
-	private Instrument instrument;
-	private Note note;
+	private @NotNull Instrument instrument;
+	private @NotNull Note note;
 	private boolean powered;
 
 	public NoteBlockData(
-			@Nonnull Instrument instrument,
-			@Nonnull Note note,
+			@NotNull Instrument instrument,
+			@NotNull Note note,
 			boolean powered
 	) {
 		this.instrument = instrument;
@@ -23,8 +22,7 @@ public class NoteBlockData {
 		this.powered = powered;
 	}
 
-	@Nonnull
-	public NoteBlock craftNoteBlock(@Nonnull BlockData blockData) {
+	public @NotNull NoteBlock craftNoteBlock(@NotNull BlockData blockData) {
 		NoteBlock noteBlock = (NoteBlock) blockData;
 		noteBlock.setInstrument(this.instrument);
 		noteBlock.setNote(this.note);
@@ -32,21 +30,25 @@ public class NoteBlockData {
 		return noteBlock;
 	}
 
-	public void setInstrument(@Nonnull Instrument instrument) {
+	public boolean isSimilar(@NotNull NoteBlockData noteBlockData) {
+		return this.instrument == noteBlockData.instrument
+				&& this.note.equals(noteBlockData.note)
+				&& this.powered == noteBlockData.powered;
+	}
+
+	public void setInstrument(@NotNull Instrument instrument) {
 		this.instrument = instrument;
 	}
 
-	@Nonnull
-	public Instrument getInstrument() {
+	public @NotNull Instrument getInstrument() {
 		return this.instrument;
 	}
 
-	public void setNote(@Nonnull Note note) {
+	public void setNote(@NotNull Note note) {
 		this.note = note;
 	}
 
-	@Nonnull
-	public Note getNote() {
+	public @NotNull Note getNote() {
 		return this.note;
 	}
 

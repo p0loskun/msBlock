@@ -13,7 +13,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -21,16 +21,16 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class PlayerUtils {
+public final class PlayerUtils {
 	public static final Map<Player, Double> steps = new HashMap<>();
 	public static final Set<Player> farAway = new HashSet<>();
 
@@ -68,8 +68,7 @@ public class PlayerUtils {
 	 * @param maxDistance the maximum distance
 	 * @return interaction Location or null if rayTraceResult == null || hit block == null
 	 */
-	@Nullable
-	public static Location getInteractionPoint(@Nonnull Location location, int maxDistance) {
+	public static @Nullable Location getInteractionPoint(@NotNull Location location, int maxDistance) {
 		if (location.getWorld() == null) return null;
 		RayTraceResult rayTraceResult = location.getWorld().rayTraceBlocks(location, location.getDirection(), maxDistance, FluidCollisionMode.NEVER, true);
 		return rayTraceResult == null
@@ -77,12 +76,11 @@ public class PlayerUtils {
 				: rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
 	}
 
-	@Nonnull
-	public static ItemActionContext getItemActionContext(@Nonnull Player player, @Nonnull Location blockLoc, @Nonnull EnumHand enumHand) {
+	public static @NotNull ItemActionContext getItemActionContext(@NotNull Player player, @NotNull Location blockLoc, @NotNull EnumHand enumHand) {
 		Location playerEyeLoc = player.getEyeLocation();
 		Vec3D vec3D = new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ());
 		BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
-		MovingObjectPositionBlock movingObjectPositionBlock = new MovingObjectPositionBlock(vec3D, ((CraftPlayer) player).getHandle().cw(), blockPosition, false);
+		MovingObjectPositionBlock movingObjectPositionBlock = new MovingObjectPositionBlock(vec3D, ((CraftPlayer) player).getHandle().cA(), blockPosition, false);
 		return new ItemActionContext(((CraftPlayer) player).getHandle(), enumHand, movingObjectPositionBlock);
 	}
 
@@ -92,7 +90,7 @@ public class PlayerUtils {
 	 * @param player        player
 	 * @param equipmentSlot hand
 	 */
-	public static void swingHand(@Nonnull Player player, @Nonnull EquipmentSlot equipmentSlot) {
+	public static void swingHand(@NotNull Player player, @NotNull EquipmentSlot equipmentSlot) {
 		if (equipmentSlot == EquipmentSlot.HAND) {
 			player.swingMainHand();
 		} else {
@@ -104,8 +102,7 @@ public class PlayerUtils {
 	 * @param player player
 	 * @return target block
 	 */
-	@Nullable
-	public static Block getTargetBlock(@Nonnull Player player) {
+	public static @Nullable Block getTargetBlock(@NotNull Player player) {
 		Location eyeLocation = player.getEyeLocation();
 		RayTraceResult rayTraceResult = player.getWorld().rayTraceBlocks(eyeLocation, eyeLocation.getDirection(), 4.5d, FluidCollisionMode.NEVER, false);
 		return rayTraceResult != null ? rayTraceResult.getHitBlock() : null;
@@ -116,8 +113,7 @@ public class PlayerUtils {
 	 * @param targetBlock target block
 	 * @return target entity
 	 */
-	@Nullable
-	public static Entity getTargetEntity(@Nonnull Player player, @Nullable Block targetBlock) {
+	public static @Nullable Entity getTargetEntity(@NotNull Player player, @Nullable Block targetBlock) {
 		Location eyeLocation = player.getEyeLocation();
 		Predicate<Entity> filter = entity -> entity != player && !MOB_FILTER.contains(entity.getType());
 		RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 4.5d, filter);
@@ -135,11 +131,11 @@ public class PlayerUtils {
 	 * @param itemStack item
 	 * @return True if item is custom block
 	 */
-	public static boolean isItemCustomBlock(@Nonnull ItemStack itemStack) {
+	public static boolean isItemCustomBlock(@NotNull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
 		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
-			ItemStack customBlockItemStack = customBlock.getItemStack();
+			ItemStack customBlockItemStack = customBlock.craftItemStack();
 			ItemMeta customBlockItemMeta = customBlockItemStack.getItemMeta();
 			if (
 					customBlockItemStack.getType() == itemStack.getType()
@@ -155,7 +151,7 @@ public class PlayerUtils {
 	 * @param itemStack item
 	 * @return True if item is custom block
 	 */
-	public static boolean isItemCustomDecor(@Nonnull ItemStack itemStack) {
+	public static boolean isItemCustomDecor(@NotNull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		return itemStack.getType() == Material.LEATHER_HORSE_ARMOR && itemMeta != null && itemMeta.hasCustomModelData();
 	}

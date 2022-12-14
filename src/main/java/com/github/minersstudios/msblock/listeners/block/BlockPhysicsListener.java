@@ -7,13 +7,12 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockPhysicsListener implements Listener {
 
 	@EventHandler
-	private void onBlockPhysics(@Nonnull BlockPhysicsEvent event) {
+	private void onBlockPhysics(@NotNull BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		if (block.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK || block.getType() == Material.NOTE_BLOCK) {
 			BlockUtils.updateNoteBlock(block);

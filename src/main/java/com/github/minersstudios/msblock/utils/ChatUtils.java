@@ -8,12 +8,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-public class ChatUtils {
+public final class ChatUtils {
 
 	private ChatUtils() {
 		throw new IllegalStateException("Utility class");
@@ -25,7 +25,7 @@ public class ChatUtils {
 	 * @param target  target
 	 * @param message warning message
 	 */
-	public static boolean sendInfo(@Nullable Object target, @Nonnull Component message) {
+	public static boolean sendInfo(@Nullable Object target, @NotNull Component message) {
 		if (target instanceof Player player) {
 			player.sendMessage(Component.text(" ").append(message));
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
@@ -42,7 +42,7 @@ public class ChatUtils {
 	 * @param target  target
 	 * @param message warning message
 	 */
-	public static boolean sendFine(@Nullable Object target, @Nonnull Component message) {
+	public static boolean sendFine(@Nullable Object target, @NotNull Component message) {
 		if (target instanceof Player player) {
 			player.sendMessage(Symbols.GREEN_EXCLAMATION_MARK.append(message.color(NamedTextColor.GREEN)));
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
@@ -59,7 +59,7 @@ public class ChatUtils {
 	 * @param target  target
 	 * @param message warning message
 	 */
-	public static boolean sendWarning(@Nullable Object target, @Nonnull Component message) {
+	public static boolean sendWarning(@Nullable Object target, @NotNull Component message) {
 		if (target instanceof Player player) {
 			player.sendMessage(Symbols.YELLOW_EXCLAMATION_MARK.append(message.color(NamedTextColor.GOLD)));
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
@@ -76,7 +76,7 @@ public class ChatUtils {
 	 * @param target  target
 	 * @param message warning message
 	 */
-	public static boolean sendError(@Nullable Object target, @Nonnull Component message) {
+	public static boolean sendError(@Nullable Object target, @NotNull Component message) {
 		if (target instanceof Player player) {
 			player.sendMessage(Symbols.RED_EXCLAMATION_MARK.append(message.color(NamedTextColor.RED)));
 		} else if (target instanceof CommandSender sender && !(sender instanceof ConsoleCommandSender)) {
@@ -93,12 +93,11 @@ public class ChatUtils {
 	 * @param level log level
 	 * @param message message
 	 */
-	public static void log(@Nonnull Level level, @Nonnull String message) {
+	public static void log(@NotNull Level level, @NotNull String message) {
 		Logger.getLogger(Main.getInstance().getName()).log(level, message);
 	}
 
-	@Nonnull
-	public static String convertComponentToString(@Nonnull Component component) {
+	public static @NotNull String convertComponentToString(@NotNull Component component) {
 		return LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build().serialize(component);
 	}
 

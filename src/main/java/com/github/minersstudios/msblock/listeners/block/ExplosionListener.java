@@ -8,32 +8,31 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class ExplosionListener implements Listener {
 
 	@EventHandler
-	public void onEntityExplode(@Nonnull EntityExplodeEvent event) {
+	public void onEntityExplode(@NotNull EntityExplodeEvent event) {
 		for (Block block : event.blockList()) {
 			if (block.getBlockData() instanceof NoteBlock noteBlock) {
 				block.setType(Material.AIR);
 				block.getWorld().dropItemNaturally(
 						block.getLocation(),
-						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getItemStack()
+						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 				);
 			}
 		}
 	}
 
 	@EventHandler
-	public void onBlockExplode(@Nonnull BlockExplodeEvent event) {
+	public void onBlockExplode(@NotNull BlockExplodeEvent event) {
 		for (Block block : event.blockList()) {
 			if (block.getBlockData() instanceof NoteBlock noteBlock) {
 				block.setType(Material.AIR);
 				block.getWorld().dropItemNaturally(
 						block.getLocation(),
-						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getItemStack()
+						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 				);
 			}
 		}

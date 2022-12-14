@@ -12,13 +12,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class InventoryCreativeListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onInventoryCreative(@Nonnull InventoryCreativeEvent event) {
+	public void onInventoryCreative(@NotNull InventoryCreativeEvent event) {
 		if (!event.getClick().isCreativeAction()) return;
 		Player player = (Player) event.getWhoClicked();
 		Block targetBlock = PlayerUtils.getTargetBlock(player);
@@ -30,7 +29,7 @@ public class InventoryCreativeListener implements Listener {
 		event.setCancelled(true);
 		Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setItem(
 				event.getSlot(),
-				CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getItemStack()
+				CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 		));
 	}
 }

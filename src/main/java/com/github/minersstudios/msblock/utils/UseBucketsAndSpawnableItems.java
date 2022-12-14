@@ -11,12 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.AxolotlBucketMeta;
 import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.security.SecureRandom;
 import java.util.function.Predicate;
 
-public class UseBucketsAndSpawnableItems {
+public final class UseBucketsAndSpawnableItems {
 	private final Player player;
 	private final World world;
 	private final Block block;
@@ -33,7 +33,7 @@ public class UseBucketsAndSpawnableItems {
 	 * @param blockFace block face
 	 * @param hand      hand
 	 */
-	public UseBucketsAndSpawnableItems(@Nonnull Player player, @Nonnull Block block, @Nonnull BlockFace blockFace, @Nonnull EquipmentSlot hand) {
+	public UseBucketsAndSpawnableItems(@NotNull Player player, @NotNull Block block, @NotNull BlockFace blockFace, @NotNull EquipmentSlot hand) {
 		this.player = player;
 		this.world = player.getWorld();
 		this.block = block;
@@ -64,21 +64,21 @@ public class UseBucketsAndSpawnableItems {
 	/**
 	 * @return random axolotl color variant
 	 */
-	private Axolotl.Variant randomVariant() {
+	private @NotNull Axolotl.Variant randomVariant() {
 		return Axolotl.Variant.values()[random.nextInt(Axolotl.Variant.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body pattern variant
 	 */
-	private TropicalFish.Pattern randomPattern() {
+	private @NotNull TropicalFish.Pattern randomPattern() {
 		return TropicalFish.Pattern.values()[random.nextInt(TropicalFish.Pattern.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body color variant
 	 */
-	private DyeColor randomBodyColor() {
+	private @NotNull DyeColor randomBodyColor() {
 		return DyeColor.values()[random.nextInt(DyeColor.values().length)];
 	}
 

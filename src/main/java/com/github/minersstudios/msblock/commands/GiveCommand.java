@@ -8,12 +8,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class GiveCommand {
 
-	public static boolean runCommand(@Nonnull CommandSender sender, @Nonnull String[] args) {
+	public static boolean runCommand(@NotNull CommandSender sender, String @NotNull ... args) {
 		if (args.length < 3) return false;
 		if (args[1].length() > 2) {
 			Player player = Bukkit.getPlayer(args[1]);
@@ -27,7 +26,7 @@ public class GiveCommand {
 			if (customBlock == null) {
 				return ChatUtils.sendError(sender, Component.text("Такого блока не существует!"));
 			}
-			ItemStack itemStack = customBlock.getItemStack();
+			ItemStack itemStack = customBlock.craftItemStack();
 			itemStack.setAmount(amount);
 			player.getInventory().addItem(itemStack);
 			return ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " [" + customBlock.getItemName() + "] Игроку : " + player.getName()));

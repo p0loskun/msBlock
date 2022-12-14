@@ -8,13 +8,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 
 public class ReloadCommand {
 
-	public static boolean runCommand(@Nonnull CommandSender sender) {
+	public static boolean runCommand(@NotNull CommandSender sender) {
 		long time = System.currentTimeMillis();
 		HandlerList.unregisterAll(Main.getInstance());
 		Iterator<Recipe> crafts = Bukkit.recipeIterator();

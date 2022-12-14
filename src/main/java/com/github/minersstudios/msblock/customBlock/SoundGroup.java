@@ -2,22 +2,21 @@ package com.github.minersstudios.msblock.customBlock;
 
 import com.github.minersstudios.msblock.Main;
 import org.bukkit.Location;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public class SoundGroup {
-	@Nullable private String placeSound;
+	private @Nullable String placeSound;
 	private float placeSoundPitch;
 	private float placeSoundVolume;
-	@Nullable private String breakSound;
+	private @Nullable String breakSound;
 	private float breakSoundPitch;
 	private float breakSoundVolume;
-	@Nullable private String hitSound;
+	private @Nullable String hitSound;
 	private float hitSoundPitch;
 	private float hitSoundVolume;
-	@Nullable private String stepSound;
+	private @Nullable String stepSound;
 	private float stepSoundPitch;
 	private float stepSoundVolume;
 
@@ -53,8 +52,7 @@ public class SoundGroup {
 		this.placeSound = placeSound;
 	}
 
-	@Nullable
-	public String getPlaceSound() {
+	public @Nullable String getPlaceSound() {
 		return this.placeSound;
 	}
 
@@ -78,8 +76,7 @@ public class SoundGroup {
 		this.breakSound = breakSound;
 	}
 
-	@Nullable
-	public String getBreakSound() {
+	public @Nullable String getBreakSound() {
 		return this.breakSound;
 	}
 
@@ -103,8 +100,7 @@ public class SoundGroup {
 		this.hitSound = hitSound;
 	}
 
-	@Nullable
-	public String getHitSound() {
+	public @Nullable String getHitSound() {
 		return this.hitSound;
 	}
 
@@ -128,8 +124,7 @@ public class SoundGroup {
 		this.stepSound = stepSound;
 	}
 
-	@Nullable
-	public String getStepSound() {
+	public @Nullable String getStepSound() {
 		return this.stepSound;
 	}
 
@@ -149,7 +144,7 @@ public class SoundGroup {
 		return this.stepSoundVolume;
 	}
 
-	public void playPlaceSound(@Nonnull Location location) {
+	public void playPlaceSound(@NotNull Location location) {
 		if (this.placeSound == null) return;
 		if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
 			location.getWorld().playSound(location, Main.getConfigCache().woodSoundPlace, this.placeSoundVolume, this.placeSoundPitch);
@@ -158,7 +153,7 @@ public class SoundGroup {
 		}
 	}
 
-	public void playBreakSound(@Nonnull Location location) {
+	public void playBreakSound(@NotNull Location location) {
 		if (this.breakSound == null) return;
 		if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
 			location.getWorld().playSound(location, Main.getConfigCache().woodSoundBreak, this.breakSoundVolume, this.breakSoundPitch);
@@ -167,7 +162,7 @@ public class SoundGroup {
 		}
 	}
 
-	public void playHitSound(@Nonnull Location location) {
+	public void playHitSound(@NotNull Location location) {
 		if (this.hitSound == null) return;
 		if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
 			location.getWorld().playSound(location, Main.getConfigCache().woodSoundHit, this.hitSoundVolume, this.hitSoundPitch);
@@ -176,7 +171,7 @@ public class SoundGroup {
 		}
 	}
 
-	public void playStepSound(@Nonnull Location location) {
+	public void playStepSound(@NotNull Location location) {
 		if (this.stepSound == null) return;
 		if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
 			location.getWorld().playSound(location, Main.getConfigCache().woodSoundStep, this.stepSoundVolume, this.stepSoundPitch);

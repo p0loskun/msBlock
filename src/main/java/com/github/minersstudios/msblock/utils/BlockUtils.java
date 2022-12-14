@@ -9,13 +9,13 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BlockUtils {
+public final class BlockUtils {
 	public static final Map<Map.Entry<Block, Player>, Integer> blocks = new ConcurrentHashMap<>();
 
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
@@ -134,6 +134,7 @@ public class BlockUtils {
 			Material.BLAST_FURNACE,
 			Material.SMOKER,
 			Material.LOOM,
+			Material.FURNACE,
 			Material.BEEHIVE,
 			Material.BEE_NEST,
 			Material.END_PORTAL_FRAME
@@ -378,7 +379,7 @@ public class BlockUtils {
 	 *
 	 * @param block block which will be updated
 	 */
-	public static void updateNoteBlock(@Nonnull Block block) {
+	public static void updateNoteBlock(@NotNull Block block) {
 		Block nextBlock = block.getRelative(BlockFace.UP);
 		if (block.getType() == Material.NOTE_BLOCK) {
 			block.getState().update(true, false);
@@ -393,7 +394,7 @@ public class BlockUtils {
 	 *
 	 * @param location location around which the blocks break
 	 */
-	public static void removeBlock(@Nonnull Location location) {
+	public static void removeBlock(@NotNull Location location) {
 		World world = location.getWorld();
 		Block topBlock = location.clone().add(0.0d, 1.0d, 0.0d).getBlock();
 		if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
@@ -415,7 +416,7 @@ public class BlockUtils {
 	 * @param player player
 	 * @return True if no tasks with player
 	 */
-	public static boolean hasPlayer(@Nonnull Player player) {
+	public static boolean hasPlayer(@NotNull Player player) {
 		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
 			if (entry.getValue() == player) {
 				return true;
@@ -428,8 +429,7 @@ public class BlockUtils {
 	 * @param block block
 	 * @return map entry with block & player
 	 */
-	@Nullable
-	public static Map.Entry<Block, Player> getEntryByBlock(@Nonnull Block block) {
+	public static @Nullable Map.Entry<Block, Player> getEntryByBlock(@NotNull Block block) {
 		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
 			if (entry.getKey().equals(block)) {
 				return entry;
@@ -443,7 +443,7 @@ public class BlockUtils {
 	 *
 	 * @param block block
 	 */
-	public static void cancelAllTasksWithThisBlock(@Nonnull Block block) {
+	public static void cancelAllTasksWithThisBlock(@NotNull Block block) {
 		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
 			if (entry.getKey().equals(block)) {
 				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
@@ -457,7 +457,7 @@ public class BlockUtils {
 	 *
 	 * @param player player
 	 */
-	public static void cancelAllTasksWithThisPlayer(@Nonnull Player player) {
+	public static void cancelAllTasksWithThisPlayer(@NotNull Player player) {
 		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
 			if (entry.getValue().equals(player)) {
 				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
@@ -466,8 +466,7 @@ public class BlockUtils {
 		}
 	}
 
-	@Nullable
-	public static BlockData getBlockDataByMaterial(@Nonnull Material material) {
+	public static @Nullable BlockData getBlockDataByMaterial(@NotNull Material material) {
 		return switch (material) {
 			case REDSTONE -> Material.REDSTONE_WIRE.createBlockData();
 			case STRING -> Material.TRIPWIRE.createBlockData();
@@ -479,7 +478,7 @@ public class BlockUtils {
 	 * @param material block material
 	 * @return True if material has wood sound
 	 */
-	public static boolean isWoodenSound(@Nonnull Material material) {
+	public static boolean isWoodenSound(@NotNull Material material) {
 		return WOOD.contains(material);
 	}
 }

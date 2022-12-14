@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.customBlock.CustomBlock;
+import com.github.minersstudios.msblock.customBlock.ToolType;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -12,13 +13,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockBreakListener implements Listener {
 
 	@EventHandler
-	public void onBlockBreak(@Nonnull BlockBreakEvent event) {
+	public void onBlockBreak(@NotNull BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation().toCenterLocation();
@@ -31,10 +31,10 @@ public class BlockBreakListener implements Listener {
 			if (gameMode == GameMode.CREATIVE) {
 				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
 			}
-			if (customBlockMaterial.isWooden() && gameMode != GameMode.CREATIVE) {
+			if (customBlockMaterial.getToolType() == ToolType.AXE && gameMode != GameMode.CREATIVE) {
 				event.setDropItems(false);
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
-				block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.getItemStack());
+				block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
 			} else {
 				event.setCancelled(gameMode == GameMode.SURVIVAL);
 			}

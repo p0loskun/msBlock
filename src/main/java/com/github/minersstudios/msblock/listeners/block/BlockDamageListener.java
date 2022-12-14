@@ -8,13 +8,12 @@ import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDamageListener implements Listener {
 
 	@EventHandler
-	public void onBlockDamage(@Nonnull BlockDamageEvent event) {
+	public void onBlockDamage(@NotNull BlockDamageEvent event) {
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation().toCenterLocation();
 		if (BlockUtils.isWoodenSound(block.getType())) {

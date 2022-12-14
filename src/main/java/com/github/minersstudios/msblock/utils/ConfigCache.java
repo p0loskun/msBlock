@@ -12,9 +12,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,9 +23,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class ConfigCache {
+public final class ConfigCache {
 	public final Map<String, CustomBlock> customBlocks = new HashMap<>();
-	@Nonnull public final String
+	public final @NotNull String
 			woodSoundPlace,
 			woodSoundBreak,
 			woodSoundStep,
@@ -91,7 +91,7 @@ public class ConfigCache {
 						);
 						if (ingredientMap != null) {
 							List<String> customBlockShapedRecipe = blockConfig.getStringList("craft.shaped-recipe");
-							ItemStack craftedItem = customBlock.getItemStack().clone();
+							ItemStack craftedItem = customBlock.craftItemStack().clone();
 							craftedItem.setAmount(blockConfig.getInt("craft.item-amount", 1));
 							ShapedRecipe shapedRecipe = new ShapedRecipe(customBlock.getNamespacedKey(), craftedItem);
 							shapedRecipe.setGroup(Main.getInstance().getName().toLowerCase(Locale.ROOT) + blockConfig.getString("craft.group"));
@@ -109,8 +109,7 @@ public class ConfigCache {
 		}
 	}
 
-	@Nullable
-	private Set<Material> getPlaceableMaterials(@Nonnull YamlConfiguration blockConfig) {
+	private @Nullable Set<Material> getPlaceableMaterials(@NotNull YamlConfiguration blockConfig) {
 		Set<Material> placeableMaterials = new HashSet<>();
 		for (String material : blockConfig.getStringList("placing.placeable-materials")) {
 			placeableMaterials.add(Material.valueOf(material));
@@ -118,8 +117,7 @@ public class ConfigCache {
 		return placeableMaterials.isEmpty() ? null : placeableMaterials;
 	}
 
-	@Nullable
-	private Map<BlockFace, NoteBlockData> getBlockFaceMap(@Nonnull YamlConfiguration blockConfig) {
+	private @Nullable Map<BlockFace, NoteBlockData> getBlockFaceMap(@NotNull YamlConfiguration blockConfig) {
 		Map<BlockFace, NoteBlockData> blockFaceMap = new HashMap<>();
 		ConfigurationSection configurationSection = blockConfig.getConfigurationSection("placing.directional.block-faces");
 		if (configurationSection == null) return null;
@@ -133,8 +131,7 @@ public class ConfigCache {
 		return blockFaceMap.isEmpty() ? null : blockFaceMap;
 	}
 
-	@Nullable
-	private Map<Axis, NoteBlockData> getBlockAxisMap(@Nonnull YamlConfiguration blockConfig) {
+	private @Nullable Map<Axis, NoteBlockData> getBlockAxisMap(@NotNull YamlConfiguration blockConfig) {
 		Map<Axis, NoteBlockData> blockAxisMap = new HashMap<>();
 		ConfigurationSection configurationSection = blockConfig.getConfigurationSection("placing.orientable.axes");
 		if (configurationSection == null) return null;
@@ -148,8 +145,7 @@ public class ConfigCache {
 		return blockAxisMap.isEmpty() ? null : blockAxisMap;
 	}
 
-	@Nullable
-	private NoteBlockData craftNoteBlockData(@Nonnull YamlConfiguration blockConfig) {
+	private @Nullable NoteBlockData craftNoteBlockData(@NotNull YamlConfiguration blockConfig) {
 		String instrument = blockConfig.getString("placing.normal.instrument");
 		return
 				instrument == null ? null :

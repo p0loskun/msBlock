@@ -21,9 +21,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,37 +63,37 @@ public class CustomBlock {
 			null
 			//</editor-fold>
 	);
-	@Nonnull private NamespacedKey namespacedKey;
+	private @NotNull NamespacedKey namespacedKey;
 	private float digSpeed;
 	private int expToDrop;
 	private boolean dropsDefaultItem;
-	@Nonnull private ToolType toolType;
+	private @NotNull ToolType toolType;
 	private boolean forceTool;
-	@Nonnull private Material itemMaterial;
-	@Nullable private String itemName;
+	private @NotNull Material itemMaterial;
+	private @Nullable String itemName;
 	private int itemCustomModelData;
-	@Nullable private NoteBlockData noteBlockData;
-	@Nullable private Set<Material> placeableMaterials;
-	@Nonnull private SoundGroup soundGroup;
-	@Nullable private PlacingType placingType;
-	@Nullable private Map<BlockFace, NoteBlockData> blockFaceMap;
-	@Nullable private Map<Axis, NoteBlockData> blockAxisMap;
+	private @Nullable NoteBlockData noteBlockData;
+	private @Nullable Set<Material> placeableMaterials;
+	private @NotNull SoundGroup soundGroup;
+	private @Nullable PlacingType placingType;
+	private @Nullable Map<BlockFace, NoteBlockData> blockFaceMap;
+	private @Nullable Map<Axis, NoteBlockData> blockAxisMap;
 	private boolean showInCraftsMenu;
-	@Nullable private ShapedRecipe shapedRecipe;
+	private @Nullable ShapedRecipe shapedRecipe;
 
 	public CustomBlock(
-			@Nonnull NamespacedKey namespacedKey,
+			@NotNull NamespacedKey namespacedKey,
 			float digSpeed,
 			int expToDrop,
 			boolean dropsDefaultItem,
-			@Nonnull ToolType toolType,
+			@NotNull ToolType toolType,
 			boolean forceTool,
-			@Nonnull Material itemMaterial,
+			@NotNull Material itemMaterial,
 			@Nullable String itemName,
 			int itemCustomModelData,
 			@Nullable NoteBlockData noteBlockData,
 			@Nullable Set<Material> placeableMaterials,
-			@Nonnull SoundGroup soundGroup,
+			@NotNull SoundGroup soundGroup,
 			@Nullable PlacingType placingType,
 			@Nullable Map<BlockFace, NoteBlockData> blockFaceMap,
 			@Nullable Map<Axis, NoteBlockData> blockAxisMap,
@@ -119,12 +119,11 @@ public class CustomBlock {
 		this.shapedRecipe = shapedRecipe;
 	}
 
-	public void setNamespacedKey(@Nonnull NamespacedKey namespacedKey) {
+	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
 		this.namespacedKey = namespacedKey;
 	}
 
-	@Nonnull
-	public NamespacedKey getNamespacedKey() {
+	public @NotNull NamespacedKey getNamespacedKey() {
 		return this.namespacedKey;
 	}
 
@@ -136,7 +135,7 @@ public class CustomBlock {
 		return this.digSpeed;
 	}
 
-	public float getCalculatedDigSpeed(@Nonnull Player player) {
+	public float getCalculatedDigSpeed(@NotNull Player player) {
 		float base = 1.0f;
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
@@ -173,12 +172,11 @@ public class CustomBlock {
 		return this.dropsDefaultItem;
 	}
 
-	public void setToolType(@Nonnull ToolType toolType) {
+	public void setToolType(@NotNull ToolType toolType) {
 		this.toolType = toolType;
 	}
 
-	@Nonnull
-	public ToolType getToolType() {
+	public @NotNull ToolType getToolType() {
 		return this.toolType;
 	}
 
@@ -190,12 +188,11 @@ public class CustomBlock {
 		return this.forceTool;
 	}
 
-	public void setItemMaterial(@Nonnull Material itemMaterial) {
+	public void setItemMaterial(@NotNull Material itemMaterial) {
 		this.itemMaterial = itemMaterial;
 	}
 
-	@Nonnull
-	public Material getItemMaterial() {
+	public @NotNull Material getItemMaterial() {
 		return this.itemMaterial;
 	}
 
@@ -203,8 +200,7 @@ public class CustomBlock {
 		this.itemName = itemName;
 	}
 
-	@Nullable
-	public String getItemName() {
+	public @Nullable String getItemName() {
 		return this.itemName;
 	}
 
@@ -220,8 +216,7 @@ public class CustomBlock {
 		this.noteBlockData = noteBlockData;
 	}
 
-	@Nullable
-	public NoteBlockData getNoteBlockData() {
+	public @Nullable NoteBlockData getNoteBlockData() {
 		return this.noteBlockData;
 	}
 
@@ -229,17 +224,15 @@ public class CustomBlock {
 		this.placeableMaterials = placeableMaterials;
 	}
 
-	@Nullable
-	public Set<Material> getPlaceableMaterials() {
+	public @Nullable Set<Material> getPlaceableMaterials() {
 		return this.placeableMaterials;
 	}
 
-	public void setSoundGroup(@Nonnull SoundGroup soundGroup) {
+	public void setSoundGroup(@NotNull SoundGroup soundGroup) {
 		this.soundGroup = soundGroup;
 	}
 
-	@Nonnull
-	public SoundGroup getSoundGroup() {
+	public @NotNull SoundGroup getSoundGroup() {
 		return this.soundGroup;
 	}
 
@@ -247,8 +240,7 @@ public class CustomBlock {
 		this.placingType = placingType;
 	}
 
-	@Nullable
-	public PlacingType getPlacingType() {
+	public @Nullable PlacingType getPlacingType() {
 		return this.placingType;
 	}
 
@@ -256,8 +248,7 @@ public class CustomBlock {
 		this.blockFaceMap = blockFaceMap;
 	}
 
-	@Nullable
-	public Map<BlockFace, NoteBlockData> getBlockFaceMap() {
+	public @Nullable Map<BlockFace, NoteBlockData> getBlockFaceMap() {
 		return this.blockFaceMap;
 	}
 
@@ -265,8 +256,7 @@ public class CustomBlock {
 		this.blockAxisMap = blockAxisMap;
 	}
 
-	@Nullable
-	public Map<Axis, NoteBlockData> getBlockAxisMap() {
+	public @Nullable Map<Axis, NoteBlockData> getBlockAxisMap() {
 		return this.blockAxisMap;
 	}
 
@@ -282,13 +272,11 @@ public class CustomBlock {
 		this.shapedRecipe = shapedRecipe;
 	}
 
-	@Nullable
-	public ShapedRecipe getShapedRecipe() {
+	public @Nullable ShapedRecipe getShapedRecipe() {
 		return this.shapedRecipe;
 	}
 
-	@Nonnull
-	public ItemStack getItemStack() {
+	public @NotNull ItemStack craftItemStack() {
 		ItemStack itemStack = new ItemStack(itemMaterial);
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		assert itemMeta != null;
@@ -312,27 +300,19 @@ public class CustomBlock {
 		return itemStack;
 	}
 
-	@Nonnull
-	public static CustomBlock getCustomBlock(@Nonnull Instrument instrument, @Nonnull Note note, boolean powered) {
+	public static @NotNull CustomBlock getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
+		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
 		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
 			if (customBlock.noteBlockData == null) {
 				if (customBlock.blockFaceMap != null) {
-					for (NoteBlockData noteBlockData : customBlock.blockFaceMap.values()) {
-						if (
-								noteBlockData.getInstrument() == instrument
-								&& noteBlockData.getNote().equals(note)
-								&& noteBlockData.isPowered() == powered
-						) {
+					for (NoteBlockData data : customBlock.blockFaceMap.values()) {
+						if (noteBlockData.isSimilar(data)) {
 							customBlock.noteBlockData = noteBlockData;
 						}
 					}
 				} else if (customBlock.blockAxisMap != null) {
-					for (NoteBlockData noteBlockData : customBlock.blockAxisMap.values()) {
-						if (
-								noteBlockData.getInstrument() == instrument
-								&& noteBlockData.getNote().equals(note)
-								&& noteBlockData.isPowered() == powered
-						) {
+					for (NoteBlockData data : customBlock.blockAxisMap.values()) {
+						if (noteBlockData.isSimilar(data)) {
 							customBlock.noteBlockData = noteBlockData;
 						}
 					}
@@ -340,16 +320,13 @@ public class CustomBlock {
 			}
 			if (
 					customBlock.noteBlockData != null
-					&& customBlock.noteBlockData.getInstrument() == instrument
-					&& customBlock.noteBlockData.getNote().equals(note)
-					&& customBlock.noteBlockData.isPowered() == powered
+					&& noteBlockData.isSimilar(customBlock.noteBlockData)
 			) return customBlock;
 		}
 		return DEFAULT;
 	}
 
-	@Nonnull
-	public static CustomBlock getCustomBlock(int itemCustomModelData) {
+	public static @NotNull CustomBlock getCustomBlock(int itemCustomModelData) {
 		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
 			if (customBlock.itemCustomModelData == itemCustomModelData) {
 				return customBlock;
@@ -358,23 +335,21 @@ public class CustomBlock {
 		return DEFAULT;
 	}
 
-	@Nullable
-	public Set<Axis> getAxes() {
+	public @Nullable Set<Axis> getAxes() {
 		if (this.blockAxisMap == null) return null;
 		return this.blockAxisMap.keySet();
 	}
 
-	@Nullable
-	public Set<BlockFace> getFaces() {
+	public @Nullable Set<BlockFace> getFaces() {
 		if (this.blockFaceMap == null) return null;
 		return this.blockFaceMap.keySet();
 	}
 
-	public void setCustomBlock(@Nonnull Block block, @Nonnull Player player, @Nonnull EquipmentSlot hand) {
+	public void setCustomBlock(@NotNull Block block, @NotNull Player player, @NotNull EquipmentSlot hand) {
 		this.setCustomBlock(block, player, hand, null, null);
 	}
 
-	public void setCustomBlock(@Nonnull Block block, @Nonnull Player player, @Nonnull EquipmentSlot hand, @Nullable BlockFace blockFace, @Nullable Axis axis) {
+	public void setCustomBlock(@NotNull Block block, @NotNull Player player, @NotNull EquipmentSlot hand, @Nullable BlockFace blockFace, @Nullable Axis axis) {
 		if (blockFace != null && this.blockFaceMap != null) {
 			this.noteBlockData = this.blockFaceMap.get(blockFace);
 		} else if (axis != null && this.blockAxisMap != null) {
@@ -397,7 +372,7 @@ public class CustomBlock {
 		});
 	}
 
-	public void breakCustomBlock(@Nonnull Block block, @Nonnull Player player) {
+	public void breakCustomBlock(@NotNull Block block, @NotNull Player player) {
 		Location blockLocation = block.getLocation();
 		World world = block.getWorld();
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
@@ -414,7 +389,7 @@ public class CustomBlock {
 				&& this != CustomBlock.DEFAULT
 		) {
 			if (this.dropsDefaultItem) {
-				world.dropItemNaturally(blockLocation, this.getItemStack());
+				world.dropItemNaturally(blockLocation, this.craftItemStack());
 			}
 			if (this.expToDrop != 0) {
 				world.spawn(blockLocation, ExperienceOrb.class).setExperience(this.expToDrop);
@@ -434,10 +409,6 @@ public class CustomBlock {
 				world.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
 			}
 		}
-	}
-
-	public boolean isWooden() {
-		return this.toolType == ToolType.AXE;
 	}
 
 	public enum PlacingType {
