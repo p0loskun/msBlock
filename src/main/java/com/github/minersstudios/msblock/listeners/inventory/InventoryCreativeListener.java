@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

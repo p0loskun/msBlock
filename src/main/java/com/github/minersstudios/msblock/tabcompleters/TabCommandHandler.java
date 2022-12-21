@@ -1,4 +1,4 @@
-package com.github.minersstudios.msblock.tabCompleters;
+package com.github.minersstudios.msblock.tabcompleters;
 
 import com.github.minersstudios.msblock.Main;
 import org.bukkit.Bukkit;

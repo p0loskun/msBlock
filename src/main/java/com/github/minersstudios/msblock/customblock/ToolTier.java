@@ -1,4 +1,4 @@
-package com.github.minersstudios.msblock.customBlock;
+package com.github.minersstudios.msblock.customblock;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

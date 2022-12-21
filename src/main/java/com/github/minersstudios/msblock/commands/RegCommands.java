@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.tabCompleters.TabCommandHandler;
+import com.github.minersstudios.msblock.tabcompleters.TabCommandHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

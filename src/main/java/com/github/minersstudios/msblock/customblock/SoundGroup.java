@@ -1,4 +1,4 @@
-package com.github.minersstudios.msblock.customBlock;
+package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.Main;
 import org.bukkit.Location;
