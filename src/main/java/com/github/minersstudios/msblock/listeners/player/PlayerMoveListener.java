@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import org.bukkit.GameMode;

@@ -9,14 +9,18 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class BlockUtils {
 	public static final Map<Map.Entry<Block, Player>, Integer> blocks = new ConcurrentHashMap<>();
+	public static final List<Recipe> CUSTOM_BLOCK_RECIPES = new ArrayList<>();
 
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
 			//<editor-fold desc="Replace materials">

@@ -1,10 +1,10 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
-import com.github.minersstudios.msblock.customBlock.NoteBlockData;
-import com.github.minersstudios.msblock.customBlock.SoundGroup;
-import com.github.minersstudios.msblock.customBlock.ToolType;
+import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.NoteBlockData;
+import com.github.minersstudios.msblock.customblock.SoundGroup;
+import com.github.minersstudios.msblock.customblock.ToolType;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -98,6 +98,9 @@ public final class ConfigCache {
 							shapedRecipe.shape(customBlockShapedRecipe.toArray(String[]::new));
 							for (Character character : ingredientMap.keySet()) {
 								shapedRecipe.setIngredient(character, ingredientMap.get(character));
+							}
+							if (customBlock.isShowInCraftsMenu()) {
+								BlockUtils.CUSTOM_BLOCK_RECIPES.add(shapedRecipe);
 							}
 							Bukkit.addRecipe(shapedRecipe);
 							customBlock.setShapedRecipe(shapedRecipe);

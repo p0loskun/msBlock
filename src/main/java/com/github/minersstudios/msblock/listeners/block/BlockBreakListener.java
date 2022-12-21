@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
-import com.github.minersstudios.msblock.customBlock.ToolType;
+import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.ToolType;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
