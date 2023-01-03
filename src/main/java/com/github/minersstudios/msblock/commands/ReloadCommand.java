@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ public class ReloadCommand {
 				Bukkit.removeRecipe(shapedRecipe.getKey());
 			}
 		}
+		BlockUtils.CUSTOM_BLOCK_RECIPES.clear();
 		Main.getInstance().load();
 		if (Main.getInstance().isEnabled()) {
 			return ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
