@@ -71,15 +71,19 @@ public final class ConfigCache {
 								this.getPlaceableMaterials(blockConfig),
 								new SoundGroup(
 										blockConfig.getString("sounds.place.sound-name"),
+										SoundCategory.valueOf(blockConfig.getString("sounds.place.sound-category")),
 										(float) blockConfig.getDouble("sounds.place.pitch"),
 										(float) blockConfig.getDouble("sounds.place.volume"),
 										blockConfig.getString("sounds.break.sound-name"),
+										SoundCategory.valueOf(blockConfig.getString("sounds.break.sound-category")),
 										(float) blockConfig.getDouble("sounds.break.pitch"),
 										(float) blockConfig.getDouble("sounds.break.volume"),
 										blockConfig.getString("sounds.hit.sound-name"),
+										SoundCategory.valueOf(blockConfig.getString("sounds.hit.sound-category")),
 										(float) blockConfig.getDouble("sounds.hit.pitch"),
 										(float) blockConfig.getDouble("sounds.hit.volume"),
 										blockConfig.getString("sounds.step.sound-name"),
+										SoundCategory.valueOf(blockConfig.getString("sounds.step.sound-category")),
 										(float) blockConfig.getDouble("sounds.step.pitch"),
 										(float) blockConfig.getDouble("sounds.step.volume")
 								),
@@ -150,9 +154,9 @@ public final class ConfigCache {
 
 	private @Nullable NoteBlockData craftNoteBlockData(@NotNull YamlConfiguration blockConfig) {
 		String instrument = blockConfig.getString("placing.normal.instrument");
-		return
-				instrument == null ? null :
-				new NoteBlockData(
+		return instrument == null
+				? null
+				: new NoteBlockData(
 						Instrument.valueOf(instrument),
 						new Note(blockConfig.getInt("placing.normal.note")),
 						blockConfig.getBoolean("placing.normal.is-powered", false)

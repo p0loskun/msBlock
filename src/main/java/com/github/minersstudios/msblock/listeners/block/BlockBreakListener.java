@@ -26,7 +26,7 @@ public class BlockBreakListener implements Listener {
 			CustomBlock.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
 		}
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlock customBlockMaterial = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+			CustomBlock customBlockMaterial = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 			GameMode gameMode = player.getGameMode();
 			if (gameMode == GameMode.CREATIVE) {
 				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);

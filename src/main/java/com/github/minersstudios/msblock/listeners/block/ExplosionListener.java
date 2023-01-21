@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
@@ -19,7 +19,7 @@ public class ExplosionListener implements Listener {
 				block.setType(Material.AIR);
 				block.getWorld().dropItemNaturally(
 						block.getLocation(),
-						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
+						BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 				);
 			}
 		}
@@ -32,7 +32,7 @@ public class ExplosionListener implements Listener {
 				block.setType(Material.AIR);
 				block.getWorld().dropItemNaturally(
 						block.getLocation(),
-						CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
+						BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 				);
 			}
 		}

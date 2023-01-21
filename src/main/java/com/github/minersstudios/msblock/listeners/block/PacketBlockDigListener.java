@@ -45,7 +45,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlock customBlock = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+					CustomBlock customBlock = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 					float digSpeed = customBlock.getCalculatedDigSpeed(player);
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
 						float ticks = 0.0f;
@@ -70,12 +70,15 @@ public class PacketBlockDigListener extends PacketAdapter {
 							if (!targetBlock.equals(block)) return;
 
 							if (!farAway.contains(player)) {
-								Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
-									@Override
-									public void onPacketReceiving(PacketEvent event) {
-										swing = true;
-									}
-								});
+								Bukkit.getScheduler().runTask(plugin, () ->
+									Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
+										@Override
+										public void onPacketReceiving(PacketEvent event) {
+											swing = true;
+											Main.getProtocolManager().removePacketListener(this);
+										}
+									})
+								);
 							}
 
 							if (!swing) {
@@ -136,12 +139,15 @@ public class PacketBlockDigListener extends PacketAdapter {
 							if (!targetBlock.equals(block)) return;
 
 							if (!farAway.contains(player)) {
-								getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
-									@Override
-									public void onPacketReceiving(PacketEvent event) {
-										swing = true;
-									}
-								});
+								Bukkit.getScheduler().runTask(plugin, () ->
+										Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
+											@Override
+											public void onPacketReceiving(PacketEvent event) {
+												swing = true;
+												Main.getProtocolManager().removePacketListener(this);
+											}
+										})
+								);
 							}
 
 							if (!swing) {

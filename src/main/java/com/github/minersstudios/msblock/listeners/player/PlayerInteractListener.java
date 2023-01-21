@@ -72,7 +72,7 @@ public class PlayerInteractListener implements Listener {
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
 
-			this.clickedCustomBlock = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+			this.clickedCustomBlock = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 			this.blockAtFace = clickedBlock.getRelative(event.getBlockFace());
 			this.nmsItem = CraftItemStack.asNMSCopy(this.itemInHand);
 			this.enumHand = this.hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
@@ -103,7 +103,7 @@ public class PlayerInteractListener implements Listener {
 			}
 			ItemMeta itemMeta = this.itemInHand.getItemMeta();
 			if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-			CustomBlock customBlock = CustomBlock.getCustomBlock(itemMeta.getCustomModelData());
+			CustomBlock customBlock = BlockUtils.getCustomBlock(itemMeta.getCustomModelData());
 			Set<BlockFace> blockFaces = customBlock.getFaces();
 			Set<Axis> blockAxes = customBlock.getAxes();
 			if (blockFaces != null) {

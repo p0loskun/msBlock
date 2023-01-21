@@ -20,7 +20,7 @@ public class BlockDamageListener implements Listener {
 			CustomBlock.DEFAULT.getSoundGroup().playHitSound(blockLocation);
 		}
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playHitSound(blockLocation);
+			BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playHitSound(blockLocation);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 
 	<groupId>com.github.minersstudios</groupId>
 	<artifactId>msBlock</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>msBlock</name>
@@ -20,7 +20,7 @@
 
 	<developers>
 		<developer>
-			<name>[Poloskun_]</name>
+			<name>Poloskun_</name>
 			<url>https://github.com/p0loskun</url>
 		</developer>
 	</developers>

@@ -2,7 +2,6 @@ package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.Main;
 import com.github.minersstudios.msblock.utils.BlockUtils;
-import com.github.minersstudios.msblock.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -44,15 +43,19 @@ public class CustomBlock {
 			null,
 			new SoundGroup(
 					"block.wood.place",
+					SoundCategory.BLOCKS,
 					1.0f,
-					1.0f,
+					0.5f,
 					"block.wood.break",
+					SoundCategory.BLOCKS,
 					1.0f,
 					1.0f,
 					"block.wood.hit",
+					SoundCategory.BLOCKS,
 					0.5f,
 					0.5f,
 					"block.wood.step",
+					SoundCategory.PLAYERS,
 					0.9f,
 					0.3f
 			),
@@ -300,41 +303,6 @@ public class CustomBlock {
 		return itemStack;
 	}
 
-	public static @NotNull CustomBlock getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
-		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
-		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
-			if (customBlock.noteBlockData == null) {
-				if (customBlock.blockFaceMap != null) {
-					for (NoteBlockData data : customBlock.blockFaceMap.values()) {
-						if (noteBlockData.isSimilar(data)) {
-							customBlock.noteBlockData = noteBlockData;
-						}
-					}
-				} else if (customBlock.blockAxisMap != null) {
-					for (NoteBlockData data : customBlock.blockAxisMap.values()) {
-						if (noteBlockData.isSimilar(data)) {
-							customBlock.noteBlockData = noteBlockData;
-						}
-					}
-				}
-			}
-			if (
-					customBlock.noteBlockData != null
-					&& noteBlockData.isSimilar(customBlock.noteBlockData)
-			) return customBlock;
-		}
-		return DEFAULT;
-	}
-
-	public static @NotNull CustomBlock getCustomBlock(int itemCustomModelData) {
-		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
-			if (customBlock.itemCustomModelData == itemCustomModelData) {
-				return customBlock;
-			}
-		}
-		return DEFAULT;
-	}
-
 	public @Nullable Set<Axis> getAxes() {
 		if (this.blockAxisMap == null) return null;
 		return this.blockAxisMap.keySet();
@@ -363,8 +331,8 @@ public class CustomBlock {
 
 			this.soundGroup.playPlaceSound(block.getLocation().toCenterLocation());
 			Main.getCoreProtectAPI().logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
-			BlockUtils.removeBlock(block.getLocation());
-			PlayerUtils.swingHand(player, hand);
+			BlockUtils.removeBlocksAround(block.getLocation());
+			player.swingHand(hand);
 
 			if (player.getGameMode() != GameMode.SURVIVAL) return;
 			ItemStack itemInHand = player.getInventory().getItem(hand);

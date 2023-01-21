@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
 import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,7 +29,7 @@ public class InventoryCreativeListener implements Listener {
 		event.setCancelled(true);
 		Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setItem(
 				event.getSlot(),
-				CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
+				BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 		));
 	}
 }

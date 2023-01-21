@@ -38,7 +38,7 @@ public class PlayerMoveListener implements Listener {
 			PlayerUtils.steps.put(player, fullDistance > 1.25d ? 0.0d : fullDistance);
 			if (fullDistance > 1.25d) {
 				if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
-					CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playStepSound(bottomBlockLocation);
+					BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playStepSound(bottomBlockLocation);
 				} else {
 					CustomBlock.DEFAULT.getSoundGroup().playStepSound(bottomBlockLocation);
 				}

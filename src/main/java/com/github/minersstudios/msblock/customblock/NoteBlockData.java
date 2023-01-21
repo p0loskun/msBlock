@@ -4,7 +4,9 @@ import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.NoteBlock;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
 public class NoteBlockData {
@@ -30,8 +32,10 @@ public class NoteBlockData {
 		return noteBlock;
 	}
 
-	public boolean isSimilar(@NotNull NoteBlockData noteBlockData) {
-		return this.instrument == noteBlockData.instrument
+	@Contract("null -> false")
+	public boolean isSimilar(@Nullable NoteBlockData noteBlockData) {
+		return noteBlockData != null
+				&& this.instrument == noteBlockData.instrument
 				&& this.note.equals(noteBlockData.note)
 				&& this.powered == noteBlockData.powered;
 	}

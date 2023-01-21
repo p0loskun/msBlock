@@ -17,7 +17,6 @@ import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.RayTraceResult;
@@ -82,20 +81,6 @@ public final class PlayerUtils {
 		BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
 		MovingObjectPositionBlock movingObjectPositionBlock = new MovingObjectPositionBlock(vec3D, ((CraftPlayer) player).getHandle().cA(), blockPosition, false);
 		return new ItemActionContext(((CraftPlayer) player).getHandle(), enumHand, movingObjectPositionBlock);
-	}
-
-	/**
-	 * Swings hand/offhand
-	 *
-	 * @param player        player
-	 * @param equipmentSlot hand
-	 */
-	public static void swingHand(@NotNull Player player, @NotNull EquipmentSlot equipmentSlot) {
-		if (equipmentSlot == EquipmentSlot.HAND) {
-			player.swingMainHand();
-		} else {
-			player.swingOffHand();
-		}
 	}
 
 	/**
