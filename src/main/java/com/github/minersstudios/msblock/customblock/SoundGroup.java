@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.customblock;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
 import org.jetbrains.annotations.NotNull;
@@ -192,7 +192,7 @@ public class SoundGroup {
 	public void playPlaceSound(@NotNull Location location) {
 		if (this.placeSound == null) return;
 		if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
-			location.getWorld().playSound(location, Main.getConfigCache().woodSoundPlace, this.placeSoundCategory, this.placeSoundVolume, this.placeSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundPlace, this.placeSoundCategory, this.placeSoundVolume, this.placeSoundPitch);
 		} else {
 			location.getWorld().playSound(location, this.placeSound, this.placeSoundCategory, this.placeSoundVolume, this.placeSoundPitch);
 		}
@@ -201,7 +201,7 @@ public class SoundGroup {
 	public void playBreakSound(@NotNull Location location) {
 		if (this.breakSound == null) return;
 		if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
-			location.getWorld().playSound(location,  Main.getConfigCache().woodSoundBreak, this.breakSoundCategory, this.breakSoundVolume, this.breakSoundPitch);
+			location.getWorld().playSound(location,  MSBlock.getConfigCache().woodSoundBreak, this.breakSoundCategory, this.breakSoundVolume, this.breakSoundPitch);
 		} else {
 			location.getWorld().playSound(location, this.breakSound, this.breakSoundCategory, this.breakSoundVolume, this.breakSoundPitch);
 		}
@@ -210,7 +210,7 @@ public class SoundGroup {
 	public void playHitSound(@NotNull Location location) {
 		if (this.hitSound == null) return;
 		if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
-			location.getWorld().playSound(location, Main.getConfigCache().woodSoundHit, this.hitSoundCategory, this.hitSoundVolume, this.hitSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundHit, this.hitSoundCategory, this.hitSoundVolume, this.hitSoundPitch);
 		} else {
 			location.getWorld().playSound(location, this.hitSound, this.hitSoundCategory, this.hitSoundVolume, this.hitSoundPitch);
 		}
@@ -219,7 +219,7 @@ public class SoundGroup {
 	public void playStepSound(@NotNull Location location) {
 		if (this.stepSound == null) return;
 		if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
-			location.getWorld().playSound(location, Main.getConfigCache().woodSoundStep, this.stepSoundCategory, this.stepSoundVolume, this.stepSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundStep, this.stepSoundCategory, this.stepSoundVolume, this.stepSoundPitch);
 		} else {
 			location.getWorld().playSound(location, this.stepSound, this.stepSoundCategory, this.stepSoundVolume, this.stepSoundPitch);
 		}

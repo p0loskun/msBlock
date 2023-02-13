@@ -1,10 +1,11 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
+import com.github.minersstudios.mscore.MSListener;
 import net.minecraft.world.EnumHand;
 import net.minecraft.world.EnumInteractionResult;
 import net.minecraft.world.item.context.ItemActionContext;
@@ -29,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
+@MSListener
 public class PlayerInteractListener implements Listener {
 	private Block blockAtFace;
 	private Location interactionPoint;
@@ -227,7 +229,7 @@ public class PlayerInteractListener implements Listener {
 				|| !this.itemInHand.getType().isBlock()
 		) return;
 		BlockData blockData = this.itemInHand.getType().createBlockData();
-		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), this.itemInHand.getType(), blockData);
+		MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), this.itemInHand.getType(), blockData);
 		SoundGroup soundGroup = blockData.getSoundGroup();
 		this.blockAtFace.getWorld().playSound(
 				this.blockAtFace.getLocation(),

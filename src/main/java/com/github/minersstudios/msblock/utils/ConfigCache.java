@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
 import com.github.minersstudios.msblock.customblock.SoundGroup;
@@ -32,7 +32,7 @@ public final class ConfigCache {
 			woodSoundHit;
 
 	public ConfigCache() {
-		File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
+		File configFile = new File(MSBlock.getInstance().getPluginFolder(), "config.yml");
 		YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(configFile);
 
 		this.woodSoundPlace = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.place"), "wood-sound.place is null");
@@ -40,7 +40,7 @@ public final class ConfigCache {
 		this.woodSoundStep = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.step"));
 		this.woodSoundHit = Objects.requireNonNull(yamlConfiguration.getString("wood-sound.hit"));
 
-		try (Stream<Path> path = Files.walk(Paths.get(Main.getInstance().getDataFolder() + "/blocks"))) {
+		try (Stream<Path> path = Files.walk(Paths.get(MSBlock.getInstance().getPluginFolder() + "/blocks"))) {
 			path.filter(Files::isRegularFile)
 					.map(Path::toFile)
 					.forEach((blocksFile) -> {
@@ -58,7 +58,7 @@ public final class ConfigCache {
 						}
 
 						CustomBlock customBlock = new CustomBlock(
-								new NamespacedKey(Main.getInstance(), Objects.requireNonNull(blockConfig.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")),
+								new NamespacedKey(MSBlock.getInstance(), Objects.requireNonNull(blockConfig.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")),
 								(float) blockConfig.getDouble("block-settings.dig-speed"),
 								blockConfig.getInt("block-settings.drop.experience"),
 								blockConfig.getBoolean("block-settings.drop.drops-default-item", true),
@@ -98,7 +98,7 @@ public final class ConfigCache {
 							ItemStack craftedItem = customBlock.craftItemStack().clone();
 							craftedItem.setAmount(blockConfig.getInt("craft.item-amount", 1));
 							ShapedRecipe shapedRecipe = new ShapedRecipe(customBlock.getNamespacedKey(), craftedItem);
-							shapedRecipe.setGroup(Main.getInstance().getName().toLowerCase(Locale.ROOT) + blockConfig.getString("craft.group"));
+							shapedRecipe.setGroup(MSBlock.getInstance().getName().toLowerCase(Locale.ROOT) + blockConfig.getString("craft.group"));
 							shapedRecipe.shape(customBlockShapedRecipe.toArray(String[]::new));
 							for (Character character : ingredientMap.keySet()) {
 								shapedRecipe.setIngredient(character, ingredientMap.get(character));
@@ -112,7 +112,7 @@ public final class ConfigCache {
 						this.customBlocks.put(customBlock.getNamespacedKey().getKey(), customBlock);
 					});
 		} catch (IOException e) {
-			Main.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));
+			MSBlock.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));
 		}
 	}
 

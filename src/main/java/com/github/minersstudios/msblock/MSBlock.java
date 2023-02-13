@@ -2,35 +2,22 @@ package com.github.minersstudios.msblock;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.github.minersstudios.msblock.commands.RegCommands;
-import com.github.minersstudios.msblock.listeners.RegEvents;
-import com.github.minersstudios.msblock.utils.ChatUtils;
+import com.github.minersstudios.msblock.listeners.block.PacketBlockDigListener;
 import com.github.minersstudios.msblock.utils.ConfigCache;
+import com.github.minersstudios.mscore.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Level;
-
-public final class Main extends JavaPlugin {
-	private static Main instance;
+public final class MSBlock extends MSPlugin {
+	private static MSBlock instance;
 	private static ConfigCache configCache;
 	private static CoreProtectAPI coreProtectAPI;
 	private static ProtocolManager protocolManager;
 
 	@Override
-	public void onEnable() {
-		long time = System.currentTimeMillis();
-		this.load();
-		if (this.isEnabled()) {
-			ChatUtils.log(Level.INFO, ChatColor.GREEN + "Enabled in " + (System.currentTimeMillis() - time) + "ms");
-		}
-	}
-
-	public void load() {
+	public void enable() {
 		instance = this;
 		protocolManager = ProtocolLibrary.getProtocolManager();
 		coreProtectAPI = getCoreProtect();
@@ -40,8 +27,7 @@ public final class Main extends JavaPlugin {
 
 		reloadConfigs();
 
-		RegEvents.init(this);
-		RegCommands.init(this);
+		protocolManager.addPacketListener(new PacketBlockDigListener());
 	}
 
 	private @Nullable CoreProtectAPI getCoreProtect() {
@@ -58,7 +44,7 @@ public final class Main extends JavaPlugin {
 		configCache = new ConfigCache();
 	}
 
-	public static Main getInstance() {
+	public static MSBlock getInstance() {
 		return instance;
 	}
 

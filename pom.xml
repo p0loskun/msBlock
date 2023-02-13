@@ -27,7 +27,7 @@
 
 	<properties>
 		<authors>[ Poloskun_ ]</authors>
-		<mainClass>com.github.minersstudios.msblock.Main</mainClass>
+		<mainClass>com.github.minersstudios.msblock.MSBlock</mainClass>
 		<apiVersion>1.19</apiVersion>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,6 +54,10 @@
 	</build>
 
 	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 		<repository>
 			<id>papermc</id>
 			<url>https://repo.papermc.io/repository/maven-public/</url>
@@ -95,6 +99,12 @@
 			<groupId>net.coreprotect</groupId>
 			<artifactId>coreprotect</artifactId>
 			<version>21.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.MinersStudios</groupId>
+			<artifactId>msCore</artifactId>
+			<version>release-127dd06fc9-1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

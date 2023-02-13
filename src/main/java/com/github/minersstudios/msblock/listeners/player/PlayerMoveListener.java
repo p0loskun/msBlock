@@ -3,6 +3,7 @@ package com.github.minersstudios.msblock.listeners.player;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class PlayerMoveListener implements Listener {
 
 	@EventHandler
@@ -22,11 +24,11 @@ public class PlayerMoveListener implements Listener {
 		Block bottomBlock = player.getLocation().subtract(0.0d, 0.5d, 0.0d).getBlock();
 		Location bottomBlockLocation = bottomBlock.getLocation().toCenterLocation();
 		if (
-				(bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
-				&& bottomBlock.getType().isSolid()
+				bottomBlock.getType().isSolid()
 				&& player.getGameMode() != GameMode.SPECTATOR
 				&& !player.isFlying()
 				&& !player.isSneaking()
+				&& (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
 		) {
 			Location from = event.getFrom().clone(),
 					to = event.getTo().clone();

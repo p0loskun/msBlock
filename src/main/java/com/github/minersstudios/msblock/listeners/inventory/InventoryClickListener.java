@@ -1,8 +1,9 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class InventoryClickListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -28,7 +30,7 @@ public class InventoryClickListener implements Listener {
 				&& PlayerUtils.isItemCustomBlock(currentItem)
 		) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+			Bukkit.getScheduler().runTask(MSBlock.getInstance(), player::updateInventory);
 		} else if (
 				clickedInventory != null
 				&& BlockUtils.IGNORABLE_INVENTORY_TYPES.contains(clickedInventory.getType())
@@ -36,7 +38,7 @@ public class InventoryClickListener implements Listener {
 				&& PlayerUtils.isItemCustomBlock(itemInCursor)
 		) {
 			event.setCancelled(true);
-			Bukkit.getScheduler().runTask(Main.getInstance(), player::updateInventory);
+			Bukkit.getScheduler().runTask(MSBlock.getInstance(), player::updateInventory);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -9,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class BlockPhysicsListener implements Listener {
 
 	@EventHandler

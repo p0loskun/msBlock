@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.Bukkit;
@@ -26,7 +26,7 @@ import static com.github.minersstudios.msblock.utils.PlayerUtils.*;
 public class PacketBlockDigListener extends PacketAdapter {
 
 	public PacketBlockDigListener() {
-		super(Main.getInstance(), PacketType.Play.Client.BLOCK_DIG);
+		super(MSBlock.getInstance(), PacketType.Play.Client.BLOCK_DIG);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 		Block block = blockPosition.toLocation(player.getWorld()).getBlock();
 		boolean hasSlowDigging = player.hasPotionEffect(PotionEffectType.SLOW_DIGGING);
 
-		Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
 				if (block.getBlockData() instanceof NoteBlock noteBlock) {
 					if (BlockUtils.hasPlayer(player)) {
@@ -47,7 +47,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					}
 					CustomBlock customBlock = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 					float digSpeed = customBlock.getCalculatedDigSpeed(player);
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
 						int currentStage = 0;
@@ -64,18 +64,18 @@ public class PacketBlockDigListener extends PacketAdapter {
 							}
 
 							if (!hasSlowDigging) {
-								player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
+								player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
 							}
 
 							if (!targetBlock.equals(block)) return;
 
 							if (!farAway.contains(player)) {
 								Bukkit.getScheduler().runTask(plugin, () ->
-									Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
+									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
 										@Override
 										public void onPacketReceiving(PacketEvent event) {
 											swing = true;
-											Main.getProtocolManager().removePacketListener(this);
+											MSBlock.getProtocolManager().removePacketListener(this);
 										}
 									})
 								);
@@ -122,7 +122,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(Main.getInstance(), new Runnable() {
+					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						static boolean swing = true;
 
@@ -140,13 +140,13 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!farAway.contains(player)) {
 								Bukkit.getScheduler().runTask(plugin, () ->
-										Main.getProtocolManager().addPacketListener(new PacketAdapter(Main.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
-											@Override
-											public void onPacketReceiving(PacketEvent event) {
-												swing = true;
-												Main.getProtocolManager().removePacketListener(this);
-											}
-										})
+									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
+										@Override
+										public void onPacketReceiving(PacketEvent event) {
+											swing = true;
+											MSBlock.getProtocolManager().removePacketListener(this);
+										}
+									})
 								);
 							}
 

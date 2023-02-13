@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -119,7 +119,7 @@ public final class PlayerUtils {
 	public static boolean isItemCustomBlock(@NotNull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
-		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
+		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
 			ItemStack customBlockItemStack = customBlock.craftItemStack();
 			ItemMeta customBlockItemMeta = customBlockItemStack.getItemMeta();
 			if (

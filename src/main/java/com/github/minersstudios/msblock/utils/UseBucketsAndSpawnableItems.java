@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -201,12 +201,12 @@ public final class UseBucketsAndSpawnableItems {
 	 */
 	private void useEmptyBucket() {
 		if (this.block.getType() == Material.LAVA) {
-			Main.getCoreProtectAPI().logRemoval(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
+			MSBlock.getCoreProtectAPI().logRemoval(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
 			this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
 			this.itemInHand.setType(this.player.getGameMode() == GameMode.SURVIVAL ? Material.LAVA_BUCKET : this.itemInHand.getType());
 			this.block.setType(Material.AIR);
 		} else {
-			Main.getCoreProtectAPI().logRemoval(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
+			MSBlock.getCoreProtectAPI().logRemoval(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
 			this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 2.0f, 1.0f);
 			if (this.block.getBlockData() instanceof Waterlogged waterlogged) {
 				waterlogged.setWaterlogged(false);
@@ -222,7 +222,7 @@ public final class UseBucketsAndSpawnableItems {
 		if (this.block.getType().isSolid()) return;
 		this.block.setType(Material.LAVA);
 		this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY_LAVA, SoundCategory.BLOCKS, 2.0f, 1.0f);
-		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
+		MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.LAVA, this.block.getBlockData());
 		setBucketIfSurvival();
 	}
 
@@ -234,7 +234,7 @@ public final class UseBucketsAndSpawnableItems {
 			this.block.setType(Material.WATER);
 		}
 		this.world.playSound(this.block.getLocation(), Sound.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 2.0f, 1.0f);
-		Main.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
+		MSBlock.getCoreProtectAPI().logPlacement(player.getName(), this.block.getLocation(), Material.WATER, this.block.getBlockData());
 		setBucketIfSurvival();
 	}
 }

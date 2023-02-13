@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
 import com.google.common.collect.ImmutableSet;
@@ -187,6 +187,8 @@ public final class BlockUtils {
 			//</editor-fold>
 	);
 
+	private static final SoundGroup WOOD_SOUND_GROUP = Material.OAK_FENCE.createBlockData().getSoundGroup();
+
 	private BlockUtils() {
 		throw new IllegalStateException("Utility class");
 	}
@@ -242,7 +244,7 @@ public final class BlockUtils {
 
 	public static @NotNull CustomBlock getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
 		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
-		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
+		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
 			if (customBlock.getNoteBlockData() == null) {
 				Map<?, NoteBlockData> map =
 						customBlock.getBlockFaceMap() == null
@@ -262,7 +264,7 @@ public final class BlockUtils {
 	}
 
 	public static @NotNull CustomBlock getCustomBlock(int itemCustomModelData) {
-		for (CustomBlock customBlock : Main.getConfigCache().customBlocks.values()) {
+		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
 			if (customBlock.getItemCustomModelData() == itemCustomModelData) {
 				return customBlock;
 			}
@@ -338,6 +340,6 @@ public final class BlockUtils {
 	 */
 	public static boolean isWoodenSound(@NotNull Material material) {
 		if (material == Material.NOTE_BLOCK) return false;
-		return Material.OAK_FENCE.createBlockData().getSoundGroup().equals(material.createBlockData().getSoundGroup());
+		return WOOD_SOUND_GROUP.equals(material.createBlockData().getSoundGroup());
 	}
 }

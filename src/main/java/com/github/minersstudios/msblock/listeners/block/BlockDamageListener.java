@@ -2,6 +2,7 @@ package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
@@ -10,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class BlockDamageListener implements Listener {
 
 	@EventHandler

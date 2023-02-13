@@ -1,8 +1,9 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class InventoryCreativeListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -27,7 +29,7 @@ public class InventoryCreativeListener implements Listener {
 				|| !(targetBlock.getBlockData() instanceof NoteBlock noteBlock)
 		) return;
 		event.setCancelled(true);
-		Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setItem(
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> player.getInventory().setItem(
 				event.getSlot(),
 				BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
 		));

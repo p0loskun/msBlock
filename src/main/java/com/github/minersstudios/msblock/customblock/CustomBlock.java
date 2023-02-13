@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.customblock;
 
-import com.github.minersstudios.msblock.Main;
+import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,7 +30,7 @@ import java.util.Set;
 public class CustomBlock {
 	public static final CustomBlock DEFAULT = new CustomBlock(
 			//<editor-fold desc="Default noteblock params">
-			new NamespacedKey(Main.getInstance(), "default"),
+			new NamespacedKey(MSBlock.getInstance(), "default"),
 			11.0f,
 			0,
 			true,
@@ -324,13 +324,13 @@ public class CustomBlock {
 			this.noteBlockData = this.blockAxisMap.get(axis);
 		}
 		if (this.noteBlockData == null) return;
-		Bukkit.getScheduler().runTask(Main.getInstance(), () -> {
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			block.setType(Material.NOTE_BLOCK);
 			NoteBlock noteBlock = this.noteBlockData.craftNoteBlock(block.getBlockData());
 			block.setBlockData(noteBlock);
 
 			this.soundGroup.playPlaceSound(block.getLocation().toCenterLocation());
-			Main.getCoreProtectAPI().logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
+			MSBlock.getCoreProtectAPI().logPlacement(player.getName(), block.getLocation(), Material.NOTE_BLOCK, noteBlock);
 			BlockUtils.removeBlocksAround(block.getLocation());
 			player.swingHand(hand);
 
@@ -346,10 +346,10 @@ public class CustomBlock {
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
 		if (BlockUtils.getEntryByBlock(block) == null) return;
-		Bukkit.getScheduler().runTask(Main.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(block));
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(block));
 		this.soundGroup.playBreakSound(block.getLocation().toCenterLocation());
 		world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, block.getBlockData());
-		Main.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, block.getBlockData());
+		MSBlock.getCoreProtectAPI().logRemoval(player.getName(), blockLocation, Material.NOTE_BLOCK, block.getBlockData());
 		block.setType(Material.AIR);
 
 		if (

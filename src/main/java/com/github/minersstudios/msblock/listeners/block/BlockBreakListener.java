@@ -3,6 +3,7 @@ package com.github.minersstudios.msblock.listeners.block;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.ToolType;
 import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -15,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+@MSListener
 public class BlockBreakListener implements Listener {
 
 	@EventHandler
@@ -33,7 +35,7 @@ public class BlockBreakListener implements Listener {
 			}
 			if (customBlockMaterial.getToolType() == ToolType.AXE && gameMode != GameMode.CREATIVE) {
 				event.setDropItems(false);
-				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, Integer.MAX_VALUE, -1, true, false, false));
+				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
 				block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
 			} else {
 				event.setCancelled(gameMode == GameMode.SURVIVAL);
