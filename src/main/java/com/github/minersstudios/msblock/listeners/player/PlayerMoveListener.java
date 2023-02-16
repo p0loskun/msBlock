@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.mscore.MSListener;
@@ -42,7 +42,7 @@ public class PlayerMoveListener implements Listener {
 				if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
 					BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playStepSound(bottomBlockLocation);
 				} else {
-					CustomBlock.DEFAULT.getSoundGroup().playStepSound(bottomBlockLocation);
+					CustomBlockData.DEFAULT.getSoundGroup().playStepSound(bottomBlockLocation);
 				}
 			}
 		} else {

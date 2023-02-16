@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -92,6 +92,8 @@ public final class BlockUtils {
 	public static final ImmutableSet<Material> IGNORABLE_MATERIALS = Sets.immutableEnumSet(
 			//<editor-fold desc="Ignorable materials">
 			Material.ANVIL,
+			Material.CHIPPED_ANVIL,
+			Material.DAMAGED_ANVIL,
 			Material.LECTERN,
 			Material.HOPPER,
 			Material.DISPENSER,
@@ -242,34 +244,34 @@ public final class BlockUtils {
 		block.breakNaturally();
 	}
 
-	public static @NotNull CustomBlock getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
+	public static @NotNull CustomBlockData getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
 		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
-		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
-			if (customBlock.getNoteBlockData() == null) {
+		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
+			if (customBlockData.getNoteBlockData() == null) {
 				Map<?, NoteBlockData> map =
-						customBlock.getBlockFaceMap() == null
-						? customBlock.getBlockAxisMap()
-						: customBlock.getBlockFaceMap();
+						customBlockData.getBlockFaceMap() == null
+						? customBlockData.getBlockAxisMap()
+						: customBlockData.getBlockFaceMap();
 				if (map != null) {
 					for (NoteBlockData data : map.values()) {
 						if (noteBlockData.isSimilar(data)) {
-							customBlock.setNoteBlockData(noteBlockData);
+							customBlockData.setNoteBlockData(noteBlockData);
 						}
 					}
 				}
 			}
-			if (noteBlockData.isSimilar(customBlock.getNoteBlockData())) return customBlock;
+			if (noteBlockData.isSimilar(customBlockData.getNoteBlockData())) return customBlockData;
 		}
-		return CustomBlock.DEFAULT;
+		return CustomBlockData.DEFAULT;
 	}
 
-	public static @NotNull CustomBlock getCustomBlock(int itemCustomModelData) {
-		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
-			if (customBlock.getItemCustomModelData() == itemCustomModelData) {
-				return customBlock;
+	public static @NotNull CustomBlockData getCustomBlock(int itemCustomModelData) {
+		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
+			if (customBlockData.getItemCustomModelData() == itemCustomModelData) {
+				return customBlockData;
 			}
 		}
-		return CustomBlock.DEFAULT;
+		return CustomBlockData.DEFAULT;
 	}
 
 	/**

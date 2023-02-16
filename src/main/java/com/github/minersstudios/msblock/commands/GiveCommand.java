@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -16,20 +16,20 @@ public class GiveCommand {
 		if (args.length < 3) return false;
 		if (args[1].length() > 2) {
 			Player player = Bukkit.getPlayer(args[1]);
-			CustomBlock customBlock = MSBlock.getConfigCache().customBlocks.get(args[2]);
+			CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.get(args[2]);
 			int amount = args.length == 4 && args[3].matches("[0-99]+")
 					? Integer.parseInt(args[3])
 					: 1;
 			if (player == null) {
 				return ChatUtils.sendError(sender, Component.text("Данный игрок не на сервере!"));
 			}
-			if (customBlock == null) {
+			if (customBlockData == null) {
 				return ChatUtils.sendError(sender, Component.text("Такого блока не существует!"));
 			}
-			ItemStack itemStack = customBlock.craftItemStack();
+			ItemStack itemStack = customBlockData.craftItemStack();
 			itemStack.setAmount(amount);
 			player.getInventory().addItem(itemStack);
-			return ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " [" + customBlock.getItemName() + "] Игроку : " + player.getName()));
+			return ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " [" + customBlockData.getItemName() + "] Игроку : " + player.getName()));
 		}
 		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
 	}

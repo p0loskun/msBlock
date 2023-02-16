@@ -1,14 +1,14 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.minecraft.core.BlockPosition;
-import net.minecraft.world.EnumHand;
-import net.minecraft.world.item.context.ItemActionContext;
-import net.minecraft.world.phys.MovingObjectPositionBlock;
-import net.minecraft.world.phys.Vec3D;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -75,12 +75,11 @@ public final class PlayerUtils {
 				: rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
 	}
 
-	public static @NotNull ItemActionContext getItemActionContext(@NotNull Player player, @NotNull Location blockLoc, @NotNull EnumHand enumHand) {
-		Location playerEyeLoc = player.getEyeLocation();
-		Vec3D vec3D = new Vec3D(playerEyeLoc.getX(), playerEyeLoc.getY(), playerEyeLoc.getZ());
-		BlockPosition blockPosition = new BlockPosition(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
-		MovingObjectPositionBlock movingObjectPositionBlock = new MovingObjectPositionBlock(vec3D, ((CraftPlayer) player).getHandle().cA(), blockPosition, false);
-		return new ItemActionContext(((CraftPlayer) player).getHandle(), enumHand, movingObjectPositionBlock);
+	public static @NotNull UseOnContext getUseOnContext(@NotNull Player player, @NotNull Location blockLoc, @NotNull InteractionHand interactionHand) {
+		ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+		BlockPos blockPos = new BlockPos(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
+		BlockHitResult blockHitResult = new BlockHitResult(serverPlayer.getEyePosition(), serverPlayer.getDirection(), blockPos, false);
+		return new UseOnContext(serverPlayer, interactionHand, blockHitResult);
 	}
 
 	/**
@@ -119,8 +118,8 @@ public final class PlayerUtils {
 	public static boolean isItemCustomBlock(@NotNull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
-		for (CustomBlock customBlock : MSBlock.getConfigCache().customBlocks.values()) {
-			ItemStack customBlockItemStack = customBlock.craftItemStack();
+		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
+			ItemStack customBlockItemStack = customBlockData.craftItemStack();
 			ItemMeta customBlockItemMeta = customBlockItemStack.getItemMeta();
 			if (
 					customBlockItemStack.getType() == itemStack.getType()

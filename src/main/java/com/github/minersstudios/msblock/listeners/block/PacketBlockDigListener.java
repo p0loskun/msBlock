@@ -8,6 +8,7 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -45,8 +46,8 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlock customBlock = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
-					float digSpeed = customBlock.getCalculatedDigSpeed(player);
+					CustomBlockData customBlockData = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
@@ -90,7 +91,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							this.progress += digSpeed;
 
 							if (this.ticks % 4.0f == 0.0f && !farAway.contains(player)) {
-								customBlock.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+								customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
 								swing = false;
 							}
 
@@ -106,7 +107,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (this.progress > 1.0f) {
 								playZeroBreakStage(blockPosition);
-								customBlock.breakCustomBlock(block, player);
+								new CustomBlock(block, player, customBlockData).breakCustomBlock();
 							}
 						}
 					}, 0L, 1L));
@@ -158,7 +159,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							this.ticks++;
 
 							if (this.ticks % 4.0f == 0.0f) {
-								CustomBlock.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
+								CustomBlockData.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
 								swing = false;
 							}
 						}

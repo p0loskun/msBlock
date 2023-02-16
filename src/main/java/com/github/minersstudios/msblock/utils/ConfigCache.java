@@ -1,11 +1,10 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
 import com.github.minersstudios.msblock.customblock.SoundGroup;
 import com.github.minersstudios.msblock.customblock.ToolType;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,7 +23,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 public final class ConfigCache {
-	public final Map<String, CustomBlock> customBlocks = new HashMap<>();
+	public final Map<String, CustomBlockData> customBlocks = new HashMap<>();
 	public final @NotNull String
 			woodSoundPlace,
 			woodSoundBreak,
@@ -57,7 +56,7 @@ public final class ConfigCache {
 							ingredientMap = null;
 						}
 
-						CustomBlock customBlock = new CustomBlock(
+						CustomBlockData customBlockData = new CustomBlockData(
 								new NamespacedKey(MSBlock.getInstance(), Objects.requireNonNull(blockConfig.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")),
 								(float) blockConfig.getDouble("block-settings.dig-speed"),
 								blockConfig.getInt("block-settings.drop.experience"),
@@ -87,7 +86,7 @@ public final class ConfigCache {
 										(float) blockConfig.getDouble("sounds.step.pitch"),
 										(float) blockConfig.getDouble("sounds.step.volume")
 								),
-								CustomBlock.PlacingType.valueOf(blockConfig.getString("placing.placing-type", "BY_BLOCK_FACE")),
+								CustomBlockData.PlacingType.valueOf(blockConfig.getString("placing.placing-type", "BY_BLOCK_FACE")),
 								this.getBlockFaceMap(blockConfig),
 								this.getBlockAxisMap(blockConfig),
 								blockConfig.getBoolean("craft.show-in-crafts-menu", false),
@@ -95,24 +94,24 @@ public final class ConfigCache {
 						);
 						if (ingredientMap != null) {
 							List<String> customBlockShapedRecipe = blockConfig.getStringList("craft.shaped-recipe");
-							ItemStack craftedItem = customBlock.craftItemStack().clone();
+							ItemStack craftedItem = customBlockData.craftItemStack().clone();
 							craftedItem.setAmount(blockConfig.getInt("craft.item-amount", 1));
-							ShapedRecipe shapedRecipe = new ShapedRecipe(customBlock.getNamespacedKey(), craftedItem);
+							ShapedRecipe shapedRecipe = new ShapedRecipe(customBlockData.getNamespacedKey(), craftedItem);
 							shapedRecipe.setGroup(MSBlock.getInstance().getName().toLowerCase(Locale.ROOT) + blockConfig.getString("craft.group"));
 							shapedRecipe.shape(customBlockShapedRecipe.toArray(String[]::new));
 							for (Character character : ingredientMap.keySet()) {
 								shapedRecipe.setIngredient(character, ingredientMap.get(character));
 							}
-							if (customBlock.isShowInCraftsMenu()) {
+							if (customBlockData.isShowInCraftsMenu()) {
 								BlockUtils.CUSTOM_BLOCK_RECIPES.add(shapedRecipe);
 							}
 							Bukkit.addRecipe(shapedRecipe);
-							customBlock.setShapedRecipe(shapedRecipe);
+							customBlockData.setShapedRecipe(shapedRecipe);
 						}
-						this.customBlocks.put(customBlock.getNamespacedKey().getKey(), customBlock);
+						this.customBlocks.put(customBlockData.getNamespacedKey().getKey(), customBlockData);
 					});
 		} catch (IOException e) {
-			MSBlock.getInstance().getLogger().info(ExceptionUtils.getFullStackTrace(e));
+			throw new RuntimeException(e);
 		}
 	}
 

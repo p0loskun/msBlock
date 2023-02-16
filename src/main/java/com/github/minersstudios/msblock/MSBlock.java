@@ -20,7 +20,7 @@ public final class MSBlock extends MSPlugin {
 	public void enable() {
 		instance = this;
 		protocolManager = ProtocolLibrary.getProtocolManager();
-		coreProtectAPI = getCoreProtect();
+		coreProtectAPI = this.getCoreProtect();
 		if (coreProtectAPI != null) {
 			coreProtectAPI.testAPI();
 		}

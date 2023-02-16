@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 @MSListener
 public class InventoryCreativeListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onInventoryCreative(@NotNull InventoryCreativeEvent event) {
 		if (!event.getClick().isCreativeAction()) return;
 		Player player = (Player) event.getWhoClicked();

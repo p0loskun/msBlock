@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ public class BlockDamageListener implements Listener {
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation().toCenterLocation();
 		if (BlockUtils.isWoodenSound(block.getType())) {
-			CustomBlock.DEFAULT.getSoundGroup().playHitSound(blockLocation);
+			CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
 		}
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
 			BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getSoundGroup().playHitSound(blockLocation);

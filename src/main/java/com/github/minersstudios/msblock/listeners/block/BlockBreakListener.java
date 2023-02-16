@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.ToolType;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.mscore.MSListener;
@@ -25,10 +25,10 @@ public class BlockBreakListener implements Listener {
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation().toCenterLocation();
 		if (BlockUtils.isWoodenSound(block.getType())) {
-			CustomBlock.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
+			CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
 		}
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlock customBlockMaterial = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+			CustomBlockData customBlockMaterial = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
 			GameMode gameMode = player.getGameMode();
 			if (gameMode == GameMode.CREATIVE) {
 				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
