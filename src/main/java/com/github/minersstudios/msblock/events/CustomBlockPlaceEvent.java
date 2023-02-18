@@ -7,21 +7,20 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
-	protected boolean cancel;
+	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
+	private boolean cancel;
 
-	protected final BlockState replacedBlockState;
-	protected final Player player;
-	protected final EquipmentSlot hand;
+	private final @NotNull BlockState replacedBlockState;
+	private final @NotNull Player player;
+	private final @NotNull EquipmentSlot hand;
 
 	public CustomBlockPlaceEvent(
-			@NotNull final CustomBlock placedCustomBlock,
-			@NotNull final BlockState replacedBlockState,
-			@NotNull final Player player,
-			@Nullable final EquipmentSlot hand
+			final @NotNull CustomBlock placedCustomBlock,
+			final @NotNull BlockState replacedBlockState,
+			final @NotNull Player player,
+			final @NotNull EquipmentSlot hand
 	) {
 		super(placedCustomBlock);
 		this.player = player;
@@ -63,16 +62,16 @@ public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellab
 	 *
 	 * @return Main or off-hand, depending on which hand was used to place the custom block
 	 */
-	public @Nullable EquipmentSlot getHand() {
+	public @NotNull EquipmentSlot getHand() {
 		return this.hand;
 	}
 
 	@Override
 	public @NotNull HandlerList getHandlers() {
-		return handlers;
+		return HANDLER_LIST;
 	}
 
 	public static @NotNull HandlerList getHandlerList() {
-		return handlers;
+		return HANDLER_LIST;
 	}
 }

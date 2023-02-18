@@ -5,15 +5,20 @@ import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R2.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -58,6 +63,26 @@ public final class PlayerUtils {
 
 	private PlayerUtils() {
 		throw new IllegalStateException("Utility class");
+	}
+
+	public static void openShulkerBoxWithoutAnimation(@NotNull Player player, @NotNull ShulkerBox shulkerBox) {
+		ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+		Container inventory = ((CraftInventory) shulkerBox.getInventory()).getInventory();
+
+		if (inventory != null && !serverPlayer.isSpectator()) {
+			int containerCounter = serverPlayer.nextContainerCounter();
+			AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, new ShulkerBoxMenu(containerCounter, serverPlayer.getInventory(), inventory), false);
+			container.setTitle(((MenuProvider) inventory).getDisplayName());
+
+			shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, serverPlayer.level.random.nextFloat() * 0.1F + 0.9F);
+
+			serverPlayer.containerMenu = container;
+			if (!serverPlayer.isImmobile()) {
+				serverPlayer.connection.send(new ClientboundOpenScreenPacket(container.containerId, container.getType(), container.getTitle()));
+			}
+
+			serverPlayer.initMenu(container);
+		}
 	}
 
 	/**

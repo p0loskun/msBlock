@@ -124,7 +124,11 @@ public final class UseBucketsAndSpawnableItems {
 	 */
 	private void setItemFrame() {
 		if (this.checkForEntities()) return;
-		this.world.spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
+		if (this.itemInHand.getType() == Material.ITEM_FRAME) {
+			this.world.spawn(this.blockLocation, ItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
+		} else {
+			this.world.spawn(this.blockLocation, GlowItemFrame.class, itemFrame -> itemFrame.setFacingDirection(this.blockFace, true));
+		}
 		if (this.player.getGameMode() != GameMode.CREATIVE) {
 			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
 		}

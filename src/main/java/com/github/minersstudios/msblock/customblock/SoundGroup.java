@@ -6,6 +6,8 @@ import org.bukkit.SoundCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.SecureRandom;
+
 @SuppressWarnings("unused")
 public class SoundGroup {
 	private @Nullable String placeSound;
@@ -24,6 +26,8 @@ public class SoundGroup {
 	private @NotNull SoundCategory stepSoundCategory;
 	private float stepSoundPitch;
 	private float stepSoundVolume;
+
+	private final SecureRandom random = new SecureRandom();
 
 	public SoundGroup(
 			@Nullable String placeSound,
@@ -192,36 +196,36 @@ public class SoundGroup {
 	public void playPlaceSound(@NotNull Location location) {
 		if (this.placeSound == null) return;
 		if (this.placeSound.equalsIgnoreCase("block.wood.place")) {
-			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundPlace, this.placeSoundCategory, this.placeSoundVolume, this.placeSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundPlace, this.placeSoundCategory, this.placeSoundVolume, this.random.nextFloat() * 0.1f + this.placeSoundPitch);
 		} else {
-			location.getWorld().playSound(location, this.placeSound, this.placeSoundCategory, this.placeSoundVolume, this.placeSoundPitch);
+			location.getWorld().playSound(location, this.placeSound, this.placeSoundCategory, this.placeSoundVolume, this.random.nextFloat() * 0.1f + this.placeSoundPitch);
 		}
 	}
 
 	public void playBreakSound(@NotNull Location location) {
 		if (this.breakSound == null) return;
 		if (this.breakSound.equalsIgnoreCase("block.wood.break")) {
-			location.getWorld().playSound(location,  MSBlock.getConfigCache().woodSoundBreak, this.breakSoundCategory, this.breakSoundVolume, this.breakSoundPitch);
+			location.getWorld().playSound(location,  MSBlock.getConfigCache().woodSoundBreak, this.breakSoundCategory, this.breakSoundVolume, this.random.nextFloat() * 0.1f + this.breakSoundPitch);
 		} else {
-			location.getWorld().playSound(location, this.breakSound, this.breakSoundCategory, this.breakSoundVolume, this.breakSoundPitch);
+			location.getWorld().playSound(location, this.breakSound, this.breakSoundCategory, this.breakSoundVolume, this.random.nextFloat() * 0.1f + this.breakSoundPitch);
 		}
 	}
 
 	public void playHitSound(@NotNull Location location) {
 		if (this.hitSound == null) return;
 		if (this.hitSound.equalsIgnoreCase("block.wood.hit")) {
-			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundHit, this.hitSoundCategory, this.hitSoundVolume, this.hitSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundHit, this.hitSoundCategory, this.hitSoundVolume, this.random.nextFloat() * 0.1f + this.hitSoundPitch);
 		} else {
-			location.getWorld().playSound(location, this.hitSound, this.hitSoundCategory, this.hitSoundVolume, this.hitSoundPitch);
+			location.getWorld().playSound(location, this.hitSound, this.hitSoundCategory, this.hitSoundVolume, this.random.nextFloat() * 0.1f + this.hitSoundPitch);
 		}
 	}
 
 	public void playStepSound(@NotNull Location location) {
 		if (this.stepSound == null) return;
 		if (this.stepSound.equalsIgnoreCase("block.wood.step")) {
-			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundStep, this.stepSoundCategory, this.stepSoundVolume, this.stepSoundPitch);
+			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundStep, this.stepSoundCategory, this.stepSoundVolume, this.random.nextFloat() * 0.1f + this.stepSoundPitch);
 		} else {
-			location.getWorld().playSound(location, this.stepSound, this.stepSoundCategory, this.stepSoundVolume, this.stepSoundPitch);
+			location.getWorld().playSound(location, this.stepSound, this.stepSoundCategory, this.stepSoundVolume, this.random.nextFloat() * 0.1f + this.stepSoundPitch);
 		}
 	}
 }

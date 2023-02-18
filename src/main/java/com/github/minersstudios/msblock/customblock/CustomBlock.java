@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlock;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -57,7 +58,7 @@ public class CustomBlock {
 
 			this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());
 			MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.block.getLocation(), Material.NOTE_BLOCK, noteBlock);
-			BlockUtils.removeBlocksAround(this.block.getLocation());
+			BlockUtils.removeBlocksAround(this.block);
 			this.player.swingHand(hand);
 
 			if (this.player.getGameMode() != GameMode.SURVIVAL) return;
@@ -78,7 +79,8 @@ public class CustomBlock {
 		if (BlockUtils.getEntryByBlock(this.block) == null) return;
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(this.block));
 		this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
-		world.spawnParticle(Particle.BLOCK_CRACK, blockLocation.clone().add(0.5d, 0.25d, 0.5d), 80, 0.35d, 0.35d, 0.35d, this.block.getBlockData());
+		CraftBlock craftBlock = (CraftBlock) this.block;
+		craftBlock.getHandle().levelEvent(2001, craftBlock.getPosition(), net.minecraft.world.level.block.Block.getId(craftBlock.getNMS()));
 		MSBlock.getCoreProtectAPI().logRemoval(this.player.getName(), blockLocation, Material.NOTE_BLOCK, this.block.getBlockData());
 		this.block.setType(Material.AIR);
 

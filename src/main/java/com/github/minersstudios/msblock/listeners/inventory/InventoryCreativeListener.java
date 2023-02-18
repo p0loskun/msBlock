@@ -31,7 +31,7 @@ public class InventoryCreativeListener implements Listener {
 		event.setCancelled(true);
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> player.getInventory().setItem(
 				event.getSlot(),
-				BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
+				BlockUtils.getCustomBlockData(noteBlock).craftItemStack()
 		));
 	}
 }

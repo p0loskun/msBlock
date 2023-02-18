@@ -46,7 +46,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlockData customBlockData = BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+					CustomBlockData customBlockData = BlockUtils.getCustomBlockData(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
 					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;

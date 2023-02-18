@@ -5,12 +5,31 @@ import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.block.BeehiveBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CommandBlock;
+import net.minecraft.world.level.block.GameMasterBlock;
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_19_R2.event.CraftEventFactory;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class BlockUtils {
@@ -213,38 +233,144 @@ public final class BlockUtils {
 	/**
 	 * Breaks top/bottom block
 	 *
-	 * @param location location around which the blocks break
+	 * @param centreBlock block around which the blocks break
 	 */
-	public static void removeBlocksAround(@NotNull Location location) {
-		Block topBlock = location.clone().add(0.0d, 1.0d, 0.0d).getBlock();
-		Block bottomBlock = location.clone().subtract(0.0d, 1.0d, 0.0d).getBlock();
+	public static void removeBlocksAround(@NotNull Block centreBlock) {
+		CraftBlock topBlock = (CraftBlock) centreBlock.getRelative(BlockFace.UP);
+		CraftBlock bottomBlock = (CraftBlock) centreBlock.getRelative(BlockFace.DOWN);
 		if (BREAK_ON_BLOCK_PLACE.contains(topBlock.getType())) {
-			breakBlock(topBlock);
+			topBlock.getHandle().destroyBlock(topBlock.getPosition(), true);
 		}
 		if (BREAK_ON_BLOCK_PLACE.contains(bottomBlock.getType())) {
-			breakBlock(bottomBlock);
+			bottomBlock.getHandle().destroyBlock(bottomBlock.getPosition(), true);
 		}
 	}
 
-	public static void breakBlock(@NotNull Block block) {
-		World world = block.getWorld();
-		SoundGroup soundGroup = block.getBlockSoundGroup();
-		world.playSound(
-				block.getLocation(),
-				soundGroup.getBreakSound(),
-				soundGroup.getVolume(),
-				soundGroup.getPitch()
-		);
-		world.spawnParticle(
-				Particle.BLOCK_CRACK,
-				block.getLocation().clone().add(0.5d, 0.25d, 0.5d),
-				80, 0.35d, 0.35d, 0.35d,
-				block.getBlockData()
-		);
-		block.breakNaturally();
+	public static boolean destroyBlock(@NotNull ServerPlayerGameMode serverPlayerGameMode, @NotNull ServerPlayer serverPlayer, @NotNull BlockPos pos) {
+		BlockState iBlockData = serverPlayerGameMode.level.getBlockState(pos);
+		Block bblock = CraftBlock.at(serverPlayerGameMode.level, pos);
+		BlockBreakEvent event = new BlockBreakEvent(bblock, serverPlayer.getBukkitEntity());
+		boolean isSwordNoBreak = !serverPlayer.getMainHandItem().getItem().canAttackBlock(iBlockData, serverPlayerGameMode.level, pos, serverPlayer);
+
+		if (serverPlayerGameMode.level.getBlockEntity(pos) == null && !isSwordNoBreak) {
+			serverPlayer.connection.send(new ClientboundBlockUpdatePacket(pos, Blocks.AIR.defaultBlockState()));
+		}
+
+		event.setCancelled(isSwordNoBreak);
+		BlockState nmsData = serverPlayerGameMode.level.getBlockState(pos);
+		net.minecraft.world.level.block.Block nmsBlock = nmsData.getBlock();
+		net.minecraft.world.item.ItemStack itemInMainHand = serverPlayer.getItemBySlot(EquipmentSlot.MAINHAND);
+
+		if (
+				serverPlayer.isCreative()
+				|| bblock.getType() == Material.NOTE_BLOCK
+		) {
+			event.setDropItems(false);
+		}
+
+		if (
+				!event.isCancelled()
+				&& !serverPlayerGameMode.isCreative()
+				&& serverPlayer.hasCorrectToolForDrops(nmsBlock.defaultBlockState())
+		) {
+			event.setExpToDrop(nmsBlock.getExpDrop(nmsData, serverPlayerGameMode.level, pos, itemInMainHand, true));
+		}
+
+		if (event.isCancelled()) {
+			if (isSwordNoBreak) return false;
+
+			serverPlayer.connection.send(new ClientboundBlockUpdatePacket(serverPlayerGameMode.level, pos));
+
+			for (Direction dir : Direction.values()) {
+				serverPlayer.connection.send(new ClientboundBlockUpdatePacket(serverPlayerGameMode.level, pos.relative(dir)));
+			}
+
+			if (!serverPlayerGameMode.captureSentBlockEntities) {
+				BlockEntity tileEntity = serverPlayerGameMode.level.getBlockEntity(pos);
+				if (tileEntity != null) {
+					serverPlayer.connection.send(Objects.requireNonNull(tileEntity.getUpdatePacket()));
+				}
+			} else {
+				serverPlayerGameMode.capturedBlockEntity = true;
+			}
+
+			return false;
+		}
+
+
+		iBlockData = serverPlayerGameMode.level.getBlockState(pos);
+		if (iBlockData.isAir()) {
+			return false;
+		} else {
+			BlockEntity tileEntity = serverPlayerGameMode.level.getBlockEntity(pos);
+			net.minecraft.world.level.block.Block block = iBlockData.getBlock();
+			if (
+					!(block instanceof GameMasterBlock)
+					|| serverPlayer.canUseGameMasterBlocks()
+					|| block instanceof CommandBlock && serverPlayer.isCreative()
+					&& serverPlayer.getBukkitEntity().hasPermission("minecraft.commandblock")
+			) {
+				if (serverPlayer.blockActionRestricted(serverPlayerGameMode.level, pos, serverPlayerGameMode.getGameModeForPlayer())) {
+					return false;
+				} else {
+					org.bukkit.block.BlockState state = bblock.getState();
+					serverPlayerGameMode.level.captureDrops = new ArrayList<>();
+					block.playerWillDestroy(serverPlayerGameMode.level, pos, iBlockData, serverPlayer);
+
+					boolean flag = serverPlayerGameMode.level.removeBlock(pos, false);
+					if (flag) {
+						block.destroy(serverPlayerGameMode.level, pos, iBlockData);
+					}
+
+					net.minecraft.world.item.ItemStack mainHandStack = null;
+					boolean isCorrectTool = false;
+					if (!serverPlayerGameMode.isCreative()) {
+						net.minecraft.world.item.ItemStack itemStack = serverPlayer.getMainHandItem();
+						net.minecraft.world.item.ItemStack itemStack1 = itemStack.copy();
+						boolean flag1 = serverPlayer.hasCorrectToolForDrops(iBlockData);
+						mainHandStack = itemStack1;
+						isCorrectTool = flag1;
+
+						itemStack.mineBlock(serverPlayerGameMode.level, iBlockData, pos, serverPlayer);
+						if (flag && flag1 && event.isDropItems()) {
+							block.playerDestroy(serverPlayerGameMode.level, serverPlayer, pos, iBlockData, tileEntity, itemStack1);
+						}
+					}
+
+					List<ItemEntity> itemsToDrop = serverPlayerGameMode.level.captureDrops;
+					serverPlayerGameMode.level.captureDrops = null;
+					if (event.isDropItems()) {
+						CraftEventFactory.handleBlockDropItemEvent(bblock, state, serverPlayer, itemsToDrop);
+					}
+
+					if (flag) {
+						iBlockData.getBlock().popExperience(serverPlayerGameMode.level, pos, event.getExpToDrop(), serverPlayer);
+					}
+
+					if (
+							mainHandStack != null
+							&& flag
+							&& isCorrectTool
+							&& event.isDropItems()
+							&& block instanceof BeehiveBlock
+							&& tileEntity instanceof BeehiveBlockEntity beehiveBlockEntity
+					) {
+						CriteriaTriggers.BEE_NEST_DESTROYED.trigger(serverPlayer, iBlockData, mainHandStack, beehiveBlockEntity.getOccupantCount());
+					}
+				}
+				return true;
+			} else {
+				serverPlayerGameMode.level.sendBlockUpdated(pos, iBlockData, iBlockData, 3);
+				return false;
+			}
+		}
 	}
 
-	public static @NotNull CustomBlockData getCustomBlock(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
+	public static @NotNull CustomBlockData getCustomBlockData(@NotNull NoteBlock noteBlock) {
+		return getCustomBlockData(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+	}
+
+	public static @NotNull CustomBlockData getCustomBlockData(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
 		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
 		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
 			if (customBlockData.getNoteBlockData() == null) {
@@ -265,7 +391,7 @@ public final class BlockUtils {
 		return CustomBlockData.DEFAULT;
 	}
 
-	public static @NotNull CustomBlockData getCustomBlock(int itemCustomModelData) {
+	public static @NotNull CustomBlockData getCustomBlockData(int itemCustomModelData) {
 		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
 			if (customBlockData.getItemCustomModelData() == itemCustomModelData) {
 				return customBlockData;

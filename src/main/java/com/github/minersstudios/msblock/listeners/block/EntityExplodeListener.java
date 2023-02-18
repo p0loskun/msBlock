@@ -20,7 +20,7 @@ public class EntityExplodeListener implements Listener {
 				block.setType(Material.AIR);
 				block.getWorld().dropItemNaturally(
 						block.getLocation(),
-						BlockUtils.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).craftItemStack()
+						BlockUtils.getCustomBlockData(noteBlock).craftItemStack()
 				);
 			}
 		}
