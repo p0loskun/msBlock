@@ -29,7 +29,7 @@ public class BlockDamageListener implements Listener {
 		}
 
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlockData customBlockData = BlockUtils.getCustomBlockData(noteBlock);
+			CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 			CustomBlockDamageEvent customBlockDamageEvent = new CustomBlockDamageEvent(new CustomBlock(block, player, customBlockData), player, event.getItemInHand());
 			Bukkit.getPluginManager().callEvent(customBlockDamageEvent);
 			if (customBlockDamageEvent.isCancelled()) return;

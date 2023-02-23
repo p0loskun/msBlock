@@ -29,10 +29,8 @@ public enum ToolTier {
 	 * @return ToolTier from item in main hand
 	 */
 	public static @NotNull ToolTier getToolTier(@NotNull ItemStack itemInMainHand) {
+		if (itemInMainHand.getType() == Material.SHEARS) return ToolTier.NETHERITE;
 		for (ToolTier toolTier : ToolTier.values()) {
-			if (itemInMainHand.getType() == Material.SHEARS) {
-				return ToolTier.NETHERITE;
-			}
 			if (itemInMainHand.getType().name().contains(toolTier.itemTierName)) {
 				return toolTier;
 			}

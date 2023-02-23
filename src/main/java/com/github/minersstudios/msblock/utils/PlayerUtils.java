@@ -143,17 +143,10 @@ public final class PlayerUtils {
 	public static boolean isItemCustomBlock(@NotNull ItemStack itemStack) {
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
-		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
-			ItemStack customBlockItemStack = customBlockData.craftItemStack();
-			ItemMeta customBlockItemMeta = customBlockItemStack.getItemMeta();
-			if (
-					customBlockItemStack.getType() == itemStack.getType()
-					&& customBlockItemMeta.getCustomModelData() == itemMeta.getCustomModelData()
-			) {
-				return true;
-			}
-		}
-		return false;
+		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getBySecondaryKey(itemMeta.getCustomModelData());
+		return customBlockData != null
+				&& customBlockData.getItemMaterial() == itemStack.getType()
+				&& customBlockData.getItemCustomModelData() == itemMeta.getCustomModelData();
 	}
 
 	/**

@@ -6,7 +6,7 @@
 
 	<groupId>com.github.minersstudios</groupId>
 	<artifactId>msBlock</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>jar</packaging>
 
 	<name>msBlock</name>
@@ -120,7 +120,7 @@
 		<dependency>
 			<groupId>com.github.MinersStudios</groupId>
 			<artifactId>msCore</artifactId>
-			<version>release-127dd06fc9-1</version>
+			<version>0.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

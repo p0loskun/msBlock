@@ -1,12 +1,16 @@
 package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.msblock.utils.BlockUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,11 +18,12 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class CustomBlockData {
@@ -114,6 +119,158 @@ public class CustomBlockData {
 		this.blockAxisMap = blockAxisMap;
 		this.showInCraftsMenu = showInCraftsMenu;
 		this.shapedRecipe = shapedRecipe;
+	}
+
+	@Contract("_, _ -> new")
+	public static @NotNull CustomBlockData fromConfig(@NotNull File file, @NotNull YamlConfiguration config) {
+		String fileName = file.getName();
+
+		NamespacedKey namespacedKey = new NamespacedKey(MSBlock.getInstance(), Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null"));
+
+		ConfigurationSection blockSettings = Objects.requireNonNull(
+				config.getConfigurationSection("block-settings"),
+				"block-settings section in " + fileName + " is null"
+		);
+		ConfigurationSection item = Objects.requireNonNull(
+				config.getConfigurationSection("item"),
+				"item section in " + fileName + " is null"
+		);
+		ConfigurationSection sounds = Objects.requireNonNull(
+				config.getConfigurationSection("sounds"),
+				"sounds section in " + fileName + " is null"
+		);
+
+		CustomBlockData customBlockData = new CustomBlockData(
+				namespacedKey,
+				(float) blockSettings.getDouble("dig-speed"),
+				blockSettings.getInt("drop.experience"),
+				blockSettings.getBoolean("drop.drops-default-item", true),
+				ToolType.valueOf(blockSettings.getString("tool.type", "HAND")),
+				blockSettings.getBoolean("tool.force", false),
+				Material.valueOf(Objects.requireNonNull(item.getString("material"), "item.material in " + fileName + " is null")),
+				item.getString("name"),
+				item.getInt("custom-model-data"),
+				craftNoteBlockData(config),
+				craftPlaceableMaterials(config),
+				SoundGroup.fromConfigSection(sounds),
+				PlacingType.valueOf(config.getString("placing.placing-type", "BY_BLOCK_FACE")),
+				craftBlockFaceMap(config),
+				craftBlockAxisMap(config),
+				config.getBoolean("craft.show-in-crafts-menu", false),
+				null
+		);
+
+		Map<Character, Material> ingredientMap = new HashMap<>();
+		ConfigurationSection craftSection = config.getConfigurationSection("craft.material-list");
+		if (craftSection != null) {
+			for (String key : craftSection.getKeys(false)) {
+				ingredientMap.put(key.toCharArray()[0], Material.valueOf(Objects.requireNonNull(craftSection.get(key)).toString()));
+			}
+
+			ItemStack craftedItem = customBlockData.craftItemStack().clone();
+			craftedItem.setAmount(config.getInt("craft.item-amount", 1));
+
+			ShapedRecipe shapedRecipe = new ShapedRecipe(namespacedKey, craftedItem);
+			shapedRecipe.setGroup(MSBlock.getInstance().getName().toLowerCase(Locale.ROOT) + config.getString("craft.group"));
+			shapedRecipe.shape(config.getStringList("craft.shaped-recipe").toArray(String[]::new));
+
+			ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
+
+			if (customBlockData.isShowInCraftsMenu()) {
+				BlockUtils.CUSTOM_BLOCK_RECIPES.add(shapedRecipe);
+			}
+
+			Bukkit.addRecipe(shapedRecipe);
+			customBlockData.setShapedRecipe(shapedRecipe);
+		}
+		return customBlockData;
+	}
+
+	public static @NotNull CustomBlockData fromNoteBlock(@NotNull NoteBlock noteBlock) {
+		return fromInstrumentNotePowered(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
+	}
+
+	@Contract("_, _, _ -> new")
+	public static @NotNull CustomBlockData fromInstrumentNotePowered(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
+		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
+		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
+			if (customBlockData.getNoteBlockData() == null) {
+				Map<?, NoteBlockData> map =
+						customBlockData.getBlockFaceMap() == null
+						? customBlockData.getBlockAxisMap()
+						: customBlockData.getBlockFaceMap();
+				if (map != null) {
+					for (NoteBlockData data : map.values()) {
+						if (noteBlockData.isSimilar(data)) {
+							customBlockData.setNoteBlockData(noteBlockData);
+						}
+					}
+				}
+			}
+			if (noteBlockData.isSimilar(customBlockData.getNoteBlockData())) return customBlockData;
+		}
+		return DEFAULT;
+	}
+
+	@Contract("_ -> new")
+	public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
+		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getBySecondaryKey(cmd);
+		return customBlockData == null ? DEFAULT : customBlockData;
+	}
+
+	@Contract("_ -> new")
+	public static @NotNull CustomBlockData fromKey(String key) {
+		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getByPrimaryKey(key);
+		return customBlockData == null ? DEFAULT : customBlockData;
+	}
+
+	private static @Nullable Set<Material> craftPlaceableMaterials(@NotNull YamlConfiguration config) {
+		Set<Material> placeableMaterials = new HashSet<>();
+		for (String material : config.getStringList("placing.placeable-materials")) {
+			placeableMaterials.add(Material.valueOf(material));
+		}
+		return placeableMaterials.isEmpty() ? null : placeableMaterials;
+	}
+
+	@Contract("_ -> new")
+	private static @Nullable Map<BlockFace, NoteBlockData> craftBlockFaceMap(@NotNull YamlConfiguration config) {
+		Map<BlockFace, NoteBlockData> blockFaceMap = new HashMap<>();
+		ConfigurationSection configurationSection = config.getConfigurationSection("placing.directional.block-faces");
+		if (configurationSection == null) return null;
+		for (String blockFace : configurationSection.getKeys(false)) {
+			blockFaceMap.put(BlockFace.valueOf(blockFace.toUpperCase(Locale.ROOT)), new NoteBlockData(
+					Instrument.valueOf(config.getString("placing.directional.block-faces." + blockFace + ".instrument")),
+					new Note(config.getInt("placing.directional.block-faces." + blockFace + ".note")),
+					config.getBoolean("placing.directional.block-faces." + blockFace + ".is-powered", false)
+			));
+		}
+		return blockFaceMap.isEmpty() ? null : blockFaceMap;
+	}
+
+	private static @Nullable Map<Axis, NoteBlockData> craftBlockAxisMap(@NotNull YamlConfiguration config) {
+		Map<Axis, NoteBlockData> blockAxisMap = new HashMap<>();
+		ConfigurationSection configurationSection = config.getConfigurationSection("placing.orientable.axes");
+		if (configurationSection == null) return null;
+		for (String axis : configurationSection.getKeys(false)) {
+			blockAxisMap.put(Axis.valueOf(axis.toUpperCase(Locale.ROOT)), new NoteBlockData(
+					Instrument.valueOf(config.getString("placing.orientable.axes." + axis + ".instrument")),
+					new Note(config.getInt("placing.orientable.axes." + axis + ".note")),
+					config.getBoolean("placing.orientable.axes." + axis + ".is-powered", false)
+			));
+		}
+		return blockAxisMap.isEmpty() ? null : blockAxisMap;
+	}
+
+	@Contract("_ -> new")
+	private static @Nullable NoteBlockData craftNoteBlockData(@NotNull YamlConfiguration config) {
+		String instrument = config.getString("placing.normal.instrument");
+		return instrument == null
+				? null
+				: new NoteBlockData(
+				Instrument.valueOf(instrument),
+				new Note(config.getInt("placing.normal.note")),
+				config.getBoolean("placing.normal.is-powered", false)
+		);
 	}
 
 	public void setNamespacedKey(@NotNull NamespacedKey namespacedKey) {
@@ -282,14 +439,14 @@ public class CustomBlockData {
 			itemMeta.displayName(
 					Component.text()
 							.append(Component.text(this.itemName)
-							.style(Style.style(
-									NamedTextColor.WHITE,
-									TextDecoration.OBFUSCATED.withState(false),
-									TextDecoration.BOLD.withState(false),
-									TextDecoration.ITALIC.withState(false),
-									TextDecoration.STRIKETHROUGH.withState(false),
-									TextDecoration.UNDERLINED.withState(false)
-							)))
+									.style(Style.style(
+											NamedTextColor.WHITE,
+											TextDecoration.OBFUSCATED.withState(false),
+											TextDecoration.BOLD.withState(false),
+											TextDecoration.ITALIC.withState(false),
+											TextDecoration.STRIKETHROUGH.withState(false),
+											TextDecoration.UNDERLINED.withState(false)
+									)))
 							.build()
 			);
 		}

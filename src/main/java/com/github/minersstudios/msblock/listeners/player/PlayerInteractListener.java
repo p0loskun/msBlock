@@ -105,7 +105,7 @@ public class PlayerInteractListener implements Listener {
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
-			this.clickedCustomBlockData = BlockUtils.getCustomBlockData(noteBlock);
+			this.clickedCustomBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 			this.blockAtFace = clickedBlock.getRelative(blockFace);
 			this.nmsItem = CraftItemStack.asNMSCopy(this.itemInHand);
 			this.interactionHand =
@@ -153,7 +153,7 @@ public class PlayerInteractListener implements Listener {
 			}
 			ItemMeta itemMeta = this.itemInHand.getItemMeta();
 			if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-			CustomBlockData customBlockData = BlockUtils.getCustomBlockData(itemMeta.getCustomModelData());
+			CustomBlockData customBlockData = CustomBlockData.fromCustomModelData(itemMeta.getCustomModelData());
 			Set<BlockFace> blockFaces = customBlockData.getFaces();
 			Set<Axis> blockAxes = customBlockData.getAxes();
 			CustomBlock customBlock = new CustomBlock(replaceableBlock, this.player, customBlockData);

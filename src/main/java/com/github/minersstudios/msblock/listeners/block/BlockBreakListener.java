@@ -40,7 +40,7 @@ public class BlockBreakListener implements Listener {
 		}
 
 		if (block.getBlockData() instanceof NoteBlock noteBlock) {
-			CustomBlockData customBlockMaterial = BlockUtils.getCustomBlockData(noteBlock);
+			CustomBlockData customBlockMaterial = CustomBlockData.fromNoteBlock(noteBlock);
 			GameMode gameMode = player.getGameMode();
 
 			event.setCancelled(true);

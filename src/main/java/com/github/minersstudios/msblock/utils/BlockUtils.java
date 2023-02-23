@@ -1,8 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.msblock.customblock.NoteBlockData;
+import com.github.minersstudios.mscore.collections.ConcurrentDualMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -20,11 +18,12 @@ import net.minecraft.world.level.block.GameMasterBlock;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_19_R2.event.CraftEventFactory;
 import org.bukkit.entity.EntityType;
@@ -37,12 +36,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class BlockUtils {
-	public static final Map<Map.Entry<Block, Player>, Integer> blocks = new ConcurrentHashMap<>();
+	public static final ConcurrentDualMap<Block, Player, Integer> blocks = new ConcurrentDualMap<>();
 	public static final List<Recipe> CUSTOM_BLOCK_RECIPES = new ArrayList<>();
 
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
@@ -366,64 +363,20 @@ public final class BlockUtils {
 		}
 	}
 
-	public static @NotNull CustomBlockData getCustomBlockData(@NotNull NoteBlock noteBlock) {
-		return getCustomBlockData(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
-	}
-
-	public static @NotNull CustomBlockData getCustomBlockData(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
-		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
-		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
-			if (customBlockData.getNoteBlockData() == null) {
-				Map<?, NoteBlockData> map =
-						customBlockData.getBlockFaceMap() == null
-						? customBlockData.getBlockAxisMap()
-						: customBlockData.getBlockFaceMap();
-				if (map != null) {
-					for (NoteBlockData data : map.values()) {
-						if (noteBlockData.isSimilar(data)) {
-							customBlockData.setNoteBlockData(noteBlockData);
-						}
-					}
-				}
-			}
-			if (noteBlockData.isSimilar(customBlockData.getNoteBlockData())) return customBlockData;
-		}
-		return CustomBlockData.DEFAULT;
-	}
-
-	public static @NotNull CustomBlockData getCustomBlockData(int itemCustomModelData) {
-		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
-			if (customBlockData.getItemCustomModelData() == itemCustomModelData) {
-				return customBlockData;
-			}
-		}
-		return CustomBlockData.DEFAULT;
-	}
-
 	/**
 	 * @param player player
-	 * @return True if no tasks with player
+	 * @return False if no tasks with player
 	 */
 	public static boolean hasPlayer(@NotNull Player player) {
-		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
-			if (entry.getValue() == player) {
-				return true;
-			}
-		}
-		return false;
+		return blocks.containsSecondaryKey(player);
 	}
 
 	/**
 	 * @param block block
-	 * @return map entry with block & player
+	 * @return False if no tasks with block
 	 */
-	public static @Nullable Map.Entry<Block, Player> getEntryByBlock(@NotNull Block block) {
-		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
-			if (entry.getKey().equals(block)) {
-				return entry;
-			}
-		}
-		return null;
+	public static boolean hasBlock(@NotNull Block block) {
+		return blocks.containsPrimaryKey(block);
 	}
 
 	/**
@@ -432,11 +385,9 @@ public final class BlockUtils {
 	 * @param block block
 	 */
 	public static void cancelAllTasksWithThisBlock(@NotNull Block block) {
-		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
-			if (entry.getKey().equals(block)) {
-				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
-				PlayerUtils.farAway.remove(entry.getValue());
-			}
+		if (blocks.containsPrimaryKey(block)) {
+			PlayerUtils.farAway.remove(blocks.getSecondaryKey(block));
+			Bukkit.getScheduler().cancelTask(blocks.removeByPrimaryKey(block));
 		}
 	}
 
@@ -446,11 +397,9 @@ public final class BlockUtils {
 	 * @param player player
 	 */
 	public static void cancelAllTasksWithThisPlayer(@NotNull Player player) {
-		for (Map.Entry<Block, Player> entry : blocks.keySet()) {
-			if (entry.getValue().equals(player)) {
-				Bukkit.getScheduler().cancelTask(blocks.remove(entry));
-				PlayerUtils.farAway.remove(entry.getValue());
-			}
+		if (blocks.containsSecondaryKey(player)) {
+			PlayerUtils.farAway.remove(player);
+			Bukkit.getScheduler().cancelTask(blocks.removeBySecondaryKey(player));
 		}
 	}
 

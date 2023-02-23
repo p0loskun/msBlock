@@ -3,6 +3,8 @@ package com.github.minersstudios.msblock.customblock;
 import com.github.minersstudios.msblock.MSBlock;
 import org.bukkit.Location;
 import org.bukkit.SoundCategory;
+import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,6 +65,28 @@ public class SoundGroup {
 		this.stepSoundCategory = stepSoundCategory;
 		this.stepSoundPitch = stepSoundPitch;
 		this.stepSoundVolume = stepSoundVolume;
+	}
+
+	@Contract("_ -> new")
+	public static @NotNull SoundGroup fromConfigSection(@NotNull ConfigurationSection section) {
+		return new SoundGroup(
+				section.getString("place.sound-name"),
+				SoundCategory.valueOf(section.getString("place.sound-category")),
+				(float) section.getDouble("place.pitch"),
+				(float) section.getDouble("place.volume"),
+				section.getString("break.sound-name"),
+				SoundCategory.valueOf(section.getString("break.sound-category")),
+				(float) section.getDouble("break.pitch"),
+				(float) section.getDouble("break.volume"),
+				section.getString("hit.sound-name"),
+				SoundCategory.valueOf(section.getString("hit.sound-category")),
+				(float) section.getDouble("hit.pitch"),
+				(float) section.getDouble("hit.volume"),
+				section.getString("step.sound-name"),
+				SoundCategory.valueOf(section.getString("step.sound-category")),
+				(float) section.getDouble("step.pitch"),
+				(float) section.getDouble("step.volume")
+		);
 	}
 
 	public void setPlaceSound(@Nullable String placeSound) {

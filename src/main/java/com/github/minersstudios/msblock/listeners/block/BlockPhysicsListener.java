@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
@@ -28,7 +29,7 @@ public class BlockPhysicsListener implements Listener {
 		Block bottomBlock = block.getRelative(BlockFace.DOWN);
 
 		if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
-			Set<Material> placeableMaterials = BlockUtils.getCustomBlockData(noteBlock).getPlaceableMaterials();
+			Set<Material> placeableMaterials = CustomBlockData.fromNoteBlock(noteBlock).getPlaceableMaterials();
 			if (placeableMaterials != null && placeableMaterials.contains(block.getType())) {
 				event.setCancelled(true);
 			}

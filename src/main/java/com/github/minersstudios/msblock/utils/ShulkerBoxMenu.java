@@ -13,7 +13,7 @@ import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventoryView;
 import org.jetbrains.annotations.NotNull;
 
-public class ShulkerBoxMenu extends AbstractContainerMenu {
+public final class ShulkerBoxMenu extends AbstractContainerMenu {
 	private static final int CONTAINER_SIZE = 27;
 	private final Container container;
 	private CraftInventoryView bukkitEntity;

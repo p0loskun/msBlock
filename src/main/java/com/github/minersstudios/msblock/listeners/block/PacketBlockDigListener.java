@@ -19,8 +19,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
-
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
 import static com.github.minersstudios.msblock.utils.PlayerUtils.*;
 
@@ -46,9 +44,9 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlockData customBlockData = BlockUtils.getCustomBlockData(noteBlock);
+					CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					BlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
 						int currentStage = 0;
@@ -123,7 +121,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					BlockUtils.blocks.put(new AbstractMap.SimpleEntry<>(block, player), Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					BlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						static boolean swing = true;
 
@@ -165,12 +163,12 @@ public class PacketBlockDigListener extends PacketAdapter {
 						}
 					}, 0L, 1L));
 				}
-			} else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && BlockUtils.getEntryByBlock(block) != null) {
+			} else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && BlockUtils.hasBlock(block)) {
 				playZeroBreakStage(blockPosition);
 				BlockUtils.cancelAllTasksWithThisBlock(block);
 			} else if (
 					digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
-					&& BlockUtils.getEntryByBlock(block) != null
+					&& BlockUtils.hasBlock(block)
 					&& !farAway.contains(player)
 			) {
 				Block targetBlock = getTargetBlock(player);

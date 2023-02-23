@@ -76,7 +76,7 @@ public class CustomBlock {
 		World world = this.block.getWorld();
 		ItemStack itemInMainHand = this.player.getInventory().getItemInMainHand();
 
-		if (BlockUtils.getEntryByBlock(this.block) == null) return;
+		if (!BlockUtils.hasBlock(this.block)) return;
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(this.block));
 		this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
 		CraftBlock craftBlock = (CraftBlock) this.block;
@@ -111,7 +111,7 @@ public class CustomBlock {
 		}
 	}
 
-	public @NotNull Block getBlock() {
+	public @NotNull Block getReplacedBlock() {
 		return this.block;
 	}
 

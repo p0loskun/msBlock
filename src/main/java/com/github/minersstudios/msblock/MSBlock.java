@@ -8,6 +8,8 @@ import com.github.minersstudios.mscore.MSPlugin;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class MSBlock extends MSPlugin {
@@ -44,19 +46,23 @@ public final class MSBlock extends MSPlugin {
 		configCache = new ConfigCache();
 	}
 
-	public static MSBlock getInstance() {
+	@Contract(pure = true)
+	public static @NotNull MSBlock getInstance() {
 		return instance;
 	}
 
-	public static ConfigCache getConfigCache() {
+	@Contract(pure = true)
+	public static @NotNull ConfigCache getConfigCache() {
 		return configCache;
 	}
 
-	public static CoreProtectAPI getCoreProtectAPI() {
+	@Contract(pure = true)
+	public static @NotNull CoreProtectAPI getCoreProtectAPI() {
 		return coreProtectAPI;
 	}
 
-	public static ProtocolManager getProtocolManager() {
+	@Contract(pure = true)
+	public static @NotNull ProtocolManager getProtocolManager() {
 		return protocolManager;
 	}
 }
