@@ -384,8 +384,10 @@ public final class BlockUtils {
 	 */
 	public static void cancelAllTasksWithThisBlock(@NotNull Block block) {
 		if (blocks.containsPrimaryKey(block)) {
+			Integer taskId = blocks.removeByPrimaryKey(block);
+			assert taskId != null;
 			PlayerUtils.farAway.remove(blocks.getSecondaryKey(block));
-			Bukkit.getScheduler().cancelTask(blocks.removeByPrimaryKey(block));
+			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}
 
@@ -396,8 +398,10 @@ public final class BlockUtils {
 	 */
 	public static void cancelAllTasksWithThisPlayer(@NotNull Player player) {
 		if (blocks.containsSecondaryKey(player)) {
+			Integer taskId = blocks.removeBySecondaryKey(player);
+			assert taskId != null;
 			PlayerUtils.farAway.remove(player);
-			Bukkit.getScheduler().cancelTask(blocks.removeBySecondaryKey(player));
+			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}
 
