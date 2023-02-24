@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public final class ConfigCache {
 	public final DualMap<String, Integer, CustomBlockData> customBlocks = new DualMap<>();
 	public final Map<Integer, CustomBlockData> cachedNoteBlockData = new HashMap<>();
-	public final Set<Recipe> customBlockRecipes = new HashSet<>();
+	public final List<Recipe> customBlockRecipes = new ArrayList<>();
 
 	public final @NotNull String
 			woodSoundPlace,

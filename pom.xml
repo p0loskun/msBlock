@@ -6,7 +6,7 @@
 
 	<groupId>com.github.minersstudios</groupId>
 	<artifactId>msBlock</artifactId>
-	<version>1.4.1</version>
+	<version>1.4.2</version>
 	<packaging>jar</packaging>
 
 	<name>msBlock</name>
@@ -89,10 +89,6 @@
 		<repository>
 			<id>dmulloy2-repo</id>
 			<url>https://repo.dmulloy2.net/repository/public/</url>
-		</repository>
-		<repository>
-			<id>bytecode.space</id>
-			<url>https://repo.bytecode.space/repository/maven-public/</url>
 		</repository>
 	</repositories>
 
