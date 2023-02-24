@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.security.SecureRandom;
 
 @SuppressWarnings("unused")
-public class SoundGroup {
+public class SoundGroup implements Cloneable {
 	private @Nullable String placeSound;
 	private @NotNull SoundCategory placeSoundCategory;
 	private float placeSoundPitch;
@@ -250,6 +250,15 @@ public class SoundGroup {
 			location.getWorld().playSound(location, MSBlock.getConfigCache().woodSoundStep, this.stepSoundCategory, this.stepSoundVolume, this.random.nextFloat() * 0.1f + this.stepSoundPitch);
 		} else {
 			location.getWorld().playSound(location, this.stepSound, this.stepSoundCategory, this.stepSoundVolume, this.random.nextFloat() * 0.1f + this.stepSoundPitch);
+		}
+	}
+
+	@Override
+	public @NotNull SoundGroup clone() {
+		try {
+			return (SoundGroup) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

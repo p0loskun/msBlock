@@ -28,7 +28,7 @@ public class BlockPlaceListener implements Listener {
 			event.setCancelled(true);
 		}
 
-		if (BlockUtils.isWoodenSound(block.getType())) {
+		if (BlockUtils.isWoodenSound(block.getBlockData())) {
 			CustomBlockData.DEFAULT.getSoundGroup().playPlaceSound(block.getLocation().toCenterLocation());
 		}
 

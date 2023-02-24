@@ -44,6 +44,7 @@ public final class MSBlock extends MSPlugin {
 		instance.saveDefaultConfig();
 		instance.reloadConfig();
 		configCache = new ConfigCache();
+		configCache.loadBlocks();
 	}
 
 	@Contract(pure = true)

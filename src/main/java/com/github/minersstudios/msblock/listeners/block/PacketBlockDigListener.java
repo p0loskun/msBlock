@@ -110,14 +110,14 @@ public class PacketBlockDigListener extends PacketAdapter {
 						}
 					}, 0L, 1L));
 				} else {
-					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getType())) {
+					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getBlockData())) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
 					if (hasSlowDigging) {
 						player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
 					}
 				}
-				if (BlockUtils.isWoodenSound(block.getType())) {
+				if (BlockUtils.isWoodenSound(block.getBlockData())) {
 					if (BlockUtils.hasPlayer(player)) {
 						BlockUtils.cancelAllTasksWithThisPlayer(player);
 					}

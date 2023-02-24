@@ -28,7 +28,7 @@ public class PlayerMoveListener implements Listener {
 				&& player.getGameMode() != GameMode.SPECTATOR
 				&& !player.isFlying()
 				&& !player.isSneaking()
-				&& (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getType()))
+				&& (bottomBlock.getType() == Material.NOTE_BLOCK || BlockUtils.isWoodenSound(bottomBlock.getBlockData()))
 		) {
 			Location from = event.getFrom().clone(),
 					to = event.getTo().clone();

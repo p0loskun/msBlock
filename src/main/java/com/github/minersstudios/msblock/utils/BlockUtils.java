@@ -30,7 +30,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,6 @@ import java.util.Objects;
 
 public final class BlockUtils {
 	public static final ConcurrentDualMap<Block, Player, Integer> blocks = new ConcurrentDualMap<>();
-	public static final List<Recipe> CUSTOM_BLOCK_RECIPES = new ArrayList<>();
 
 	public static final ImmutableSet<Material> REPLACE = Sets.immutableEnumSet(
 			//<editor-fold desc="Replace materials">
@@ -412,11 +410,11 @@ public final class BlockUtils {
 	}
 
 	/**
-	 * @param material block material
+	 * @param blockData block material
 	 * @return True if material has wood sound
 	 */
-	public static boolean isWoodenSound(@NotNull Material material) {
-		if (material == Material.NOTE_BLOCK) return false;
-		return WOOD_SOUND_GROUP.equals(material.createBlockData().getSoundGroup());
+	public static boolean isWoodenSound(@NotNull BlockData blockData) {
+		return blockData.getMaterial() != Material.NOTE_BLOCK
+				&& WOOD_SOUND_GROUP.equals(blockData.getSoundGroup());
 	}
 }

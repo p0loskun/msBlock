@@ -1,7 +1,6 @@
 package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.utils.BlockUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -26,7 +25,7 @@ import java.io.File;
 import java.util.*;
 
 @SuppressWarnings("unused")
-public class CustomBlockData {
+public class CustomBlockData implements Cloneable {
 	public static final CustomBlockData DEFAULT = new CustomBlockData(
 			//<editor-fold desc="Default note block params">
 			new NamespacedKey(MSBlock.getInstance(), "default"),
@@ -160,6 +159,7 @@ public class CustomBlockData {
 				null
 		);
 
+
 		Map<Character, Material> ingredientMap = new HashMap<>();
 		ConfigurationSection craftSection = config.getConfigurationSection("craft.material-list");
 		if (craftSection != null) {
@@ -177,12 +177,13 @@ public class CustomBlockData {
 			ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
 
 			if (customBlockData.isShowInCraftsMenu()) {
-				BlockUtils.CUSTOM_BLOCK_RECIPES.add(shapedRecipe);
+				MSBlock.getConfigCache().customBlockRecipes.add(shapedRecipe);
 			}
 
 			Bukkit.addRecipe(shapedRecipe);
 			customBlockData.setShapedRecipe(shapedRecipe);
 		}
+
 		return customBlockData;
 	}
 
@@ -192,24 +193,9 @@ public class CustomBlockData {
 
 	@Contract("_, _, _ -> new")
 	public static @NotNull CustomBlockData fromInstrumentNotePowered(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
-		NoteBlockData noteBlockData = new NoteBlockData(instrument, note, powered);
-		for (CustomBlockData customBlockData : MSBlock.getConfigCache().customBlocks.values()) {
-			if (customBlockData.getNoteBlockData() == null) {
-				Map<?, NoteBlockData> map =
-						customBlockData.getBlockFaceMap() == null
-						? customBlockData.getBlockAxisMap()
-						: customBlockData.getBlockFaceMap();
-				if (map != null) {
-					for (NoteBlockData data : map.values()) {
-						if (noteBlockData.isSimilar(data)) {
-							customBlockData.setNoteBlockData(noteBlockData);
-						}
-					}
-				}
-			}
-			if (noteBlockData.isSimilar(customBlockData.getNoteBlockData())) return customBlockData;
-		}
-		return DEFAULT;
+		return MSBlock.getConfigCache().cachedNoteBlockData.getOrDefault(
+				new NoteBlockData(instrument, note, powered).toInt(), DEFAULT
+		);
 	}
 
 	@Contract("_ -> new")
@@ -462,6 +448,15 @@ public class CustomBlockData {
 	public @Nullable Set<BlockFace> getFaces() {
 		if (this.blockFaceMap == null) return null;
 		return this.blockFaceMap.keySet();
+	}
+
+	@Override
+	public @NotNull CustomBlockData clone() {
+		try {
+			return (CustomBlockData) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public enum PlacingType {

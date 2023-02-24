@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("unused")
-public class NoteBlockData {
+public class NoteBlockData implements Cloneable {
 	private @NotNull Instrument instrument;
 	private @NotNull Note note;
 	private boolean powered;
@@ -22,6 +22,13 @@ public class NoteBlockData {
 		this.instrument = instrument;
 		this.note = note;
 		this.powered = powered;
+	}
+
+	public Integer toInt() {
+		int instrument = this.instrument.hashCode();
+		int note = this.note.hashCode();
+		int powered = Boolean.hashCode(this.powered);
+		return instrument + note + powered;
 	}
 
 	public @NotNull NoteBlock craftNoteBlock(@NotNull BlockData blockData) {
@@ -62,5 +69,14 @@ public class NoteBlockData {
 
 	public boolean isPowered() {
 		return this.powered;
+	}
+
+	@Override
+	public @NotNull NoteBlockData clone() {
+		try {
+			return (NoteBlockData) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

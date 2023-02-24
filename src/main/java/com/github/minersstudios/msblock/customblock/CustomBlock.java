@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-public class CustomBlock {
+public class CustomBlock implements Cloneable {
 	private final @NotNull Block block;
 	private final @NotNull Player player;
 	private final @NotNull CustomBlockData customBlockData;
@@ -121,5 +121,14 @@ public class CustomBlock {
 
 	public @NotNull CustomBlockData getCustomBlockData() {
 		return this.customBlockData;
+	}
+
+	@Override
+	public @NotNull CustomBlock clone() {
+		try {
+			return (CustomBlock) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

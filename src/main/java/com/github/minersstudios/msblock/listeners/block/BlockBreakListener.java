@@ -35,7 +35,7 @@ public class BlockBreakListener implements Listener {
 		Block bottomBlock = event.getBlock().getRelative(BlockFace.DOWN);
 		Location blockLocation = block.getLocation().toCenterLocation();
 
-		if (BlockUtils.isWoodenSound(block.getType())) {
+		if (BlockUtils.isWoodenSound(block.getBlockData())) {
 			CustomBlockData.DEFAULT.getSoundGroup().playBreakSound(blockLocation);
 		}
 

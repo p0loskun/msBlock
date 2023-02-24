@@ -24,7 +24,7 @@ public class BlockDamageListener implements Listener {
 		Block block = event.getBlock();
 		Location blockLocation = block.getLocation().toCenterLocation();
 
-		if (BlockUtils.isWoodenSound(block.getType())) {
+		if (BlockUtils.isWoodenSound(block.getBlockData())) {
 			CustomBlockData.DEFAULT.getSoundGroup().playHitSound(blockLocation);
 		}
 
