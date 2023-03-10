@@ -1,9 +1,9 @@
 package com.github.minersstudios.msblock.listeners.player;
 
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.msblock.utils.BlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;

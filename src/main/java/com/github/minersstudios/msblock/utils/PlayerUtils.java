@@ -1,7 +1,5 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
@@ -13,7 +11,10 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
-import org.bukkit.*;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
@@ -22,8 +23,6 @@ import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -134,27 +133,5 @@ public final class PlayerUtils {
 				&& eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
 		) return null;
 		return targetEntity;
-	}
-
-	/**
-	 * @param itemStack item
-	 * @return True if item is custom block
-	 */
-	public static boolean isItemCustomBlock(@NotNull ItemStack itemStack) {
-		ItemMeta itemMeta = itemStack.getItemMeta();
-		if (itemMeta == null || !itemMeta.hasCustomModelData()) return false;
-		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getBySecondaryKey(itemMeta.getCustomModelData());
-		return customBlockData != null
-				&& customBlockData.getItemMaterial() == itemStack.getType()
-				&& customBlockData.getItemCustomModelData() == itemMeta.getCustomModelData();
-	}
-
-	/**
-	 * @param itemStack item
-	 * @return True if item is custom block
-	 */
-	public static boolean isItemCustomDecor(@NotNull ItemStack itemStack) {
-		ItemMeta itemMeta = itemStack.getItemMeta();
-		return itemStack.getType() == Material.LEATHER_HORSE_ARMOR && itemMeta != null && itemMeta.hasCustomModelData();
 	}
 }

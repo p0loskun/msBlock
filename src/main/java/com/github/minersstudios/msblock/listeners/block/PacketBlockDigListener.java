@@ -9,7 +9,8 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -41,12 +42,12 @@ public class PacketBlockDigListener extends PacketAdapter {
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
 				if (block.getBlockData() instanceof NoteBlock noteBlock) {
-					if (BlockUtils.hasPlayer(player)) {
-						BlockUtils.cancelAllTasksWithThisPlayer(player);
+					if (CustomBlockUtils.hasPlayer(player)) {
+						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
 					CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
-					BlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					CustomBlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
 						int currentStage = 0;
@@ -82,7 +83,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!swing) {
 								playZeroBreakStage(blockPosition);
-								BlockUtils.cancelAllTasksWithThisPlayer(player);
+								CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
@@ -110,18 +111,19 @@ public class PacketBlockDigListener extends PacketAdapter {
 						}
 					}, 0L, 1L));
 				} else {
-					if (BlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getBlockData())) {
-						BlockUtils.cancelAllTasksWithThisPlayer(player);
+					if (CustomBlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getBlockData())) {
+						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
 					if (hasSlowDigging) {
 						player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
 					}
 				}
+
 				if (BlockUtils.isWoodenSound(block.getBlockData())) {
-					if (BlockUtils.hasPlayer(player)) {
-						BlockUtils.cancelAllTasksWithThisPlayer(player);
+					if (CustomBlockUtils.hasPlayer(player)) {
+						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					BlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					CustomBlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						static boolean swing = true;
 
@@ -151,7 +153,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!swing) {
 								playZeroBreakStage(blockPosition);
-								BlockUtils.cancelAllTasksWithThisPlayer(player);
+								CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
@@ -163,18 +165,18 @@ public class PacketBlockDigListener extends PacketAdapter {
 						}
 					}, 0L, 1L));
 				}
-			} else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && BlockUtils.hasBlock(block)) {
+			} else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && CustomBlockUtils.hasBlock(block)) {
 				playZeroBreakStage(blockPosition);
-				BlockUtils.cancelAllTasksWithThisBlock(block);
+				CustomBlockUtils.cancelAllTasksWithThisBlock(block);
 			} else if (
 					digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
-					&& BlockUtils.hasBlock(block)
+					&& CustomBlockUtils.hasBlock(block)
 					&& !farAway.contains(player)
 			) {
 				Block targetBlock = getTargetBlock(player);
 				if (getTargetEntity(player, targetBlock) == null && targetBlock != null) {
 					playZeroBreakStage(blockPosition);
-					BlockUtils.cancelAllTasksWithThisPlayer(player);
+					CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 				}
 			}
 		});

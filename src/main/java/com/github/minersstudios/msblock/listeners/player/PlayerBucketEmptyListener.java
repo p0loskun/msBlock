@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,7 +16,7 @@ public class PlayerBucketEmptyListener implements Listener {
 	public void onPlayerBucketEmpty(@NotNull PlayerBucketEmptyEvent event) {
 		if (
 				event.getBlock().getType() == Material.NOTE_BLOCK
-				|| PlayerUtils.isItemCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
+				|| MSBlockUtils.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
 		) {
 			event.setCancelled(true);
 		}

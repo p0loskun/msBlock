@@ -1,8 +1,8 @@
 package com.github.minersstudios.msblock.commands;
 
-import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.mscore.MSCommand;
 import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.MSCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,7 +44,7 @@ public class CommandHandler implements MSCommandExecutor {
 					completions.add(player.getName());
 				}
 			}
-			case 3 -> completions.addAll(MSBlock.getConfigCache().customBlocks.primaryKeySet());
+			case 3 -> completions.addAll(MSCore.getConfigCache().customBlockMap.secondaryKeySet());
 		}
 		return completions;
 	}

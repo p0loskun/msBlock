@@ -3,9 +3,7 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
-import com.github.minersstudios.mscore.collections.DualMap;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -13,19 +11,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
+import static com.github.minersstudios.mscore.MSCore.getConfigCache;
+
 public final class ConfigCache {
-	public final DualMap<String, Integer, CustomBlockData> customBlocks = new DualMap<>();
-	public final Map<Integer, CustomBlockData> cachedNoteBlockData = new HashMap<>();
-	public final List<Recipe> customBlockRecipes = new ArrayList<>();
 
 	public final @NotNull String
 			woodSoundPlace,
 			woodSoundBreak,
 			woodSoundStep,
 			woodSoundHit;
+
+	public final List<CustomBlockData> recipeBlocks = new ArrayList<>();
 
 	public ConfigCache() {
 		File configFile = new File(MSBlock.getInstance().getPluginFolder(), "config.yml");
@@ -45,7 +47,7 @@ public final class ConfigCache {
 			.forEach(file -> {
 				if (file.getName().equals("example.yml")) return;
 				CustomBlockData customBlockData = CustomBlockData.fromConfig(file, YamlConfiguration.loadConfiguration(file));
-				this.customBlocks.put(customBlockData.getNamespacedKey().getKey(), customBlockData.getItemCustomModelData(), customBlockData);
+				getConfigCache().customBlockMap.put(customBlockData.getItemCustomModelData(), customBlockData.getNamespacedKey().getKey(), customBlockData);
 
 				NoteBlockData noteBlockData = customBlockData.getNoteBlockData();
 				if (noteBlockData == null) {
@@ -56,11 +58,11 @@ public final class ConfigCache {
 
 					if (map != null) {
 						for (NoteBlockData data : map.values()) {
-							this.cachedNoteBlockData.put(data.toInt(), customBlockData);
+							getConfigCache().cachedNoteBlockData.put(data.toInt(), customBlockData);
 						}
 					}
 				} else {
-					this.cachedNoteBlockData.put(noteBlockData.toInt(), customBlockData);
+					getConfigCache().cachedNoteBlockData.put(noteBlockData.toInt(), customBlockData);
 				}
 			});
 		} catch (IOException e) {

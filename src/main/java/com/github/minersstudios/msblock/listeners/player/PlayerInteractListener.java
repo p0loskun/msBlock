@@ -4,10 +4,13 @@ import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.events.CustomBlockRightClickEvent;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.BlockUtils;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
+import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
@@ -55,7 +58,7 @@ public class PlayerInteractListener implements Listener {
 				event.getAction() != Action.RIGHT_CLICK_BLOCK
 				|| event.getClickedBlock() == null
 				|| event.getHand() == null
-				|| !PlayerUtils.isItemCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
+				|| !MSBlockUtils.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
 		) return;
 		event.setUseItemInHand(Event.Result.DENY);
 	}
@@ -90,8 +93,8 @@ public class PlayerInteractListener implements Listener {
 			event.setCancelled(true);
 		}
 
-		if (PlayerUtils.isItemCustomDecor(itemInMainHand)) return;
-		if (hand != EquipmentSlot.HAND && PlayerUtils.isItemCustomBlock(itemInMainHand)) {
+		if (MSDecorUtils.isCustomDecor(itemInMainHand)) return;
+		if (hand != EquipmentSlot.HAND && MSBlockUtils.isCustomBlock(itemInMainHand)) {
 			hand = EquipmentSlot.HAND;
 		}
 		this.itemInHand = this.player.getInventory().getItem(hand);
@@ -101,7 +104,7 @@ public class PlayerInteractListener implements Listener {
 				clickedBlock.getBlockData() instanceof NoteBlock noteBlock
 				&& !this.itemInHand.getType().isAir()
 				&& (hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-				&& !PlayerUtils.isItemCustomBlock(this.itemInHand)
+				&& !MSBlockUtils.isCustomBlock(this.itemInHand)
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
@@ -131,7 +134,7 @@ public class PlayerInteractListener implements Listener {
 		}
 
 		if (
-				PlayerUtils.isItemCustomBlock(this.itemInHand)
+				MSBlockUtils.isCustomBlock(this.itemInHand)
 				&& (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
 				&& BlockUtils.REPLACE.contains(clickedBlock.getRelative(blockFace).getType())
 				&& this.gameMode != GameMode.ADVENTURE
@@ -149,7 +152,7 @@ public class PlayerInteractListener implements Listener {
 					? clickedBlock
 					: clickedBlock.getRelative(blockFace);
 			for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-				if (!BlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
+				if (!CustomBlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
 			}
 			ItemMeta itemMeta = this.itemInHand.getItemMeta();
 			if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
@@ -179,7 +182,7 @@ public class PlayerInteractListener implements Listener {
 		BlockFace blockFace = event.getBlockFace();
 		BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(this.itemInHand.getType());
 
-		if (BlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
+		if (CustomBlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
 			new UseBucketsAndSpawnableItems(this.player, this.blockAtFace, blockFace, this.itemInHand);
 		} else if (Tag.SLABS.isTagged(this.itemInHand.getType())) {
 			boolean placeDouble = true;
@@ -253,7 +256,7 @@ public class PlayerInteractListener implements Listener {
 						directionalMaterial.getFaces().contains(blockFace)
 						|| Tag.STAIRS.isTagged(this.itemInHand.getType())
 						|| Tag.TRAPDOORS.isTagged(this.itemInHand.getType())
-				) && !BlockUtils.IGNORABLE_MATERIALS.contains(this.itemInHand.getType())
+				) && !CustomBlockUtils.IGNORABLE_MATERIALS.contains(this.itemInHand.getType())
 		) {
 			this.useOn();
 			if (!(this.blockAtFace.getBlockData() instanceof Directional directional)) return;
@@ -280,7 +283,7 @@ public class PlayerInteractListener implements Listener {
 		ItemStack copyItem = this.itemInHand.clone();
 		if (
 				this.nmsItem.useOn(this.useOnContext, this.interactionHand) == InteractionResult.FAIL
-				|| !this.itemInHand.getType().isBlock()
+				|| !copyItem.getType().isBlock()
 		) return;
 		BlockData blockData = copyItem.getType().createBlockData();
 		MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), copyItem.getType(), blockData);

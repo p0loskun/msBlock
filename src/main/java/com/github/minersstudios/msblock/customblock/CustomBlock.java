@@ -3,7 +3,8 @@ package com.github.minersstudios.msblock.customblock;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.github.minersstudios.msblock.events.CustomBlockPlaceEvent;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -76,8 +77,8 @@ public class CustomBlock implements Cloneable {
 		World world = this.block.getWorld();
 		ItemStack itemInMainHand = this.player.getInventory().getItemInMainHand();
 
-		if (!BlockUtils.hasBlock(this.block)) return;
-		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> BlockUtils.cancelAllTasksWithThisBlock(this.block));
+		if (!CustomBlockUtils.hasBlock(this.block)) return;
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> CustomBlockUtils.cancelAllTasksWithThisBlock(this.block));
 		this.customBlockData.getSoundGroup().playBreakSound(this.block.getLocation().toCenterLocation());
 		CraftBlock craftBlock = (CraftBlock) this.block;
 		craftBlock.getHandle().levelEvent(2001, craftBlock.getPosition(), net.minecraft.world.level.block.Block.getId(craftBlock.getNMS()));

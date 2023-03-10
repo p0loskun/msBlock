@@ -2,7 +2,7 @@ package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,7 +54,7 @@ public class BlockPhysicsListener implements Listener {
 				|| block.getType() == Material.NOTE_BLOCK
 		) {
 			event.setCancelled(true);
-			BlockUtils.updateNoteBlock(block);
+			CustomBlockUtils.updateNoteBlock(block);
 
 			if (
 					Tag.DOORS.isTagged(block.getType())

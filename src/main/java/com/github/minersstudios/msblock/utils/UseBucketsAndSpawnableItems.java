@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.utils;
 
 import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

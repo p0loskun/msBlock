@@ -1,9 +1,10 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.utils.BlockUtils;
-import com.github.minersstudios.msblock.utils.PlayerUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
+import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,18 +25,16 @@ public class InventoryClickListener implements Listener {
 		ItemStack itemInCursor = event.getCursor();
 		ItemStack currentItem = event.getCurrentItem();
 		if (
-				BlockUtils.IGNORABLE_INVENTORY_TYPES.contains(event.getInventory().getType())
+				CustomBlockUtils.IGNORABLE_INVENTORY_TYPES.contains(event.getInventory().getType())
 				&& event.isShiftClick()
-				&& currentItem != null
-				&& PlayerUtils.isItemCustomBlock(currentItem)
+				&& MSBlockUtils.isCustomBlock(currentItem)
 		) {
 			event.setCancelled(true);
 			Bukkit.getScheduler().runTask(MSBlock.getInstance(), player::updateInventory);
 		} else if (
 				clickedInventory != null
-				&& BlockUtils.IGNORABLE_INVENTORY_TYPES.contains(clickedInventory.getType())
-				&& itemInCursor != null
-				&& PlayerUtils.isItemCustomBlock(itemInCursor)
+				&& CustomBlockUtils.IGNORABLE_INVENTORY_TYPES.contains(clickedInventory.getType())
+				&& MSDecorUtils.isCustomDecor(itemInCursor)
 		) {
 			event.setCancelled(true);
 			Bukkit.getScheduler().runTask(MSBlock.getInstance(), player::updateInventory);

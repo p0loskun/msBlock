@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.player;
 
 import com.github.minersstudios.msblock.MSBlock;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ public class PlayerDeathListener implements Listener {
 	public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
 		Player player = event.getEntity();
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
-			BlockUtils.cancelAllTasksWithThisPlayer(player);
+			CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 			PlayerUtils.steps.remove(player);
 		});
 	}

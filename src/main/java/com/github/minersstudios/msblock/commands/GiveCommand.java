@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.commands;
 
-import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
+import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ public class GiveCommand {
 		if (args.length < 3) return false;
 		if (args[1].length() > 2) {
 			Player player = Bukkit.getPlayer(args[1]);
-			CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getByPrimaryKey(args[2]);
+			CustomBlockData customBlockData = MSCore.getConfigCache().customBlockMap.getBySecondaryKey(args[2]);
 			int amount = args.length == 4 && args[3].matches("[0-99]+")
 					? Integer.parseInt(args[3])
 					: 1;

@@ -2,8 +2,9 @@ package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.ToolType;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.BlockUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import org.bukkit.GameMode;
@@ -47,7 +48,7 @@ public class BlockBreakListener implements Listener {
 
 			if (
 					gameMode == GameMode.CREATIVE
-					&& BlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition())
+					&& CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition())
 			) {
 				customBlockMaterial.getSoundGroup().playBreakSound(blockLocation);
 			}
@@ -55,7 +56,7 @@ public class BlockBreakListener implements Listener {
 			if (customBlockMaterial.getToolType() == ToolType.AXE && gameMode != GameMode.CREATIVE) {
 				player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
 				block.getWorld().dropItemNaturally(block.getLocation(), customBlockMaterial.craftItemStack());
-				BlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+				CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
 			}
 			return;
 		}
@@ -65,7 +66,7 @@ public class BlockBreakListener implements Listener {
 				|| bottomBlock.getType() == Material.NOTE_BLOCK
 		) {
 			event.setCancelled(true);
-			BlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
+			CustomBlockUtils.destroyBlock(new ServerPlayerGameMode(serverPlayer), serverPlayer, craftBlock.getPosition());
 		}
 	}
 }

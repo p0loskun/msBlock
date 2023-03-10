@@ -25,10 +25,10 @@ public class NoteBlockData implements Cloneable {
 	}
 
 	public Integer toInt() {
-		int instrument = this.instrument.hashCode();
+		int instrument = this.instrument.ordinal();
 		int note = this.note.hashCode();
-		int powered = Boolean.hashCode(this.powered);
-		return instrument + note + powered;
+		int powered = this.powered ? 1 : 0;
+		return Integer.parseInt(instrument + "00" + note + "00" + powered);
 	}
 
 	public @NotNull NoteBlock craftNoteBlock(@NotNull BlockData blockData) {

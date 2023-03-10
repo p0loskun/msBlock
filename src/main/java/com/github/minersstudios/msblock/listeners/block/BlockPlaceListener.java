@@ -2,9 +2,9 @@ package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.customblock.CustomBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.msblock.utils.BlockUtils;
-import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.BlockUtils;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ public class BlockPlaceListener implements Listener {
 
 		if (
 				block.getType() == Material.NOTE_BLOCK
-				|| PlayerUtils.isItemCustomBlock(player.getInventory().getItemInMainHand())
+				|| MSBlockUtils.isCustomBlock(player.getInventory().getItemInMainHand())
 		) {
 			event.setCancelled(true);
 		}

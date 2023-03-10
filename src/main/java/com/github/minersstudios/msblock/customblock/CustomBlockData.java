@@ -1,10 +1,9 @@
 package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.MSBlock;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextDecoration;
+import com.github.minersstudios.mscore.utils.ChatUtils;
+import com.github.minersstudios.mscore.utils.ItemUtils;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
@@ -15,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Contract;
@@ -23,6 +23,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
+
+import static com.github.minersstudios.mscore.MSCore.getConfigCache;
 
 @SuppressWarnings("unused")
 public class CustomBlockData implements Cloneable {
@@ -34,7 +36,6 @@ public class CustomBlockData implements Cloneable {
 			true,
 			ToolType.AXE,
 			false,
-			Material.NOTE_BLOCK,
 			null,
 			0,
 			new NoteBlockData(Instrument.BIT, new Note(0), false),
@@ -70,7 +71,6 @@ public class CustomBlockData implements Cloneable {
 	private boolean dropsDefaultItem;
 	private @NotNull ToolType toolType;
 	private boolean forceTool;
-	private @NotNull Material itemMaterial;
 	private @Nullable String itemName;
 	private int itemCustomModelData;
 	private @Nullable NoteBlockData noteBlockData;
@@ -82,6 +82,9 @@ public class CustomBlockData implements Cloneable {
 	private boolean showInCraftsMenu;
 	private @Nullable ShapedRecipe shapedRecipe;
 
+	protected File file;
+	protected YamlConfiguration config;
+
 	public CustomBlockData(
 			@NotNull NamespacedKey namespacedKey,
 			float digSpeed,
@@ -89,7 +92,6 @@ public class CustomBlockData implements Cloneable {
 			boolean dropsDefaultItem,
 			@NotNull ToolType toolType,
 			boolean forceTool,
-			@NotNull Material itemMaterial,
 			@Nullable String itemName,
 			int itemCustomModelData,
 			@Nullable NoteBlockData noteBlockData,
@@ -107,7 +109,6 @@ public class CustomBlockData implements Cloneable {
 		this.dropsDefaultItem = dropsDefaultItem;
 		this.toolType = toolType;
 		this.forceTool = forceTool;
-		this.itemMaterial = itemMaterial;
 		this.itemName = itemName;
 		this.itemCustomModelData = itemCustomModelData;
 		this.noteBlockData = noteBlockData;
@@ -124,7 +125,10 @@ public class CustomBlockData implements Cloneable {
 	public static @NotNull CustomBlockData fromConfig(@NotNull File file, @NotNull YamlConfiguration config) {
 		String fileName = file.getName();
 
-		NamespacedKey namespacedKey = new NamespacedKey(MSBlock.getInstance(), Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null"));
+		NamespacedKey namespacedKey = new NamespacedKey(
+				MSBlock.getInstance(),
+				Objects.requireNonNull(config.getString("namespaced-key"), "namespaced-key in " + fileName + " is null")
+		);
 
 		ConfigurationSection blockSettings = Objects.requireNonNull(
 				config.getConfigurationSection("block-settings"),
@@ -146,7 +150,6 @@ public class CustomBlockData implements Cloneable {
 				blockSettings.getBoolean("drop.drops-default-item", true),
 				ToolType.valueOf(blockSettings.getString("tool.type", "HAND")),
 				blockSettings.getBoolean("tool.force", false),
-				Material.valueOf(Objects.requireNonNull(item.getString("material"), "item.material in " + fileName + " is null")),
 				item.getString("name"),
 				item.getInt("custom-model-data"),
 				craftNoteBlockData(config),
@@ -159,29 +162,11 @@ public class CustomBlockData implements Cloneable {
 				null
 		);
 
+		customBlockData.file = file;
+		customBlockData.config = config;
 
-		Map<Character, Material> ingredientMap = new HashMap<>();
-		ConfigurationSection craftSection = config.getConfigurationSection("craft.material-list");
-		if (craftSection != null) {
-			for (String key : craftSection.getKeys(false)) {
-				ingredientMap.put(key.toCharArray()[0], Material.valueOf(Objects.requireNonNull(craftSection.get(key)).toString()));
-			}
-
-			ItemStack craftedItem = customBlockData.craftItemStack().clone();
-			craftedItem.setAmount(config.getInt("craft.item-amount", 1));
-
-			ShapedRecipe shapedRecipe = new ShapedRecipe(namespacedKey, craftedItem);
-			shapedRecipe.setGroup(MSBlock.getInstance().getName().toLowerCase(Locale.ROOT) + config.getString("craft.group"));
-			shapedRecipe.shape(config.getStringList("craft.shaped-recipe").toArray(String[]::new));
-
-			ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
-
-			if (customBlockData.isShowInCraftsMenu()) {
-				MSBlock.getConfigCache().customBlockRecipes.add(shapedRecipe);
-			}
-
-			Bukkit.addRecipe(shapedRecipe);
-			customBlockData.setShapedRecipe(shapedRecipe);
+		if (config.getConfigurationSection("craft") != null) {
+			MSBlock.getConfigCache().recipeBlocks.add(customBlockData);
 		}
 
 		return customBlockData;
@@ -193,20 +178,20 @@ public class CustomBlockData implements Cloneable {
 
 	@Contract("_, _, _ -> new")
 	public static @NotNull CustomBlockData fromInstrumentNotePowered(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
-		return MSBlock.getConfigCache().cachedNoteBlockData.getOrDefault(
+		return getConfigCache().cachedNoteBlockData.getOrDefault(
 				new NoteBlockData(instrument, note, powered).toInt(), DEFAULT
 		);
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
-		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getBySecondaryKey(cmd);
+		CustomBlockData customBlockData = getConfigCache().customBlockMap.getByPrimaryKey(cmd);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromKey(String key) {
-		CustomBlockData customBlockData = MSBlock.getConfigCache().customBlocks.getByPrimaryKey(key);
+		CustomBlockData customBlockData = getConfigCache().customBlockMap.getBySecondaryKey(key);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 
@@ -284,6 +269,8 @@ public class CustomBlockData implements Cloneable {
 			if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
 				base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
 			}
+		} else if (this.toolType == ToolType.PICKAXE) {
+			base /= 30.0f;
 		} else {
 			base /= 5.0f;
 		}
@@ -326,14 +313,6 @@ public class CustomBlockData implements Cloneable {
 
 	public boolean isForceTool() {
 		return this.forceTool;
-	}
-
-	public void setItemMaterial(@NotNull Material itemMaterial) {
-		this.itemMaterial = itemMaterial;
-	}
-
-	public @NotNull Material getItemMaterial() {
-		return this.itemMaterial;
 	}
 
 	public void setItemName(@Nullable String itemName) {
@@ -417,27 +396,54 @@ public class CustomBlockData implements Cloneable {
 	}
 
 	public @NotNull ItemStack craftItemStack() {
-		ItemStack itemStack = new ItemStack(itemMaterial);
+		ItemStack itemStack = new ItemStack(Material.PAPER);
 		ItemMeta itemMeta = itemStack.getItemMeta();
-		assert itemMeta != null;
+		itemMeta.getPersistentDataContainer().set(
+				MSBlockUtils.CUSTOM_BLOCK_TYPE_NAMESPACED_KEY,
+				PersistentDataType.STRING,
+				this.namespacedKey.getKey()
+		);
 		itemMeta.setCustomModelData(this.itemCustomModelData);
 		if (this.itemName != null) {
-			itemMeta.displayName(
-					Component.text()
-							.append(Component.text(this.itemName)
-									.style(Style.style(
-											NamedTextColor.WHITE,
-											TextDecoration.OBFUSCATED.withState(false),
-											TextDecoration.BOLD.withState(false),
-											TextDecoration.ITALIC.withState(false),
-											TextDecoration.STRIKETHROUGH.withState(false),
-											TextDecoration.UNDERLINED.withState(false)
-									)))
-							.build()
-			);
+			itemMeta.displayName(ChatUtils.createDefaultStyledText(this.itemName));
 		}
 		itemStack.setItemMeta(itemMeta);
 		return itemStack;
+	}
+
+	public void registerRecipes() {
+		Map<Character, ItemStack> ingredientMap = new HashMap<>();
+		ConfigurationSection craftSection = this.config.getConfigurationSection("craft.material-list");
+
+		if (craftSection != null) {
+			for (String key : craftSection.getKeys(false)) {
+				ItemStack itemStack;
+				String itemStr = craftSection.getString(key);
+				assert itemStr != null;
+				try {
+					itemStack = new ItemStack(Material.valueOf(itemStr));
+				} catch (IllegalArgumentException ignored) {
+					itemStack = ItemUtils.getMSItemStack(itemStr);
+				}
+				ingredientMap.put(key.toCharArray()[0], itemStack);
+			}
+
+			ItemStack craftedItem = this.craftItemStack().clone();
+			craftedItem.setAmount(config.getInt("craft.item-amount", 1));
+
+			ShapedRecipe shapedRecipe = new ShapedRecipe(namespacedKey, craftedItem);
+			shapedRecipe.setGroup(MSBlock.getInstance().getName().toLowerCase(Locale.ROOT) + config.getString("craft.group"));
+			shapedRecipe.shape(config.getStringList("craft.shaped-recipe").toArray(String[]::new));
+
+			ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
+
+			if (this.isShowInCraftsMenu()) {
+				getConfigCache().customBlockRecipes.add(shapedRecipe);
+			}
+
+			Bukkit.addRecipe(shapedRecipe);
+			this.setShapedRecipe(shapedRecipe);
+		}
 	}
 
 	public @Nullable Set<Axis> getAxes() {
