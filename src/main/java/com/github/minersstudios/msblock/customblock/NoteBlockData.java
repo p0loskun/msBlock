@@ -31,8 +31,9 @@ public class NoteBlockData implements Cloneable {
 		return Integer.parseInt(instrument + "00" + note + "00" + powered);
 	}
 
-	public @NotNull NoteBlock craftNoteBlock(@NotNull BlockData blockData) {
-		NoteBlock noteBlock = (NoteBlock) blockData;
+	@Contract("null -> null")
+	public @Nullable NoteBlock craftNoteBlock(@Nullable BlockData blockData) {
+		if (!(blockData instanceof NoteBlock noteBlock)) return null;
 		noteBlock.setInstrument(this.instrument);
 		noteBlock.setNote(this.note);
 		noteBlock.setPowered(this.powered);

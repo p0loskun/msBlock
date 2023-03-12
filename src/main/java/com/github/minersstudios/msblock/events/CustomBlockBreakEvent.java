@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockBreakEvent extends CustomBlockEvent implements Cancellable {
 	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-	private boolean cancel;
+	protected boolean cancel;
 
-	private final @NotNull Player player;
+	protected final @NotNull Player player;
 
 	public CustomBlockBreakEvent(
 			final @NotNull CustomBlock breakedCustomBlock,

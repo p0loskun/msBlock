@@ -19,7 +19,7 @@ public class PlayerTeleportListener implements Listener {
 		Player player = event.getPlayer();
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
-			PlayerUtils.steps.remove(player);
+			PlayerUtils.removeSteps(player);
 		});
 	}
 }

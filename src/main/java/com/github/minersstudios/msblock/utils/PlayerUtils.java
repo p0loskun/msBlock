@@ -1,5 +1,6 @@
 package com.github.minersstudios.msblock.utils;
 
+import com.github.minersstudios.msblock.MSBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
@@ -24,19 +25,13 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 
 public final class PlayerUtils {
-	public static final Map<Player, Double> steps = new HashMap<>();
-	public static final Set<Player> farAway = new HashSet<>();
-
 	private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
 			//<editor-fold desc="Ignorable mob types">
 			EntityType.DROPPED_ITEM,
@@ -60,6 +55,7 @@ public final class PlayerUtils {
 			//</editor-fold>
 	);
 
+	@Contract(value = " -> fail")
 	private PlayerUtils() {
 		throw new IllegalStateException("Utility class");
 	}
@@ -133,5 +129,21 @@ public final class PlayerUtils {
 				&& eyeLocation.distance(targetBlock.getLocation()) <= eyeLocation.distance(targetEntity.getLocation())
 		) return null;
 		return targetEntity;
+	}
+
+	public static void addSteps(@NotNull Player player, double distance) {
+		MSBlock.getConfigCache().steps.put(player, distance);
+	}
+
+	public static void removeSteps(@NotNull Player player) {
+		MSBlock.getConfigCache().steps.remove(player);
+	}
+
+	public static boolean containsSteps(@NotNull Player player) {
+		return MSBlock.getConfigCache().steps.containsKey(player);
+	}
+
+	public static double getStepDistance(@NotNull Player player) {
+		return MSBlock.getConfigCache().steps.get(player);
 	}
 }

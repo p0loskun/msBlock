@@ -19,7 +19,7 @@ public class PlayerDeathListener implements Listener {
 		Player player = event.getEntity();
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
-			PlayerUtils.steps.remove(player);
+			PlayerUtils.removeSteps(player);
 		});
 	}
 }

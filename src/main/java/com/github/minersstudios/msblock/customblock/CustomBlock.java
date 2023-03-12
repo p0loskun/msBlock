@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class CustomBlock implements Cloneable {
 	private final @NotNull Block block;
 	private final @NotNull Player player;
@@ -51,10 +52,12 @@ public class CustomBlock implements Cloneable {
 		} else if (axis != null && blockAxisMap != null) {
 			this.customBlockData.setNoteBlockData(blockAxisMap.get(axis));
 		}
+
 		if (this.customBlockData.getNoteBlockData() == null) return;
 		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> {
 			this.block.setType(Material.NOTE_BLOCK);
 			NoteBlock noteBlock = this.customBlockData.getNoteBlockData().craftNoteBlock(this.block.getBlockData());
+			assert noteBlock != null;
 			this.block.setBlockData(noteBlock);
 
 			this.customBlockData.getSoundGroup().playPlaceSound(this.block.getLocation().toCenterLocation());

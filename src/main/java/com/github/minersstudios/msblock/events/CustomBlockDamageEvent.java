@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockDamageEvent extends CustomBlockEvent implements Cancellable {
 	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-	private boolean cancel;
+	protected boolean cancel;
 
-	private final @NotNull Player player;
-	private final @NotNull ItemStack itemStack;
+	protected final @NotNull Player player;
+	protected final @NotNull ItemStack itemStack;
 
 	public CustomBlockDamageEvent(
 			final @NotNull CustomBlock damagedCustomBlock,

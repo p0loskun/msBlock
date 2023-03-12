@@ -67,21 +67,21 @@ public final class UseBucketsAndSpawnableItems {
 	 * @return random axolotl color variant
 	 */
 	private @NotNull Axolotl.Variant randomVariant() {
-		return Axolotl.Variant.values()[random.nextInt(Axolotl.Variant.values().length)];
+		return Axolotl.Variant.values()[this.random.nextInt(Axolotl.Variant.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body pattern variant
 	 */
 	private @NotNull TropicalFish.Pattern randomPattern() {
-		return TropicalFish.Pattern.values()[random.nextInt(TropicalFish.Pattern.values().length)];
+		return TropicalFish.Pattern.values()[this.random.nextInt(TropicalFish.Pattern.values().length)];
 	}
 
 	/**
 	 * @return random tropical fish body color variant
 	 */
 	private @NotNull DyeColor randomBodyColor() {
-		return DyeColor.values()[random.nextInt(DyeColor.values().length)];
+		return DyeColor.values()[this.random.nextInt(DyeColor.values().length)];
 	}
 
 	/**

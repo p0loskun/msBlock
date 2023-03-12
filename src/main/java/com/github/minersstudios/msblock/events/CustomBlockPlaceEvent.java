@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockPlaceEvent extends CustomBlockEvent implements Cancellable {
 	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-	private boolean cancel;
+	protected boolean cancel;
 
-	private final @NotNull BlockState replacedBlockState;
-	private final @NotNull Player player;
-	private final @NotNull EquipmentSlot hand;
+	protected final @NotNull BlockState replacedBlockState;
+	protected final @NotNull Player player;
+	protected final @NotNull EquipmentSlot hand;
 
 	public CustomBlockPlaceEvent(
 			final @NotNull CustomBlock placedCustomBlock,

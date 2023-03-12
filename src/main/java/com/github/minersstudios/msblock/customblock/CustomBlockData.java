@@ -185,13 +185,13 @@ public class CustomBlockData implements Cloneable {
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
-		CustomBlockData customBlockData = getConfigCache().customBlockMap.getByPrimaryKey(cmd);
+		CustomBlockData customBlockData = getConfigCache().customBlockMap.getBySecondaryKey(cmd);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromKey(String key) {
-		CustomBlockData customBlockData = getConfigCache().customBlockMap.getBySecondaryKey(key);
+		CustomBlockData customBlockData = getConfigCache().customBlockMap.getByPrimaryKey(key);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 

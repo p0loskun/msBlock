@@ -1,6 +1,5 @@
 package com.github.minersstudios.msblock.utils;
 
-import com.github.minersstudios.mscore.collections.ConcurrentDualMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -28,15 +27,16 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class CustomBlockUtils {
-	public static final ConcurrentDualMap<Block, Player, Integer> blocks = new ConcurrentDualMap<>();
+import static com.github.minersstudios.msblock.MSBlock.getConfigCache;
 
+public final class CustomBlockUtils {
 	public static final ImmutableSet<InventoryType> IGNORABLE_INVENTORY_TYPES = Sets.immutableEnumSet(
 			//<editor-fold desc="Ignorable inventory types">
 			InventoryType.CARTOGRAPHY,
@@ -174,6 +174,7 @@ public final class CustomBlockUtils {
 			//</editor-fold>
 	);
 
+	@Contract(value = " -> fail")
 	private CustomBlockUtils() {
 		throw new IllegalStateException("Utility class");
 	}
@@ -317,16 +318,18 @@ public final class CustomBlockUtils {
 	 * @param player player
 	 * @return False if no tasks with player
 	 */
+	@Contract(pure = true)
 	public static boolean hasPlayer(@NotNull Player player) {
-		return blocks.containsSecondaryKey(player);
+		return getConfigCache().blocks.containsSecondaryKey(player);
 	}
 
 	/**
 	 * @param block block
 	 * @return False if no tasks with block
 	 */
+	@Contract(pure = true)
 	public static boolean hasBlock(@NotNull Block block) {
-		return blocks.containsPrimaryKey(block);
+		return getConfigCache().blocks.containsPrimaryKey(block);
 	}
 
 	/**
@@ -335,10 +338,10 @@ public final class CustomBlockUtils {
 	 * @param block block
 	 */
 	public static void cancelAllTasksWithThisBlock(@NotNull Block block) {
-		if (blocks.containsPrimaryKey(block)) {
-			Integer taskId = blocks.removeByPrimaryKey(block);
+		if (getConfigCache().blocks.containsPrimaryKey(block)) {
+			Integer taskId = getConfigCache().blocks.removeByPrimaryKey(block);
 			assert taskId != null;
-			PlayerUtils.farAway.remove(blocks.getSecondaryKey(block));
+			getConfigCache().farAway.remove(getConfigCache().blocks.getSecondaryKey(block));
 			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}
@@ -349,10 +352,10 @@ public final class CustomBlockUtils {
 	 * @param player player
 	 */
 	public static void cancelAllTasksWithThisPlayer(@NotNull Player player) {
-		if (blocks.containsSecondaryKey(player)) {
-			Integer taskId = blocks.removeBySecondaryKey(player);
+		if (getConfigCache().blocks.containsSecondaryKey(player)) {
+			Integer taskId = getConfigCache().blocks.removeBySecondaryKey(player);
 			assert taskId != null;
-			PlayerUtils.farAway.remove(player);
+			getConfigCache().farAway.remove(player);
 			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}

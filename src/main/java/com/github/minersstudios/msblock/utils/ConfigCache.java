@@ -3,7 +3,10 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
+import com.github.minersstudios.mscore.collections.ConcurrentDualMap;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -11,16 +14,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.github.minersstudios.mscore.MSCore.getConfigCache;
 
 public final class ConfigCache {
-
 	public final @NotNull String
 			woodSoundPlace,
 			woodSoundBreak,
@@ -28,6 +27,10 @@ public final class ConfigCache {
 			woodSoundHit;
 
 	public final List<CustomBlockData> recipeBlocks = new ArrayList<>();
+
+	public final Map<Player, Double> steps = new HashMap<>();
+	public final Set<Player> farAway = new HashSet<>();
+	public  final ConcurrentDualMap<Block, Player, Integer> blocks = new ConcurrentDualMap<>();
 
 	public ConfigCache() {
 		File configFile = new File(MSBlock.getInstance().getPluginFolder(), "config.yml");
@@ -47,7 +50,7 @@ public final class ConfigCache {
 			.forEach(file -> {
 				if (file.getName().equals("example.yml")) return;
 				CustomBlockData customBlockData = CustomBlockData.fromConfig(file, YamlConfiguration.loadConfiguration(file));
-				getConfigCache().customBlockMap.put(customBlockData.getItemCustomModelData(), customBlockData.getNamespacedKey().getKey(), customBlockData);
+				getConfigCache().customBlockMap.put(customBlockData.getNamespacedKey().getKey(), customBlockData.getItemCustomModelData(), customBlockData);
 
 				NoteBlockData noteBlockData = customBlockData.getNoteBlockData();
 				if (noteBlockData == null) {

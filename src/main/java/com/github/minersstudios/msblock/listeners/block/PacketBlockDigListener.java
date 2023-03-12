@@ -21,6 +21,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
+import static com.github.minersstudios.msblock.MSBlock.getConfigCache;
 import static com.github.minersstudios.msblock.utils.PlayerUtils.*;
 
 public class PacketBlockDigListener extends PacketAdapter {
@@ -47,7 +48,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					}
 					CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
-					CustomBlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
 						int currentStage = 0;
@@ -57,10 +58,10 @@ public class PacketBlockDigListener extends PacketAdapter {
 						public void run() {
 							Block targetBlock = getTargetBlock(player);
 							if (getTargetEntity(player, targetBlock) != null || targetBlock == null) {
-								farAway.add(player);
+								getConfigCache().farAway.add(player);
 								return;
 							} else {
-								farAway.remove(player);
+								getConfigCache().farAway.remove(player);
 							}
 
 							if (!hasSlowDigging) {
@@ -69,7 +70,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!targetBlock.equals(block)) return;
 
-							if (!farAway.contains(player)) {
+							if (!getConfigCache().farAway.contains(player)) {
 								Bukkit.getScheduler().runTask(plugin, () ->
 									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
 										@Override
@@ -89,7 +90,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 							this.ticks++;
 							this.progress += digSpeed;
 
-							if (this.ticks % 4.0f == 0.0f && !farAway.contains(player)) {
+							if (this.ticks % 4.0f == 0.0f && !getConfigCache().farAway.contains(player)) {
 								customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
 								swing = false;
 							}
@@ -123,7 +124,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (CustomBlockUtils.hasPlayer(player)) {
 						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
 					}
-					CustomBlockUtils.blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
+					getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						static boolean swing = true;
 
@@ -131,15 +132,15 @@ public class PacketBlockDigListener extends PacketAdapter {
 						public void run() {
 							Block targetBlock = getTargetBlock(player);
 							if (getTargetEntity(player, targetBlock) != null || targetBlock == null) {
-								farAway.add(player);
+								getConfigCache().farAway.add(player);
 								return;
 							} else {
-								farAway.remove(player);
+								getConfigCache().farAway.remove(player);
 							}
 
 							if (!targetBlock.equals(block)) return;
 
-							if (!farAway.contains(player)) {
+							if (!getConfigCache().farAway.contains(player)) {
 								Bukkit.getScheduler().runTask(plugin, () ->
 									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
 										@Override
@@ -171,7 +172,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 			} else if (
 					digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
 					&& CustomBlockUtils.hasBlock(block)
-					&& !farAway.contains(player)
+					&& !getConfigCache().farAway.contains(player)
 			) {
 				Block targetBlock = getTargetBlock(player);
 				if (getTargetEntity(player, targetBlock) == null && targetBlock != null) {

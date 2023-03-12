@@ -3,6 +3,7 @@ package com.github.minersstudios.msblock.listeners.inventory;
 import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.mscore.utils.MSBlockUtils;
+import com.github.minersstudios.mscore.utils.MSDecorUtils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,7 @@ public class PrepareItemCraftListener implements Listener {
 					&& shapedRecipe.getIngredientMap().values().stream().noneMatch(item -> ItemUtils.isSimilarItemStacks(item, itemStack)))
 					|| (!result.hasItemMeta() || !result.getItemMeta().hasCustomModelData())
 			) {
+				if (MSDecorUtils.isCustomDecor(event.getInventory().getResult())) return;
 				event.getInventory().setResult(new ItemStack(Material.AIR));
 			}
 		}

@@ -18,13 +18,6 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
 	private CraftInventoryView bukkitEntity;
 	private final Inventory player;
 
-	public @NotNull CraftInventoryView getBukkitView() {
-		if (this.bukkitEntity == null) {
-			this.bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), new CraftInventory(this.container), this);
-		}
-		return this.bukkitEntity;
-	}
-
 	public ShulkerBoxMenu(int syncId, Inventory playerInventory, Container inventory) {
 		super(MenuType.SHULKER_BOX, syncId);
 		checkContainerSize(inventory, CONTAINER_SIZE);
@@ -50,10 +43,20 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
 		}
 	}
 
+	@Override
+	public @NotNull CraftInventoryView getBukkitView() {
+		if (this.bukkitEntity == null) {
+			this.bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), new CraftInventory(this.container), this);
+		}
+		return this.bukkitEntity;
+	}
+
+	@Override
 	public boolean stillValid(@NotNull Player player) {
 		return !this.checkReachable || this.container.stillValid(player);
 	}
 
+	@Override
 	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int slot) {
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot1 = this.slots.get(slot);
@@ -78,6 +81,7 @@ public final class ShulkerBoxMenu extends AbstractContainerMenu {
 		return itemstack;
 	}
 
+	@Override
 	public void removed(@NotNull Player player) {
 		super.removed(player);
 		this.container.stopOpen(player);

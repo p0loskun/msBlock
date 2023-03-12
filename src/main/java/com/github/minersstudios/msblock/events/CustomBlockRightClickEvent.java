@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomBlockRightClickEvent extends CustomBlockEvent implements Cancellable {
 	private static final @NotNull HandlerList HANDLER_LIST = new HandlerList();
-	private boolean cancel;
+	protected boolean cancel;
 
-	private final @NotNull Player player;
-	private final @NotNull ItemStack itemStack;
-	private final @NotNull EquipmentSlot hand;
-	private final @NotNull BlockFace blockFace;
-	private final @NotNull Location interactionPoint;
+	protected final @NotNull Player player;
+	protected final @NotNull ItemStack itemStack;
+	protected final @NotNull EquipmentSlot hand;
+	protected final @NotNull BlockFace blockFace;
+	protected final @NotNull Location interactionPoint;
 
 	public CustomBlockRightClickEvent(
 			final @NotNull CustomBlock damagedCustomBlock,

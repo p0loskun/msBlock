@@ -9,11 +9,9 @@ import com.github.minersstudios.mscore.MSPlugin;
 import com.github.minersstudios.mscore.utils.MSPluginUtils;
 import net.coreprotect.CoreProtect;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class MSBlock extends MSPlugin {
 	private static MSBlock instance;
@@ -25,21 +23,11 @@ public final class MSBlock extends MSPlugin {
 	public void enable() {
 		instance = this;
 		protocolManager = ProtocolLibrary.getProtocolManager();
-		coreProtectAPI = this.getCoreProtect();
-		if (coreProtectAPI != null) {
-			coreProtectAPI.testAPI();
-		}
+		coreProtectAPI = CoreProtect.getInstance().getAPI();
 
 		reloadConfigs();
 
 		protocolManager.addPacketListener(new PacketBlockDigListener());
-	}
-
-	private @Nullable CoreProtectAPI getCoreProtect() {
-		Plugin coreProtect = getServer().getPluginManager().getPlugin("CoreProtect");
-		if (coreProtect == null) return null;
-		CoreProtectAPI api = ((CoreProtect)coreProtect).getAPI();
-		return !api.isEnabled() || api.APIVersion() < 9 ? null : api;
 	}
 
 	public static void reloadConfigs() {
@@ -47,6 +35,7 @@ public final class MSBlock extends MSPlugin {
 		instance.saveDefaultConfig();
 		instance.reloadConfig();
 		configCache = new ConfigCache();
+
 		configCache.loadBlocks();
 		instance.loadedCustoms = true;
 

@@ -36,8 +36,8 @@ public class PlayerMoveListener implements Listener {
 			to.setY(0.0d);
 			double distance = from.distance(to);
 			if (distance == 0.0d) return;
-			double fullDistance = PlayerUtils.steps.containsKey(player) ? PlayerUtils.steps.get(player) + distance : 1.0d;
-			PlayerUtils.steps.put(player, fullDistance > 1.25d ? 0.0d : fullDistance);
+			double fullDistance = PlayerUtils.containsSteps(player) ? PlayerUtils.getStepDistance(player) + distance : 1.0d;
+			PlayerUtils.addSteps(player, fullDistance > 1.25d ? 0.0d : fullDistance);
 			if (fullDistance > 1.25d) {
 				if (bottomBlock.getBlockData() instanceof NoteBlock noteBlock) {
 					CustomBlockData.fromNoteBlock(noteBlock).getSoundGroup().playStepSound(bottomBlockLocation);
@@ -46,7 +46,7 @@ public class PlayerMoveListener implements Listener {
 				}
 			}
 		} else {
-			PlayerUtils.steps.remove(player);
+			PlayerUtils.removeSteps(player);
 		}
 	}
 }

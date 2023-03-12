@@ -44,7 +44,7 @@ public class CommandHandler implements MSCommandExecutor {
 					completions.add(player.getName());
 				}
 			}
-			case 3 -> completions.addAll(MSCore.getConfigCache().customBlockMap.secondaryKeySet());
+			case 3 -> completions.addAll(MSCore.getConfigCache().customBlockMap.primaryKeySet());
 		}
 		return completions;
 	}

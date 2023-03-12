@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_19_R2.CraftServer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +33,7 @@ import java.util.zip.InflaterInputStream;
 @SuppressWarnings("unused")
 public final class AdaptationUtils {
 
+	@Contract(value = " -> fail")
 	private AdaptationUtils() {
 		throw new IllegalStateException("Utility class");
 	}
@@ -68,6 +70,7 @@ public final class AdaptationUtils {
 		private final byte[] compressionType = new byte[CHUNKS_PER_REGION];
 		private final byte[][] compressedData = new byte[CHUNKS_PER_REGION][];
 		private final CompoundTag[] chunkRoot = new CompoundTag[CHUNKS_PER_REGION];
+		private final File fileObject;
 		private final RandomAccessFile file;
 
 		public RegionFile(Path fileName) throws FileNotFoundException {
@@ -80,14 +83,14 @@ public final class AdaptationUtils {
 				this.chunkRoot[i] = null;
 			}
 
-			File fileObject = new File(fileName.toString());
-			if (!fileObject.exists()) throw new FileNotFoundException("File not found");
-			this.file = new RandomAccessFile(fileObject, "r");
+			this.fileObject = new File(fileName.toString());
+			if (!this.fileObject.exists()) throw new FileNotFoundException("File not found");
+			this.file = new RandomAccessFile(this.fileObject, "r");
 		}
 
-		public Multimap<Map.Entry<Integer, Integer>, UUID> getCustomDecors() throws Exception {
+		public @NotNull Multimap<Map.Entry<Integer, Integer>, UUID> getCustomDecors() throws Exception {
 			Multimap<Map.Entry<Integer, Integer>, UUID> chunks = MultimapBuilder.hashKeys().hashSetValues().build();
-			this.initRegion();
+			if (!this.initRegion()) return chunks;
 
 			for (int i = 0; i < CHUNKS_PER_REGION; i++) {
 				if (this.offset[i] != 0) {
@@ -97,7 +100,12 @@ public final class AdaptationUtils {
 					this.chunkRoot[i].getList("Entities", Tag.TAG_COMPOUND)
 					.forEach(tag -> {
 						String str = tag.getAsString();
-						if (str.contains("Tags:[\"customDecor\"]")) {
+						if (
+								(str.contains("id:\"minecraft:armor_stand\"")
+								|| str.contains("id:\"minecraft:item_frame\"")
+								|| str.contains("id:\"minecraft:item\""))
+								&& str.contains("CustomModelData")
+						) {
 							Pattern pattern = Pattern.compile("UUID:\\[I;(-?\\d+),(-?\\d+),(-?\\d+),(-?\\d+)]");
 							Matcher matcher = pattern.matcher(str);
 							if (matcher.find()) {
@@ -121,9 +129,9 @@ public final class AdaptationUtils {
 			return chunks;
 		}
 
-		public Multimap<Map.Entry<Integer, Integer>, Location> getTileEntitiesWithCustoms(@NotNull World world) throws Exception {
+		public @NotNull Multimap<Map.Entry<Integer, Integer>, Location> getTileEntitiesWithCustoms(@NotNull World world) throws Exception {
 			Multimap<Map.Entry<Integer, Integer>, Location> chunks = MultimapBuilder.hashKeys().hashSetValues().build();
-			this.initRegion();
+			if (!this.initRegion()) return chunks;
 
 			for (int i = 0; i < CHUNKS_PER_REGION; i++) {
 				if (this.offset[i] != 0) {
@@ -131,29 +139,29 @@ public final class AdaptationUtils {
 
 					int[] coords = new int[]{this.chunkRoot[i].getInt("xPos"), this.chunkRoot[i].getInt("zPos")};
 					this.chunkRoot[i].getList("block_entities", Tag.TAG_COMPOUND)
-							.forEach(tag -> {
-								try {
-									CompoundTag compoundTag = NbtUtils.snbtToStructure(tag.getAsString());
-									ListTag items = compoundTag.getList("Items", Tag.TAG_COMPOUND);
-									if (!items.isEmpty()) {
-										items.forEach(item -> {
-											if (item.getAsString().contains("CustomModelData")) {
-												chunks.put(
-														new AbstractMap.SimpleEntry<>(coords[0], coords[1]),
-														new Location(
-																world,
-																compoundTag.getInt("x"),
-																compoundTag.getInt("y"),
-																compoundTag.getInt("z")
-														)
-												);
-											}
-										});
+					.forEach(tag -> {
+						try {
+							CompoundTag compoundTag = NbtUtils.snbtToStructure(tag.getAsString());
+							ListTag items = compoundTag.getList("Items", Tag.TAG_COMPOUND);
+							if (!items.isEmpty()) {
+								items.forEach(item -> {
+									if (item.getAsString().contains("CustomModelData")) {
+										chunks.put(
+												new AbstractMap.SimpleEntry<>(coords[0], coords[1]),
+												new Location(
+														world,
+														compoundTag.getInt("x"),
+														compoundTag.getInt("y"),
+														compoundTag.getInt("z")
+												)
+										);
 									}
-								} catch (CommandSyntaxException e) {
-									throw new RuntimeException(e);
-								}
-							});
+								});
+							}
+						} catch (CommandSyntaxException e) {
+							throw new RuntimeException(e);
+						}
+					});
 				}
 			}
 
@@ -161,10 +169,11 @@ public final class AdaptationUtils {
 			return chunks;
 		}
 
-		private void initRegion() throws Exception {
+		private boolean initRegion() throws IOException {
 			if (this.file.length() < 2 * INT_SIZE * CHUNKS_PER_REGION) {
 				this.file.close();
-				throw new Exception("Invalid file structure (file is not big enough to contain a valid region file header)");
+				Bukkit.getLogger().warning("Invalid file structure (file is not big enough to contain a valid region file header) : " + this.fileObject.getAbsolutePath());
+				return false;
 			}
 
 			for (int i = 0; i < CHUNKS_PER_REGION; i++) {
@@ -172,6 +181,7 @@ public final class AdaptationUtils {
 				this.offset[i] = (j & 0xFFFFFF00) >> 8;
 				this.sectors[i] = (j & 0x000000FF);
 			}
+			return true;
 		}
 
 		private void initChunk(int i) throws Exception {
@@ -192,7 +202,7 @@ public final class AdaptationUtils {
 
 			if (
 					!(this.compressionType[i] == COMPRESSION_TYPE_GZIP
-							|| this.compressionType[i] == COMPRESSION_TYPE_ZLIB)
+					|| this.compressionType[i] == COMPRESSION_TYPE_ZLIB)
 			) {
 				this.file.close();
 				throw new Exception("Unknown compression type");
