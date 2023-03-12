@@ -1,25 +1,51 @@
 package com.github.minersstudios.msblock.commands;
 
+import com.github.minersstudios.mscore.MSCommand;
+import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.MSCore;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
-public class CommandHandler implements CommandExecutor {
+@MSCommand(command = "msblock")
+public class CommandHandler implements MSCommandExecutor {
 
 	@Override
-	public boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command command, @Nonnull String label, @Nonnull String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
 		if (args.length > 0) {
 			String utilsCommand = args[0].toLowerCase(Locale.ROOT);
-			if ("reload".equals(utilsCommand)) {
+			if ("reload".equalsIgnoreCase(utilsCommand)) {
 				return ReloadCommand.runCommand(sender);
 			}
-			if ("give".equals(utilsCommand)) {
+			if ("give".equalsIgnoreCase(utilsCommand)) {
 				return GiveCommand.runCommand(sender, args);
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String @NotNull ... args) {
+		List<String> completions = new ArrayList<>();
+		switch (args.length) {
+			case 1 -> {
+				completions.add("reload");
+				completions.add("give");
+			}
+			case 2 -> {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					completions.add(player.getName());
+				}
+			}
+			case 3 -> completions.addAll(MSCore.getConfigCache().customBlockMap.primaryKeySet());
+		}
+		return completions;
 	}
 }

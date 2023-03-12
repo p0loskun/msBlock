@@ -1,22 +1,30 @@
 package com.github.minersstudios.msblock.listeners.player;
 
-import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
-import com.github.minersstudios.msblock.utils.BlockUtils;
+import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
+import com.github.minersstudios.msblock.events.CustomBlockRightClickEvent;
+import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
 import com.github.minersstudios.msblock.utils.UseBucketsAndSpawnableItems;
-import net.minecraft.world.EnumHand;
-import net.minecraft.world.EnumInteractionResult;
-import net.minecraft.world.item.context.ItemActionContext;
+import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.utils.BlockUtils;
+import com.github.minersstudios.mscore.utils.MSBlockUtils;
+import com.github.minersstudios.mscore.utils.MSDecorUtils;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -25,40 +33,69 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import java.security.SecureRandom;
 import java.util.Set;
 
+@MSListener
 public class PlayerInteractListener implements Listener {
 	private Block blockAtFace;
 	private Location interactionPoint;
-	private ItemActionContext itemActionContext;
-	private EnumHand enumHand;
+	private UseOnContext useOnContext;
+	private InteractionHand interactionHand;
 	private ItemStack itemInHand;
 	private Player player;
 	private GameMode gameMode;
-	private EquipmentSlot hand;
 	private net.minecraft.world.item.ItemStack nmsItem;
-	private CustomBlock clickedCustomBlock;
+	private CustomBlockData clickedCustomBlockData;
+
+	private final SecureRandom random = new SecureRandom();
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerInteract(@Nonnull PlayerInteractEvent event) {
+	public void onPlaceArmorStand(@NotNull PlayerInteractEvent event) {
+		if (
+				event.getAction() != Action.RIGHT_CLICK_BLOCK
+				|| event.getClickedBlock() == null
+				|| event.getHand() == null
+				|| !MSBlockUtils.isCustomBlock(event.getPlayer().getInventory().getItemInMainHand())
+		) return;
+		event.setUseItemInHand(Event.Result.DENY);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerInteract(@NotNull PlayerInteractEvent event) {
 		if (
 				event.getClickedBlock() == null
 				|| event.getHand() == null
 				|| event.getAction() != Action.RIGHT_CLICK_BLOCK
 		) return;
 		Block clickedBlock = event.getClickedBlock();
-		this.hand = event.getHand();
+		BlockFace blockFace = event.getBlockFace();
+		EquipmentSlot hand = event.getHand();
 		this.player = event.getPlayer();
 		this.gameMode = this.player.getGameMode();
 		ItemStack itemInMainHand = this.player.getInventory().getItemInMainHand();
 
-		event.setCancelled(clickedBlock.getType() == Material.NOTE_BLOCK);
+		if (
+				event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& Tag.SHULKER_BOXES.isTagged(clickedBlock.getType())
+				&& clickedBlock.getRelative(BlockFace.UP).getType() == Material.NOTE_BLOCK
+				&& clickedBlock.getState() instanceof ShulkerBox shulkerBox
+				&& clickedBlock.getBlockData() instanceof Directional directional
+				&& BlockUtils.REPLACE.contains(clickedBlock.getRelative(directional.getFacing()).getType())
+		) {
+			event.setCancelled(true);
+			PlayerUtils.openShulkerBoxWithoutAnimation(this.player, shulkerBox);
+		}
 
-		if (PlayerUtils.isItemCustomDecor(itemInMainHand)) return;
-		if (this.hand != EquipmentSlot.HAND && PlayerUtils.isItemCustomBlock(itemInMainHand)) {
-			this.hand = EquipmentSlot.HAND;
+		if (clickedBlock.getType() == Material.NOTE_BLOCK) {
+			event.setCancelled(true);
+		}
+
+		if (MSDecorUtils.isCustomDecor(itemInMainHand)) return;
+		if (hand != EquipmentSlot.HAND && MSBlockUtils.isCustomBlock(itemInMainHand)) {
+			hand = EquipmentSlot.HAND;
 		}
 		this.itemInHand = this.player.getInventory().getItem(hand);
 		this.interactionPoint = PlayerUtils.getInteractionPoint(this.player.getEyeLocation(), 8);
@@ -67,24 +104,39 @@ public class PlayerInteractListener implements Listener {
 				clickedBlock.getBlockData() instanceof NoteBlock noteBlock
 				&& !this.itemInHand.getType().isAir()
 				&& (hand == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
-				&& !PlayerUtils.isItemCustomBlock(this.itemInHand)
+				&& !MSBlockUtils.isCustomBlock(this.itemInHand)
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
 		) {
-
-			this.clickedCustomBlock = CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered());
-			this.blockAtFace = clickedBlock.getRelative(event.getBlockFace());
+			this.clickedCustomBlockData = CustomBlockData.fromNoteBlock(noteBlock);
+			this.blockAtFace = clickedBlock.getRelative(blockFace);
 			this.nmsItem = CraftItemStack.asNMSCopy(this.itemInHand);
-			this.enumHand = this.hand == EquipmentSlot.HAND ? EnumHand.a : EnumHand.b;
-			this.itemActionContext = PlayerUtils.getItemActionContext(this.player, this.blockAtFace.getLocation(), this.enumHand);
+			this.interactionHand =
+					hand == EquipmentSlot.HAND
+					? InteractionHand.MAIN_HAND
+					: InteractionHand.OFF_HAND;
+			this.useOnContext = PlayerUtils.getUseOnContext(this.player, this.blockAtFace.getLocation(), this.interactionHand);
 			if (this.interactionPoint != null) {
-				useItemInHand(event);
+				if (clickedBlock.getType() == Material.NOTE_BLOCK) {
+					CustomBlockRightClickEvent customBlockRightClickEvent = new CustomBlockRightClickEvent(
+							new CustomBlock(clickedBlock, this.player, this.clickedCustomBlockData),
+							this.player,
+							this.itemInHand,
+							hand,
+							blockFace,
+							this.interactionPoint
+					);
+					Bukkit.getPluginManager().callEvent(customBlockRightClickEvent);
+					if (customBlockRightClickEvent.isCancelled()) return;
+				}
+				this.useItemInHand(event);
 			}
 		}
+
 		if (
-				PlayerUtils.isItemCustomBlock(this.itemInHand)
-				&& (event.getHand() == EquipmentSlot.HAND || this.hand == EquipmentSlot.OFF_HAND)
-				&& BlockUtils.REPLACE.contains(clickedBlock.getRelative(event.getBlockFace()).getType())
+				MSBlockUtils.isCustomBlock(this.itemInHand)
+				&& (event.getHand() == EquipmentSlot.HAND || hand == EquipmentSlot.OFF_HAND)
+				&& BlockUtils.REPLACE.contains(clickedBlock.getRelative(blockFace).getType())
 				&& this.gameMode != GameMode.ADVENTURE
 				&& this.gameMode != GameMode.SPECTATOR
 				&& this.interactionPoint != null
@@ -96,45 +148,47 @@ public class PlayerInteractListener implements Listener {
 					&& !this.player.isSneaking()
 			) return;
 			Block replaceableBlock =
-					BlockUtils.REPLACE.contains(clickedBlock.getType()) ? clickedBlock
-							: clickedBlock.getRelative(event.getBlockFace());
+					BlockUtils.REPLACE.contains(clickedBlock.getType())
+					? clickedBlock
+					: clickedBlock.getRelative(blockFace);
 			for (Entity nearbyEntity : replaceableBlock.getWorld().getNearbyEntities(replaceableBlock.getLocation().toCenterLocation(), 0.5d, 0.5d, 0.5d)) {
-				if (!BlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
+				if (!CustomBlockUtils.IGNORABLE_ENTITIES.contains(nearbyEntity.getType())) return;
 			}
 			ItemMeta itemMeta = this.itemInHand.getItemMeta();
 			if (itemMeta == null || !itemMeta.hasCustomModelData()) return;
-			CustomBlock customBlock = CustomBlock.getCustomBlock(itemMeta.getCustomModelData());
-			Set<BlockFace> blockFaces = customBlock.getFaces();
-			Set<Axis> blockAxes = customBlock.getAxes();
+			CustomBlockData customBlockData = CustomBlockData.fromCustomModelData(itemMeta.getCustomModelData());
+			Set<BlockFace> blockFaces = customBlockData.getFaces();
+			Set<Axis> blockAxes = customBlockData.getAxes();
+			CustomBlock customBlock = new CustomBlock(replaceableBlock, this.player, customBlockData);
 			if (blockFaces != null) {
-				if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_BLOCK_FACE) {
-					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, event.getBlockFace(), null);
-				} else if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_EYE_POSITION) {
-					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, this.getBlockFaceByEyes(blockFaces), null);
+				if (customBlockData.getPlacingType() == CustomBlockData.PlacingType.BY_BLOCK_FACE) {
+					customBlock.setCustomBlock(hand, blockFace, null);
+				} else if (customBlockData.getPlacingType() == CustomBlockData.PlacingType.BY_EYE_POSITION) {
+					customBlock.setCustomBlock(hand, this.getBlockFaceByEyes(blockFaces), null);
 				}
 			} else if (blockAxes != null) {
-				if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_BLOCK_FACE) {
-					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, null, this.getAxis());
-				} else if (customBlock.getPlacingType() == CustomBlock.PlacingType.BY_EYE_POSITION) {
-					customBlock.setCustomBlock(replaceableBlock, this.player, this.hand, null, this.getAxisByEyes(blockAxes));
+				if (customBlockData.getPlacingType() == CustomBlockData.PlacingType.BY_BLOCK_FACE) {
+					customBlock.setCustomBlock(hand, null, this.getAxis());
+				} else if (customBlockData.getPlacingType() == CustomBlockData.PlacingType.BY_EYE_POSITION) {
+					customBlock.setCustomBlock(hand, null, this.getAxisByEyes(blockAxes));
 				}
 			} else {
-				customBlock.setCustomBlock(replaceableBlock, this.player, this.hand);
+				customBlock.setCustomBlock(hand);
 			}
 		}
 	}
 
-	private void useItemInHand(@Nonnull PlayerInteractEvent event) {
+	private void useItemInHand(@NotNull PlayerInteractEvent event) {
 		BlockFace blockFace = event.getBlockFace();
 		BlockData materialBlockData = BlockUtils.getBlockDataByMaterial(this.itemInHand.getType());
-		if (BlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
-			new UseBucketsAndSpawnableItems(this.player, this.blockAtFace, blockFace, this.hand);
-		}
-		if (Tag.SLABS.isTagged(this.itemInHand.getType())) {
+
+		if (CustomBlockUtils.SPAWNABLE_ITEMS.contains(this.itemInHand.getType())) {
+			new UseBucketsAndSpawnableItems(this.player, this.blockAtFace, blockFace, this.itemInHand);
+		} else if (Tag.SLABS.isTagged(this.itemInHand.getType())) {
 			boolean placeDouble = true;
 			Material itemMaterial = this.itemInHand.getType();
 			if (this.blockAtFace.getType() != itemMaterial) {
-				useOn();
+				this.useOn();
 				placeDouble = false;
 			}
 			if (!(this.blockAtFace.getBlockData() instanceof Slab slab)) return;
@@ -168,9 +222,17 @@ public class PlayerInteractListener implements Listener {
 			}
 			this.blockAtFace.setBlockData(slab);
 		}
+
 		if (!BlockUtils.REPLACE.contains(this.blockAtFace.getType())) return;
+
+		Set<Material> placeableMaterials = this.clickedCustomBlockData.getPlaceableMaterials();
+		if (placeableMaterials != null && placeableMaterials.contains(this.itemInHand.getType())) {
+			this.blockAtFace.setType(this.itemInHand.getType(), false);
+			this.itemInHand.setAmount(this.itemInHand.getAmount() - 1);
+		}
+
 		if (materialBlockData instanceof FaceAttachable) {
-			useOn();
+			this.useOn();
 			FaceAttachable faceAttachable = (FaceAttachable) this.blockAtFace.getBlockData();
 			switch (blockFace) {
 				case UP -> faceAttachable.setAttachedFace(FaceAttachable.AttachedFace.FLOOR);
@@ -184,7 +246,7 @@ public class PlayerInteractListener implements Listener {
 			}
 			this.blockAtFace.setBlockData(faceAttachable);
 		} else if (materialBlockData instanceof Orientable) {
-			useOn();
+			this.useOn();
 			if (!(this.blockAtFace.getBlockData() instanceof Orientable orientable)) return;
 			orientable.setAxis(this.getAxis());
 			this.blockAtFace.setBlockData(orientable);
@@ -192,11 +254,11 @@ public class PlayerInteractListener implements Listener {
 				materialBlockData instanceof Directional directionalMaterial
 				&& (
 						directionalMaterial.getFaces().contains(blockFace)
-						|| Tag.STAIRS.isTagged(itemInHand.getType())
-						|| Tag.TRAPDOORS.isTagged(itemInHand.getType())
-				) && !BlockUtils.IGNORABLE_MATERIALS.contains(itemInHand.getType())
+						|| Tag.STAIRS.isTagged(this.itemInHand.getType())
+						|| Tag.TRAPDOORS.isTagged(this.itemInHand.getType())
+				) && !CustomBlockUtils.IGNORABLE_MATERIALS.contains(this.itemInHand.getType())
 		) {
-			useOn();
+			this.useOn();
 			if (!(this.blockAtFace.getBlockData() instanceof Directional directional)) return;
 			if (!(directional instanceof Bisected bisected)) {
 				directional.setFacing(blockFace);
@@ -213,33 +275,29 @@ public class PlayerInteractListener implements Listener {
 			}
 			this.blockAtFace.setBlockData(directional);
 		} else if (!this.blockAtFace.getType().isSolid() && this.blockAtFace.getType() != this.itemInHand.getType()) {
-			useOn();
-		}
-		Set<Material> placeableMaterials = this.clickedCustomBlock.getPlaceableMaterials();
-		if (placeableMaterials != null && placeableMaterials.contains(this.itemInHand.getType())) {
-			blockAtFace.setType(this.itemInHand.getType());
+			this.useOn();
 		}
 	}
 
 	private void useOn() {
+		ItemStack copyItem = this.itemInHand.clone();
 		if (
-				this.nmsItem.useOn(this.itemActionContext, this.enumHand) == EnumInteractionResult.e
-				|| !this.itemInHand.getType().isBlock()
+				this.nmsItem.useOn(this.useOnContext, this.interactionHand) == InteractionResult.FAIL
+				|| !copyItem.getType().isBlock()
 		) return;
-		BlockData blockData = this.itemInHand.getType().createBlockData();
-		Main.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), this.itemInHand.getType(), blockData);
+		BlockData blockData = copyItem.getType().createBlockData();
+		MSBlock.getCoreProtectAPI().logPlacement(this.player.getName(), this.blockAtFace.getLocation(), copyItem.getType(), blockData);
 		SoundGroup soundGroup = blockData.getSoundGroup();
 		this.blockAtFace.getWorld().playSound(
 				this.blockAtFace.getLocation(),
 				soundGroup.getPlaceSound(),
 				SoundCategory.BLOCKS,
 				soundGroup.getVolume(),
-				soundGroup.getPitch()
+				this.random.nextFloat() * 0.1F + soundGroup.getPitch()
 		);
 	}
 
-	@Nonnull
-	private Axis getAxis() {
+	private @NotNull Axis getAxis() {
 		if (this.interactionPoint.getX() == 0.0 || this.interactionPoint.getX() == 1.0) {
 			return Axis.X;
 		} else if (this.interactionPoint.getY() == 0.0 || this.interactionPoint.getY() == 1.0) {
@@ -248,7 +306,7 @@ public class PlayerInteractListener implements Listener {
 		return Axis.Z;
 	}
 
-	private BlockFace getBlockFaceByEyes(@Nonnull Set<BlockFace> blockFaces) {
+	private BlockFace getBlockFaceByEyes(@NotNull Set<BlockFace> blockFaces) {
 		float pitch = this.player.getLocation().getPitch();
 		if (!(pitch >= -45.0f) && blockFaces.contains(BlockFace.DOWN)) {
 			return BlockFace.DOWN;
@@ -263,7 +321,7 @@ public class PlayerInteractListener implements Listener {
 		return faces[Math.round(this.player.getLocation().getYaw() / 90f) & 0x3];
 	}
 
-	private Axis getAxisByEyes(@Nonnull Set<Axis> axes) {
+	private Axis getAxisByEyes(@NotNull Set<Axis> axes) {
 		float pitch = this.player.getLocation().getPitch();
 		if (!(pitch >= -45.0f && pitch <= 45.0f) && axes.contains(Axis.Y)) {
 			return Axis.Y;

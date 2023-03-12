@@ -1,8 +1,9 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
-import com.github.minersstudios.msblock.Main;
-import com.github.minersstudios.msblock.customBlock.CustomBlock;
+import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
+import com.github.minersstudios.mscore.MSListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,13 +13,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCreativeEvent;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-
+@MSListener
 public class InventoryCreativeListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onInventoryCreative(@Nonnull InventoryCreativeEvent event) {
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onInventoryCreative(@NotNull InventoryCreativeEvent event) {
 		if (!event.getClick().isCreativeAction()) return;
 		Player player = (Player) event.getWhoClicked();
 		Block targetBlock = PlayerUtils.getTargetBlock(player);
@@ -28,9 +29,9 @@ public class InventoryCreativeListener implements Listener {
 				|| !(targetBlock.getBlockData() instanceof NoteBlock noteBlock)
 		) return;
 		event.setCancelled(true);
-		Bukkit.getScheduler().runTask(Main.getInstance(), () -> player.getInventory().setItem(
+		Bukkit.getScheduler().runTask(MSBlock.getInstance(), () -> player.getInventory().setItem(
 				event.getSlot(),
-				CustomBlock.getCustomBlock(noteBlock.getInstrument(), noteBlock.getNote(), noteBlock.isPowered()).getItemStack()
+				CustomBlockData.fromNoteBlock(noteBlock).craftItemStack()
 		));
 	}
 }
