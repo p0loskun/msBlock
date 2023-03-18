@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
 import static com.github.minersstudios.msblock.MSBlock.getConfigCache;
+import static com.github.minersstudios.msblock.utils.CustomBlockUtils.cancelAllTasksWithThisBlock;
+import static com.github.minersstudios.msblock.utils.CustomBlockUtils.cancelAllTasksWithThisPlayer;
 import static com.github.minersstudios.msblock.utils.PlayerUtils.*;
 
 public class PacketBlockDigListener extends PacketAdapter {
@@ -44,7 +46,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 			if (digType == EnumWrappers.PlayerDigType.START_DESTROY_BLOCK) {
 				if (block.getBlockData() instanceof NoteBlock noteBlock) {
 					if (CustomBlockUtils.hasPlayer(player)) {
-						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+						cancelAllTasksWithThisPlayer(player);
 					}
 					CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
@@ -84,7 +86,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!swing) {
 								playZeroBreakStage(blockPosition);
-								CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+								cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
@@ -113,7 +115,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 					}, 0L, 1L));
 				} else {
 					if (CustomBlockUtils.hasPlayer(player) && !BlockUtils.isWoodenSound(block.getBlockData())) {
-						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+						cancelAllTasksWithThisPlayer(player);
 					}
 					if (hasSlowDigging) {
 						player.removePotionEffect(PotionEffectType.SLOW_DIGGING);
@@ -122,7 +124,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 				if (BlockUtils.isWoodenSound(block.getBlockData())) {
 					if (CustomBlockUtils.hasPlayer(player)) {
-						CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+						cancelAllTasksWithThisPlayer(player);
 					}
 					getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
@@ -154,7 +156,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 
 							if (!swing) {
 								playZeroBreakStage(blockPosition);
-								CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+								cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
@@ -168,7 +170,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 				}
 			} else if (digType == EnumWrappers.PlayerDigType.STOP_DESTROY_BLOCK && CustomBlockUtils.hasBlock(block)) {
 				playZeroBreakStage(blockPosition);
-				CustomBlockUtils.cancelAllTasksWithThisBlock(block);
+				cancelAllTasksWithThisBlock(block);
 			} else if (
 					digType == EnumWrappers.PlayerDigType.ABORT_DESTROY_BLOCK
 					&& CustomBlockUtils.hasBlock(block)
@@ -177,7 +179,7 @@ public class PacketBlockDigListener extends PacketAdapter {
 				Block targetBlock = getTargetBlock(player);
 				if (getTargetEntity(player, targetBlock) == null && targetBlock != null) {
 					playZeroBreakStage(blockPosition);
-					CustomBlockUtils.cancelAllTasksWithThisPlayer(player);
+					cancelAllTasksWithThisPlayer(player);
 				}
 			}
 		});
