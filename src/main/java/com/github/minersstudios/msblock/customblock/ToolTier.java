@@ -1,41 +1,58 @@
 package com.github.minersstudios.msblock.customblock;
 
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public enum ToolTier {
-	HAND("HAND", 0.1f),
-	WOOD("WOODEN_", 0.3f),
-	STONE("STONE_", 0.45f),
-	IRON("IRON_", 0.56f),
-	GOLD("GOLDEN_", 0.8f),
-	DIAMOND("DIAMOND_", 0.65f),
-	NETHERITE("NETHERITE_", 0.8f);
+	HAND(0.1f),
+	WOOD(0.3f),
+	STONE(0.45f),
+	IRON(0.56f),
+	GOLD(0.8f),
+	DIAMOND(0.65f),
+	NETHERITE(0.8f);
 
-	private final @NotNull String itemTierName;
 	private final float speed;
 
-	ToolTier(
-			@NotNull String itemTierName,
-			float speed
-	) {
-		this.itemTierName = itemTierName;
+	ToolTier(float speed) {
 		this.speed = speed;
 	}
 
-	/**
-	 * @param itemInMainHand item in main hand
-	 * @return ToolTier from item in main hand
-	 */
-	public static @NotNull ToolTier getToolTier(@NotNull ItemStack itemInMainHand) {
-		if (itemInMainHand.getType() == Material.SHEARS) return NETHERITE;
-		for (ToolTier toolTier : ToolTier.values()) {
-			if (itemInMainHand.getType().name().contains(toolTier.itemTierName)) {
-				return toolTier;
-			}
-		}
-		return HAND;
+	public static @NotNull ToolTier fromItemStack(@NotNull ItemStack itemStack) {
+		return switch (itemStack.getType()) {
+			case WOODEN_PICKAXE,
+					WOODEN_AXE,
+					WOODEN_HOE,
+					WOODEN_SHOVEL,
+					WOODEN_SWORD -> WOOD;
+			case STONE_PICKAXE,
+					STONE_AXE,
+					STONE_HOE,
+					STONE_SHOVEL,
+					STONE_SWORD -> STONE;
+			case IRON_PICKAXE,
+					IRON_AXE,
+					IRON_HOE,
+					IRON_SHOVEL,
+					IRON_SWORD -> IRON;
+			case GOLDEN_PICKAXE,
+					GOLDEN_AXE,
+					GOLDEN_HOE,
+					GOLDEN_SHOVEL,
+					GOLDEN_SWORD -> GOLD;
+			case DIAMOND_PICKAXE,
+					DIAMOND_AXE,
+					DIAMOND_HOE,
+					DIAMOND_SHOVEL,
+					DIAMOND_SWORD -> DIAMOND;
+			case NETHERITE_PICKAXE,
+					NETHERITE_AXE,
+					NETHERITE_HOE,
+					NETHERITE_SHOVEL,
+					NETHERITE_SWORD,
+					SHEARS -> NETHERITE;
+			default -> HAND;
+		};
 	}
 
 	public float getSpeed() {

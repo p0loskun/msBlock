@@ -24,9 +24,9 @@ public class PrepareItemCraftListener implements Listener {
 		for (ItemStack itemStack : event.getInventory().getMatrix()) {
 			if (
 					MSBlockUtils.isCustomBlock(itemStack)
-					&& (recipe instanceof ShapedRecipe shapedRecipe
+					&& ((recipe instanceof ShapedRecipe shapedRecipe
 					&& shapedRecipe.getIngredientMap().values().stream().noneMatch(item -> ItemUtils.isSimilarItemStacks(item, itemStack)))
-					|| (!result.hasItemMeta() || !result.getItemMeta().hasCustomModelData())
+					|| (!result.hasItemMeta() || !result.getItemMeta().hasCustomModelData()))
 			) {
 				if (MSDecorUtils.isCustomDecor(event.getInventory().getResult())) return;
 				event.getInventory().setResult(new ItemStack(Material.AIR));

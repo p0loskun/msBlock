@@ -264,8 +264,8 @@ public class CustomBlockData implements Cloneable {
 		float base = 1.0f;
 		ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 
-		if (this.toolType == ToolType.getToolType(itemInMainHand)) {
-			base = ToolTier.getToolTier(itemInMainHand).getSpeed();
+		if (this.toolType == ToolType.fromItemStack(itemInMainHand)) {
+			base = ToolTier.fromItemStack(itemInMainHand).getSpeed();
 			if (itemInMainHand.containsEnchantment(Enchantment.DIG_SPEED)) {
 				base += itemInMainHand.getEnchantmentLevel(Enchantment.DIG_SPEED) * 0.3f;
 			}

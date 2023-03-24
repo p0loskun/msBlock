@@ -5,6 +5,7 @@ import com.github.minersstudios.msblock.events.CustomBlockBreakEvent;
 import com.github.minersstudios.msblock.events.CustomBlockPlaceEvent;
 import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.mscore.utils.BlockUtils;
+import com.github.minersstudios.mscore.utils.ItemUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,7 +15,6 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,7 +89,7 @@ public class CustomBlock implements Cloneable {
 		this.block.setType(Material.AIR);
 
 		if (
-				(!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.getToolType(itemInMainHand))
+				(!this.customBlockData.isForceTool() || this.customBlockData.getToolType() == ToolType.fromItemStack(itemInMainHand))
 				&& this.customBlockData != CustomBlockData.DEFAULT
 		) {
 			if (this.customBlockData.isDropsDefaultItem()) {
@@ -102,16 +102,8 @@ public class CustomBlock implements Cloneable {
 			world.dropItemNaturally(blockLocation, new ItemStack(Material.NOTE_BLOCK));
 		}
 
-		if (
-				ToolType.getToolType(itemInMainHand) != ToolType.HAND
-				&& itemInMainHand.getItemMeta() instanceof Damageable handItemDamageable
-		) {
-			handItemDamageable.setDamage(handItemDamageable.getDamage() + 1);
-			itemInMainHand.setItemMeta(handItemDamageable);
-			if (handItemDamageable.getDamage() > itemInMainHand.getType().getMaxDurability()) {
-				itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-				world.playSound(this.player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
-			}
+		if (ToolType.fromItemStack(itemInMainHand) != ToolType.HAND) {
+			ItemUtils.damageItem(this.player, itemInMainHand);
 		}
 	}
 
