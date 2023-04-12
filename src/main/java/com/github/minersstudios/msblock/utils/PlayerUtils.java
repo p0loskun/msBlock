@@ -3,24 +3,20 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.MSBlock;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R2.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -93,13 +89,6 @@ public final class PlayerUtils {
 		return rayTraceResult == null
 				|| rayTraceResult.getHitBlock() == null ? null
 				: rayTraceResult.getHitPosition().subtract(rayTraceResult.getHitBlock().getLocation().toVector()).toLocation(location.getWorld());
-	}
-
-	public static @NotNull UseOnContext getUseOnContext(@NotNull Player player, @NotNull Location blockLoc, @NotNull InteractionHand interactionHand) {
-		ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-		BlockPos blockPos = new BlockPos(blockLoc.getBlockX(), blockLoc.getBlockY(), blockLoc.getBlockZ());
-		BlockHitResult blockHitResult = new BlockHitResult(serverPlayer.getEyePosition(), serverPlayer.getDirection(), blockPos, false);
-		return new UseOnContext(serverPlayer, interactionHand, blockHitResult);
 	}
 
 	/**

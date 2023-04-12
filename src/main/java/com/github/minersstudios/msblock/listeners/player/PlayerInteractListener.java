@@ -11,9 +11,11 @@ import com.github.minersstudios.mscore.MSListener;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -21,7 +23,9 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.block.data.*;
 import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.block.data.type.Slab;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -42,7 +46,6 @@ import java.util.Set;
 public class PlayerInteractListener implements Listener {
 	private Block blockAtFace;
 	private Location interactionPoint;
-	private UseOnContext useOnContext;
 	private InteractionHand interactionHand;
 	private ItemStack itemInHand;
 	private Player player;
@@ -115,7 +118,6 @@ public class PlayerInteractListener implements Listener {
 					hand == EquipmentSlot.HAND
 					? InteractionHand.MAIN_HAND
 					: InteractionHand.OFF_HAND;
-			this.useOnContext = PlayerUtils.getUseOnContext(this.player, this.blockAtFace.getLocation(), this.interactionHand);
 			if (this.interactionPoint != null) {
 				if (clickedBlock.getType() == Material.NOTE_BLOCK) {
 					CustomBlockRightClickEvent customBlockRightClickEvent = new CustomBlockRightClickEvent(
@@ -281,8 +283,13 @@ public class PlayerInteractListener implements Listener {
 
 	private void useOn() {
 		ItemStack copyItem = this.itemInHand.clone();
+		ServerPlayer serverPlayer = ((CraftPlayer) this.player).getHandle();
+		BlockHitResult blockHitResult = new BlockHitResult(serverPlayer.getEyePosition(), serverPlayer.getDirection(), ((CraftBlock) this.blockAtFace).getPosition(), false);
 		if (
-				this.nmsItem.useOn(this.useOnContext, this.interactionHand) == InteractionResult.FAIL
+				this.nmsItem.useOn(
+						new UseOnContext(serverPlayer, this.interactionHand, blockHitResult),
+						this.interactionHand
+				) == InteractionResult.FAIL
 				|| !copyItem.getType().isBlock()
 		) return;
 		BlockData blockData = copyItem.getType().createBlockData();

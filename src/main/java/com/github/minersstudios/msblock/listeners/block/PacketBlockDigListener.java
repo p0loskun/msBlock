@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -24,7 +25,8 @@ import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
 import static com.github.minersstudios.msblock.MSBlock.getConfigCache;
 import static com.github.minersstudios.msblock.utils.CustomBlockUtils.cancelAllTasksWithThisBlock;
 import static com.github.minersstudios.msblock.utils.CustomBlockUtils.cancelAllTasksWithThisPlayer;
-import static com.github.minersstudios.msblock.utils.PlayerUtils.*;
+import static com.github.minersstudios.msblock.utils.PlayerUtils.getTargetBlock;
+import static com.github.minersstudios.msblock.utils.PlayerUtils.getTargetEntity;
 
 public class PacketBlockDigListener extends PacketAdapter {
 
@@ -48,53 +50,44 @@ public class PacketBlockDigListener extends PacketAdapter {
 					if (CustomBlockUtils.hasPlayer(player)) {
 						cancelAllTasksWithThisPlayer(player);
 					}
+
+					if (!hasSlowDigging) {
+						player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
+					}
+
 					CustomBlockData customBlockData = CustomBlockData.fromNoteBlock(noteBlock);
 					float digSpeed = customBlockData.getCalculatedDigSpeed(player);
 					getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
 						float progress = 0.0f;
 						int currentStage = 0;
-						static boolean swing = true;
 
 						@Override
 						public void run() {
 							Block targetBlock = getTargetBlock(player);
+							boolean wasFarAway = false;
+
 							if (getTargetEntity(player, targetBlock) != null || targetBlock == null) {
 								getConfigCache().farAway.add(player);
 								return;
-							} else {
+							} else if (getConfigCache().farAway.contains(player)) {
 								getConfigCache().farAway.remove(player);
-							}
-
-							if (!hasSlowDigging) {
-								player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 108000, -1, true, false, false));
+								wasFarAway = true;
 							}
 
 							if (!targetBlock.equals(block)) return;
-
-							if (!getConfigCache().farAway.contains(player)) {
-								Bukkit.getScheduler().runTask(plugin, () ->
-									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
-										@Override
-										public void onPacketReceiving(PacketEvent event) {
-											swing = true;
-											MSBlock.getProtocolManager().removePacketListener(this);
-										}
-									})
-								);
-							}
-
-							if (!swing) {
+							if (
+									!(!getConfigCache().farAway.contains(player)
+									&& (((CraftPlayer) player).getHandle().swinging || wasFarAway))
+							) {
 								playZeroBreakStage(blockPosition);
 								cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
 							this.progress += digSpeed;
-
 							if (this.ticks % 4.0f == 0.0f && !getConfigCache().farAway.contains(player)) {
 								customBlockData.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
-								swing = false;
 							}
 
 							if (this.progress > this.currentStage++ * 0.1f) {
@@ -128,42 +121,32 @@ public class PacketBlockDigListener extends PacketAdapter {
 					}
 					getConfigCache().blocks.put(block, player, Bukkit.getScheduler().scheduleSyncRepeatingTask(MSBlock.getInstance(), new Runnable() {
 						float ticks = 0.0f;
-						static boolean swing = true;
 
 						@Override
 						public void run() {
 							Block targetBlock = getTargetBlock(player);
+							boolean wasFarAway = false;
+
 							if (getTargetEntity(player, targetBlock) != null || targetBlock == null) {
 								getConfigCache().farAway.add(player);
 								return;
-							} else {
+							} else if (getConfigCache().farAway.contains(player)) {
 								getConfigCache().farAway.remove(player);
+								wasFarAway = true;
 							}
 
 							if (!targetBlock.equals(block)) return;
-
-							if (!getConfigCache().farAway.contains(player)) {
-								Bukkit.getScheduler().runTask(plugin, () ->
-									MSBlock.getProtocolManager().addPacketListener(new PacketAdapter(MSBlock.getInstance(), PacketType.Play.Client.ARM_ANIMATION) {
-										@Override
-										public void onPacketReceiving(PacketEvent event) {
-											swing = true;
-											MSBlock.getProtocolManager().removePacketListener(this);
-										}
-									})
-								);
-							}
-
-							if (!swing) {
+							if (
+									!(!getConfigCache().farAway.contains(player)
+									&& (((CraftPlayer) player).getHandle().swinging || wasFarAway))
+							) {
 								playZeroBreakStage(blockPosition);
 								cancelAllTasksWithThisPlayer(player);
 							}
 
 							this.ticks++;
-
 							if (this.ticks % 4.0f == 0.0f) {
 								CustomBlockData.DEFAULT.getSoundGroup().playHitSound(block.getLocation().toCenterLocation());
-								swing = false;
 							}
 						}
 					}, 0L, 1L));

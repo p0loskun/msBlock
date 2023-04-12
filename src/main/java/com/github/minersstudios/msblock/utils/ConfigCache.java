@@ -3,7 +3,7 @@ package com.github.minersstudios.msblock.utils;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.NoteBlockData;
-import com.github.minersstudios.mscore.collections.DualMap;
+import com.github.minersstudios.mscore.collections.ConcurrentDualMap;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public final class ConfigCache {
 
 	public final Map<Player, Double> steps = new HashMap<>();
 	public final Set<Player> farAway = new HashSet<>();
-	public  final DualMap<Block, Player, Integer> blocks = new DualMap<>();
+	public final ConcurrentDualMap<Block, Player, Integer> blocks = new ConcurrentDualMap<>();
 
 	public ConfigCache() {
 		File configFile = new File(MSBlock.getInstance().getPluginFolder(), "config.yml");

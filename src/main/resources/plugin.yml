@@ -10,6 +10,7 @@ softdepend:
   - msCore
   - ProtocolLib
   - CoreProtect
+
 commands:
   msblock:
     usage: " ꀑ §cИспользуй: /<command> [параметры]"
