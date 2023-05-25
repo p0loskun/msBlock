@@ -338,10 +338,9 @@ public final class CustomBlockUtils {
 	 * @param block block
 	 */
 	public static void cancelAllTasksWithThisBlock(@NotNull Block block) {
-		if (getConfigCache().blocks.containsPrimaryKey(block)) {
-			Integer taskId = getConfigCache().blocks.removeByPrimaryKey(block);
-			assert taskId != null;
-			getConfigCache().farAway.remove(getConfigCache().blocks.getSecondaryKey(block));
+		getConfigCache().farAway.remove(getConfigCache().blocks.getSecondaryKey(block));
+		Integer taskId = getConfigCache().blocks.removeByPrimaryKey(block);
+		if (taskId != null) {
 			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}
@@ -352,10 +351,9 @@ public final class CustomBlockUtils {
 	 * @param player player
 	 */
 	public static void cancelAllTasksWithThisPlayer(@NotNull Player player) {
-		if (getConfigCache().blocks.containsSecondaryKey(player)) {
-			Integer taskId = getConfigCache().blocks.removeBySecondaryKey(player);
-			assert taskId != null;
-			getConfigCache().farAway.remove(player);
+		getConfigCache().farAway.remove(player);
+		Integer taskId = getConfigCache().blocks.removeBySecondaryKey(player);
+		if (taskId != null) {
 			Bukkit.getScheduler().cancelTask(taskId);
 		}
 	}
