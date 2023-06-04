@@ -1,7 +1,7 @@
 package com.github.minersstudios.msblock.listeners.block;
 
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.NoteBlock;

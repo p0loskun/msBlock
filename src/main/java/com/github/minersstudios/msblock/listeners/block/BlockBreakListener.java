@@ -3,7 +3,7 @@ package com.github.minersstudios.msblock.listeners.block;
 import com.github.minersstudios.msblock.customblock.CustomBlockData;
 import com.github.minersstudios.msblock.customblock.ToolType;
 import com.github.minersstudios.msblock.utils.CustomBlockUtils;
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.BlockUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;

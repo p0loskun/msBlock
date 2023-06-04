@@ -1,12 +1,15 @@
 package com.github.minersstudios.msblock.commands;
 
-import com.github.minersstudios.mscore.MSCommand;
-import com.github.minersstudios.mscore.MSCommandExecutor;
+import com.github.minersstudios.mscore.command.MSCommand;
+import com.github.minersstudios.mscore.command.MSCommandExecutor;
 import com.github.minersstudios.mscore.MSCore;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.tree.CommandNode;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,7 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@MSCommand(command = "msblock")
+import static com.mojang.brigadier.builder.LiteralArgumentBuilder.literal;
+import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
+
+@MSCommand(
+		command = "msblock",
+		usage = " ꀑ §cИспользуй: /<command> [параметры]",
+		description = "Прочие команды",
+		permission = "msblock.*",
+		permissionDefault = PermissionDefault.OP
+)
 public class CommandHandler implements MSCommandExecutor {
 
 	@Override
@@ -22,7 +34,8 @@ public class CommandHandler implements MSCommandExecutor {
 		if (args.length > 0) {
 			String utilsCommand = args[0].toLowerCase(Locale.ROOT);
 			if ("reload".equalsIgnoreCase(utilsCommand)) {
-				return ReloadCommand.runCommand(sender);
+				ReloadCommand.runCommand(sender);
+				return true;
 			}
 			if ("give".equalsIgnoreCase(utilsCommand)) {
 				return GiveCommand.runCommand(sender, args);
@@ -47,5 +60,19 @@ public class CommandHandler implements MSCommandExecutor {
 			case 3 -> completions.addAll(MSCore.getConfigCache().customBlockMap.primaryKeySet());
 		}
 		return completions;
+	}
+
+	@Override
+	public @Nullable CommandNode<?> getCommandNode() {
+		return literal("msblock")
+				.then(literal("reload"))
+				.then(
+						literal("give")
+						.then(
+								argument("nametag", StringArgumentType.word())
+								.then(argument("block id", StringArgumentType.word()))
+						)
+				)
+				.build();
 	}
 }

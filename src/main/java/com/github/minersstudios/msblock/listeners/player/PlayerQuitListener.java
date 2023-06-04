@@ -3,7 +3,7 @@ package com.github.minersstudios.msblock.listeners.player;
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.msblock.utils.CustomBlockUtils;
 import com.github.minersstudios.msblock.utils.PlayerUtils;
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

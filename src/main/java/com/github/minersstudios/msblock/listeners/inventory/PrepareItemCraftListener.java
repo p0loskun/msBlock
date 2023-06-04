@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.inventory;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.mscore.utils.MSBlockUtils;
 import com.github.minersstudios.mscore.utils.MSDecorUtils;

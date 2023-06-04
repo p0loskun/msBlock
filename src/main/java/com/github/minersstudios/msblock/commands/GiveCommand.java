@@ -21,16 +21,20 @@ public class GiveCommand {
 					? Integer.parseInt(args[3])
 					: 1;
 			if (player == null) {
-				return ChatUtils.sendError(sender, Component.text("Данный игрок не на сервере!"));
+				ChatUtils.sendError(sender, Component.text("Данный игрок не на сервере!"));
+				return true;
 			}
 			if (customBlockData == null) {
-				return ChatUtils.sendError(sender, Component.text("Такого блока не существует!"));
+				ChatUtils.sendError(sender, Component.text("Такого блока не существует!"));
+				return true;
 			}
 			ItemStack itemStack = customBlockData.craftItemStack();
 			itemStack.setAmount(amount);
 			player.getInventory().addItem(itemStack);
-			return ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " [" + customBlockData.getItemName() + "] Игроку : " + player.getName()));
+			ChatUtils.sendInfo(sender, Component.text("Выдано " + amount + " [" + customBlockData.getItemName() + "] Игроку : " + player.getName()));
+			return true;
 		}
-		return ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		ChatUtils.sendWarning(sender, Component.text("Ник не может состоять менее чем из 3 символов!"));
+		return true;
 	}
 }

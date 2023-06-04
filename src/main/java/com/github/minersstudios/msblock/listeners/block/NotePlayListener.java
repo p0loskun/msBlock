@@ -1,6 +1,6 @@
 package com.github.minersstudios.msblock.listeners.block;
 
-import com.github.minersstudios.mscore.MSListener;
+import com.github.minersstudios.mscore.listener.MSListener;
 import org.bukkit.Instrument;
 import org.bukkit.Note;
 import org.bukkit.event.EventHandler;
