@@ -14,9 +14,9 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_19_R3.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,9 +25,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.SecureRandom;
 import java.util.function.Predicate;
 
 public final class PlayerUtils {
+	private static final SecureRandom RANDOM = new SecureRandom();
 	private static final ImmutableSet<EntityType> MOB_FILTER = Sets.immutableEnumSet(
 			//<editor-fold desc="Ignorable mob types">
 			EntityType.DROPPED_ITEM,
@@ -65,7 +67,7 @@ public final class PlayerUtils {
 			AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, new ShulkerBoxMenu(containerCounter, serverPlayer.getInventory(), inventory), false);
 			container.setTitle(((MenuProvider) inventory).getDisplayName());
 
-			shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, serverPlayer.level.random.nextFloat() * 0.1F + 0.9F);
+			shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, RANDOM.nextFloat() * 0.1F + 0.9F);
 
 			serverPlayer.containerMenu = container;
 			if (!serverPlayer.isImmobile()) {

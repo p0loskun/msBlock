@@ -29,6 +29,7 @@ public class ReloadCommand {
 		MSBlock.reloadConfigs();
 		if (MSBlock.getInstance().isEnabled()) {
 			ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));
+			return;
 		}
 		ChatUtils.sendError(sender, Component.text("Плагин был перезагружён неудачно"));
 	}

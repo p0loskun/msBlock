@@ -2,8 +2,8 @@ package com.github.minersstudios.msblock.customblock;
 
 import com.github.minersstudios.msblock.MSBlock;
 import com.github.minersstudios.mscore.utils.ChatUtils;
-import com.github.minersstudios.mscore.utils.ItemUtils;
 import com.github.minersstudios.mscore.utils.MSBlockUtils;
+import com.github.minersstudios.mscore.utils.MSCustomUtils;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.NoteBlock;
@@ -423,7 +423,7 @@ public class CustomBlockData implements Cloneable {
 				try {
 					itemStack = new ItemStack(Material.valueOf(itemStr));
 				} catch (IllegalArgumentException ignored) {
-					itemStack = ItemUtils.getMSItemStack(itemStr);
+					itemStack = MSCustomUtils.getItemStack(itemStr);
 				}
 				ingredientMap.put(key.toCharArray()[0], itemStack);
 			}
