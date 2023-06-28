@@ -1,6 +1,7 @@
 package com.github.minersstudios.msblock.commands;
 
 import com.github.minersstudios.msblock.MSBlock;
+import com.github.minersstudios.mscore.Cache;
 import com.github.minersstudios.mscore.MSCore;
 import com.github.minersstudios.mscore.utils.ChatUtils;
 import net.kyori.adventure.text.Component;
@@ -23,9 +24,10 @@ public class ReloadCommand {
 				Bukkit.removeRecipe(shapedRecipe.getKey());
 			}
 		}
-		MSCore.getConfigCache().customBlockMap.clear();
-		MSCore.getConfigCache().cachedNoteBlockData.clear();
-		MSCore.getConfigCache().customBlockRecipes.clear();
+		Cache cache = MSCore.getCache();
+		cache.customBlockMap.clear();
+		cache.cachedNoteBlockData.clear();
+		cache.customBlockRecipes.clear();
 		MSBlock.reloadConfigs();
 		if (MSBlock.getInstance().isEnabled()) {
 			ChatUtils.sendFine(sender, Component.text("Плагин был успешно перезагружён за " + (System.currentTimeMillis() - time) + "ms"));

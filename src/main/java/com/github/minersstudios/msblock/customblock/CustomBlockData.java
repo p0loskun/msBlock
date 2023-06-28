@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 
-import static com.github.minersstudios.mscore.MSCore.getConfigCache;
+import static com.github.minersstudios.mscore.MSCore.getCache;
 
 @SuppressWarnings("unused")
 public class CustomBlockData implements Cloneable {
@@ -178,20 +178,20 @@ public class CustomBlockData implements Cloneable {
 
 	@Contract("_, _, _ -> new")
 	public static @NotNull CustomBlockData fromInstrumentNotePowered(@NotNull Instrument instrument, @NotNull Note note, boolean powered) {
-		return getConfigCache().cachedNoteBlockData.getOrDefault(
+		return getCache().cachedNoteBlockData.getOrDefault(
 				new NoteBlockData(instrument, note, powered).toInt(), DEFAULT
 		);
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromCustomModelData(int cmd) {
-		CustomBlockData customBlockData = getConfigCache().customBlockMap.getBySecondaryKey(cmd);
+		CustomBlockData customBlockData = getCache().customBlockMap.getBySecondaryKey(cmd);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull CustomBlockData fromKey(String key) {
-		CustomBlockData customBlockData = getConfigCache().customBlockMap.getByPrimaryKey(key);
+		CustomBlockData customBlockData = getCache().customBlockMap.getByPrimaryKey(key);
 		return customBlockData == null ? DEFAULT : customBlockData;
 	}
 
@@ -438,7 +438,7 @@ public class CustomBlockData implements Cloneable {
 			ingredientMap.keySet().forEach(character -> shapedRecipe.setIngredient(character, ingredientMap.get(character)));
 
 			if (this.isShowInCraftsMenu()) {
-				getConfigCache().customBlockRecipes.add(shapedRecipe);
+				getCache().customBlockRecipes.add(shapedRecipe);
 			}
 
 			Bukkit.addRecipe(shapedRecipe);

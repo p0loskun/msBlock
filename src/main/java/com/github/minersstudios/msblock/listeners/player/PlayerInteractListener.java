@@ -300,7 +300,7 @@ public class PlayerInteractListener implements Listener {
 				soundGroup.getPlaceSound(),
 				SoundCategory.BLOCKS,
 				soundGroup.getVolume(),
-				this.random.nextFloat() * 0.1F + soundGroup.getPitch()
+				this.random.nextFloat() * 0.1f + soundGroup.getPitch()
 		);
 	}
 

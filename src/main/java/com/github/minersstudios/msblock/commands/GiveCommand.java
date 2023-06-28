@@ -16,7 +16,7 @@ public class GiveCommand {
 		if (args.length < 3) return false;
 		if (args[1].length() > 2) {
 			Player player = Bukkit.getPlayer(args[1]);
-			CustomBlockData customBlockData = MSCore.getConfigCache().customBlockMap.getByPrimaryKey(args[2]);
+			CustomBlockData customBlockData = MSCore.getCache().customBlockMap.getByPrimaryKey(args[2]);
 			int amount = args.length == 4 && args[3].matches("[0-99]+")
 					? Integer.parseInt(args[3])
 					: 1;

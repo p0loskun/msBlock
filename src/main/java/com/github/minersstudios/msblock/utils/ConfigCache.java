@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.github.minersstudios.mscore.MSCore.getConfigCache;
+import static com.github.minersstudios.mscore.MSCore.getCache;
 
 public final class ConfigCache {
 	public final @NotNull String
@@ -50,7 +50,7 @@ public final class ConfigCache {
 			.forEach(file -> {
 				if (file.getName().equals("example.yml")) return;
 				CustomBlockData customBlockData = CustomBlockData.fromConfig(file, YamlConfiguration.loadConfiguration(file));
-				getConfigCache().customBlockMap.put(customBlockData.getNamespacedKey().getKey(), customBlockData.getItemCustomModelData(), customBlockData);
+				getCache().customBlockMap.put(customBlockData.getNamespacedKey().getKey(), customBlockData.getItemCustomModelData(), customBlockData);
 
 				NoteBlockData noteBlockData = customBlockData.getNoteBlockData();
 				if (noteBlockData == null) {
@@ -61,11 +61,11 @@ public final class ConfigCache {
 
 					if (map != null) {
 						for (NoteBlockData data : map.values()) {
-							getConfigCache().cachedNoteBlockData.put(data.toInt(), customBlockData);
+							getCache().cachedNoteBlockData.put(data.toInt(), customBlockData);
 						}
 					}
 				} else {
-					getConfigCache().cachedNoteBlockData.put(noteBlockData.toInt(), customBlockData);
+					getCache().cachedNoteBlockData.put(noteBlockData.toInt(), customBlockData);
 				}
 			});
 		} catch (IOException e) {

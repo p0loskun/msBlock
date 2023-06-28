@@ -67,7 +67,7 @@ public final class PlayerUtils {
 			AbstractContainerMenu container = CraftEventFactory.callInventoryOpenEvent(serverPlayer, new ShulkerBoxMenu(containerCounter, serverPlayer.getInventory(), inventory), false);
 			container.setTitle(((MenuProvider) inventory).getDisplayName());
 
-			shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, RANDOM.nextFloat() * 0.1F + 0.9F);
+			shulkerBox.getWorld().playSound(shulkerBox.getLocation(), Sound.BLOCK_SHULKER_BOX_OPEN, SoundCategory.BLOCKS, 0.5f, RANDOM.nextFloat() * 0.1f + 0.9f);
 
 			serverPlayer.containerMenu = container;
 			if (!serverPlayer.isImmobile()) {
